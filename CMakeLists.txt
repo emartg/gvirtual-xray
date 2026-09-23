@@ -42,7 +42,11 @@ project(gVirtualXRay-Superbuild
         LANGUAGES CXX
 )
 
+# Check for Git LFS
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CheckGitLFS.cmake)
 
+
+# Set CMake module path to include the cmake directory
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 

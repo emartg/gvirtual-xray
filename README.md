@@ -52,6 +52,25 @@ Python wheels are available on [Python Package Index (Pypi)](https://pypi.org/pr
 
 Yes. It is hosted in an established third-party source code repository called [SourceForge](https://sourceforge.net/projects/gvirtualxray/).
 
+## Git LFS requirement
+
+Git LFS (Large File Storage) is required when cloning the source repository because the project contains large test data and documentation files.
+
+Install Git LFS using the instructions for your platform:
+
+- Windows: `winget install GitHub.GitLFS` or download it from [git-lfs.com](https://git-lfs.com/).
+- macOS: `brew install git-lfs`
+- Debian or Ubuntu: `sudo apt install git-lfs`
+
+Then enable Git LFS and download the project files:
+
+```bash
+git lfs install
+git clone <repository-url>
+cd gVirtualXray
+git lfs pull
+```
+
 ## Installation
 
 ```bash
