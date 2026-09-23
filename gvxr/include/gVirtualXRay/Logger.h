@@ -7,6 +7,8 @@
 //******************************************************************************
 #include <string>
 #include <fstream>
+#include <ostream>
+#include <streambuf>
 
 
 //******************************************************************************
@@ -16,6 +18,21 @@ namespace gVirtualXRay {
 
 
 class Logger;
+
+class LoggerStreamBuffer : public std::streambuf
+{
+public:
+    void setTargets(std::streambuf* aFileBuffer, std::streambuf* aConsoleBuffer);
+
+protected:
+    int overflow(int aCharacter = traits_type::eof()) override;
+    std::streamsize xsputn(const char* apText, std::streamsize aCount) override;
+    int sync() override;
+
+private:
+    std::streambuf* m_file_buffer = nullptr;
+    std::streambuf* m_console_buffer = nullptr;
+};
 
 extern Logger LOGGER;
 
@@ -50,6 +67,9 @@ protected:
 
     std::ofstream m_output;
     std::string m_filename;
+
+    LoggerStreamBuffer m_stream_buffer;
+    std::ostream m_stream;
 
     int m_last_progress_as_int;
 };

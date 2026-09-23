@@ -159,9 +159,13 @@ int main()
 
         float_2d_kernel.save((g_output_path / fs::path("float_2d_kernel.tiff")).string());
 
+        std::cout << "Convolution results written to: "
+                  << fs::absolute(g_output_path).string() << std::endl;
+
         return 0;
     }
     catch (std::exception& e) {
         gVirtualXRay::LOGGER.logError("") << e.what() << std::endl;
+        return 1;
     }
 }

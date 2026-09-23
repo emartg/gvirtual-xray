@@ -144,8 +144,8 @@ ENDIF ()
 # Find dependencies
 INCLUDE (cmake/dependencies.cmake)
 
-
-# Library source code ##########################################################
+        SET (gVirtualXRay_LIBRARY
+            ${PROJECT_BINARY_DIR}/libgVirtualXRay.a)
 SET (CXX_SOURCES
     # gVirtualXRay
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gVirtualXRay/PythonSingleton.cxx

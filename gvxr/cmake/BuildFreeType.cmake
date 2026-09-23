@@ -81,10 +81,15 @@ SET (FREETYPE_built_type "${CMAKE_CFG_INTDIR} ${Configuration} ${CMAKE_CONFIGURA
 SET(FREETYPE_LIBRARIES    ${FREETYPE_INSTALL_DIR}/lib64/libfreetype.a )
 
 if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-    SET(FREETYPE_LIBRARIES
-        optimized ${FREETYPE_INSTALL_DIR}/lib/freetype.lib
-        debug     ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib
-    )
+    string(FIND ${CMAKE_GENERATOR} "Visual Studio" GENERATED_WITH_MSVC)
+    if (GENERATED_WITH_MSVC GREATER -1)
+        SET(FREETYPE_LIBRARIES
+            optimized ${FREETYPE_INSTALL_DIR}/lib/freetype.lib
+            debug     ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib
+        )
+    else ()
+        SET(FREETYPE_LIBRARIES ${FREETYPE_INSTALL_DIR}/lib/libfreetype.a)
+    endif ()
 endif()
 
 

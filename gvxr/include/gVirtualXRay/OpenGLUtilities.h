@@ -71,8 +71,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gVirtualXRay/gVirtualXRayConfig.h"
 #endif
 
-#include <vector>
-
 #ifndef GVXR_MATRIX_4X4_H
 #include "gVirtualXRay/Matrix4x4.h"
 #endif

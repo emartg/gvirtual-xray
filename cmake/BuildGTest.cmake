@@ -45,7 +45,7 @@ if (WIN32)
             )
         else (GENERATED_WITH_MSVC GREATER -1)
             SET (GTest_LIBRARIES
-                    ${INSTALL_DIR}/${INSTALL_LIBDIR}/gtest.lib
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/libgtest.a
                     CACHE FILEPATH "Path of GTest's library." FORCE
             )
         endif (GENERATED_WITH_MSVC GREATER -1)

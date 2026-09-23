@@ -41,7 +41,7 @@ if (WIN32)
             )
         else (GENERATED_WITH_MSVC GREATER -1)
             SET (ZLIB_LIBRARY
-                    ${INSTALL_DIR}/${INSTALL_LIBDIR}/zlibstatic.lib
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/libzlibstatic.a
                     CACHE FILEPATH "Path of zlib's library." FORCE
             )
         endif (GENERATED_WITH_MSVC GREATER -1)

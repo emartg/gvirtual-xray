@@ -242,6 +242,13 @@ void SimpleGVXR::Window::renderLoop()
 			// Process the event
 			glfwPollEvents();
 
+            // A close callback may have changed the loop state while polling.
+            // Do not render with a context or shader that is being torn down.
+            if (glfwWindowShouldClose(m_context.getWindowHandle()) || !g_run_loop)
+            {
+                break;
+            }
+
 			// Render here
 			displayScene(true);
         }
@@ -268,6 +275,21 @@ void SimpleGVXR::Window::showWindow()
             m_visible = true;
         }
     }
+#endif
+}
+
+
+//------------------------------------------------------------
+void SimpleGVXR::Window::setWindowTitle(const std::string& aTitle)
+//------------------------------------------------------------
+{
+#ifdef HAS_GLFW
+    if (m_context.getWindowHandle())
+    {
+        glfwSetWindowTitle(m_context.getWindowHandle(), aTitle.c_str());
+    }
+#else
+    (void)aTitle;
 #endif
 }
 
@@ -436,11 +458,14 @@ gVirtualXRay::Context& SimpleGVXR::Window::getContext()
 void window_close_callback(GLFWwindow* window)
 //--------------------------------------------
 {
-    glfwSetWindowShouldClose(window, GLFW_FALSE);
+    g_run_loop = false;
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
 
-	SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
-    p_window->hideWindow();
-
+    SimpleGVXR::Window* p_window = SimpleGVXR::Window::getWindow(window);
+    if (p_window)
+    {
+        p_window->hideWindow();
+    }
 }
 
 

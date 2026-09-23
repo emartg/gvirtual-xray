@@ -58,9 +58,23 @@ ENDIF ()
 
 # C++ version ##################################################################
 set(CMAKE_CXX_STANDARD 23) # C++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (I.e. not optional)
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # C++23 is required (i.e. not optional)
 set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
+# Disable warnings for unused variables and unused but set variables
+if (CMAKE_COMPILER_IS_GNUCXX OR MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error -Wno-unused-but-set-variable")
+endif()
+
+# Treat ASSIMP warnings as errors
+if (ASSIMP_WARNINGS_AS_ERRORS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif()
+
+# MinGW std::byte collision fix
+if (MINGW OR WIN32)
+    add_compile_options(-include "${CMAKE_CURRENT_SOURCE_DIR}/mingw_fix.h")
+endif()
 
 # Flag required for shared libraries
 SET (BUILD_SHARED_LIBS OFF)

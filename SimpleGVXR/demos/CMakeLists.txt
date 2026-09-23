@@ -68,6 +68,14 @@ target_link_libraries(DemoDragon ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} $
 add_executable(DemoConvolutionKernel DemoConvolutionKernel.cxx)
 target_link_libraries(DemoConvolutionKernel ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs})
 
+foreach(SGVXR_DEMO_TARGET Benchmark DemoBeerLambertLawMonoChromatic DemoDragon DemoConvolutionKernel)
+    target_link_libraries(${SGVXR_DEMO_TARGET}
+        "-Wl,--start-group"
+        ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES}
+        ${optionalLibs} ${requiredLibs} ${ZLIB_LIBRARY}
+        "-Wl,--end-group")
+endforeach()
+
 # Add dependencies
 ADD_DEPENDENCIES(Benchmark   SimpleGVXR)
 ADD_DEPENDENCIES(DemoBeerLambertLawMonoChromatic   SimpleGVXR)
@@ -83,9 +91,11 @@ ADD_DEPENDENCIES(DemoConvolutionKernel   SimpleGVXR)
 #FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/SIRT)
 
 # Copy the DLLs
-IF (WIN32 AND MSVC)
+IF (WIN32)
     FILE(COPY ${XRAYLIB_SHARED_LIB_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-ENDIF (WIN32 AND MSVC)
+    install (FILES ${XRAYLIB_SHARED_LIB_PATH}
+        DESTINATION ${INSTALL_DIR}/demos)
+ENDIF (WIN32)
 
 # add the install targets
 install (TARGETS Benchmark

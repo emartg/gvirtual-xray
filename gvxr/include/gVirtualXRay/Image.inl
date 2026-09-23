@@ -1115,7 +1115,7 @@ template<typename T> Image<T> Image<T>::convolution2D(const Image<float>& aKerne
 		map(to:p_input_image_data[0:number_of_voxels], p_kernel[0:kernel_size_u * kernel_size_v]) \
 		map(from:p_output_image_data[0:number_of_voxels])
 #else
-#if WIN32
+#ifdef WIN32
 #pragma omp parallel for
 #else
 #pragma omp parallel for collapse(3)

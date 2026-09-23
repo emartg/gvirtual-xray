@@ -202,7 +202,7 @@ IF (FFTW3_LIBRARIES)
 ENDIF()
 
 target_link_libraries(SGVXR_TestSpectrum                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
-target_link_libraries(SGVXR_TestFocalSpot ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
+target_link_libraries(SGVXR_TestFocalSpot ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads ${gVirtualXRay_LIBRARY})
 
 IF (Python3_Development.Embed_FOUND)
     target_link_libraries(SGVXR_TestTubeVoltage                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
@@ -228,6 +228,23 @@ target_link_libraries(SGVXR_TestFluxConversion                      ${SimpleGVXR
 target_link_libraries(SGVXR_TestDetector                      ${SimpleGVXR_LIBRARY} ${SimpleGVXR_LIBRARIES}
         ${optionalLibs}
         ${requiredLibs} ${GTest_LIBRARIES} Threads::Threads)
+
+set(SGVXR_TEST_TARGETS
+    SGVXR_TestDensity SGVXR_TestMassAttenuationCoefficients SGVXR_TestScintillator
+    SGVXR_TestBeerLambertLawMonoChromatic SGVXR_TestBeerLambertLawPolyChromatic
+    SGVXR_TestSinogramFromMesh SGVXR_TestCubeSource SGVXR_TestSpectrum
+    SGVXR_TestFocalSpot SGVXR_TestMemoryLeak SGVXR_TestVulkan SGVXR_TestUtils
+    SGVXR_TestAcquisitionFile SGVXR_TestSampleFile SGVXR_TestBeamFiltration
+    SGVXR_TestIsoSurface SGVXR_TestGain SGVXR_TestClipping SGVXR_TestFluxConversion
+    SGVXR_TestDetector)
+
+foreach(SGVXR_TEST_TARGET IN LISTS SGVXR_TEST_TARGETS)
+    target_link_libraries(${SGVXR_TEST_TARGET}
+        "-Wl,--start-group"
+        ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES}
+        ${optionalLibs} ${requiredLibs} ${ZLIB_LIBRARY}
+        "-Wl,--end-group")
+endforeach()
 
 # Add dependencies
 ADD_DEPENDENCIES(SGVXR_TestDensity   SimpleGVXR)

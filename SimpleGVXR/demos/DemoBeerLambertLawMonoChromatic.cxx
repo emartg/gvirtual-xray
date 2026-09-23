@@ -126,9 +126,9 @@ int main()
     createWindow();
 #endif
 */
-    createWindow(-1, 1, 
-        "EGL", 
-        4, 6, 
+    createWindow(-1, 1,
+        "OPENGL",
+        4, 6,
         0); // Half-precision floating-point numbers is enough
 
 

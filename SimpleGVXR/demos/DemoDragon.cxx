@@ -101,7 +101,8 @@ using namespace std::chrono;
 //  Function declarations
 //******************************************************************************
 void createEnvironment(const std::string& aRenderer,
-    unsigned int aMixedPrecisionFlag);
+    unsigned int aMixedPrecisionFlag,
+    const std::string& aPrecisionLabel);
 
 
 //******************************************************************************
@@ -116,7 +117,8 @@ const size_t REPEAT_CALCULATIONS = 100;
 
 //--------------------------------------------------------
 void createEnvironment(const std::string& aRenderer,
-                       unsigned int aMixedPrecisionFlag)
+                       unsigned int aMixedPrecisionFlag,
+                       const std::string& aPrecisionLabel)
 //--------------------------------------------------------
 {
     // Create a simulation environment
@@ -126,6 +128,9 @@ void createEnvironment(const std::string& aRenderer,
         true,
         aRenderer,
         4, 6, aMixedPrecisionFlag);
+
+    setWindowTitle(std::string("DemoDragon - ") + aPrecisionLabel);
+    gVirtualXRay::LOGGER.logNow("Precision: ") << aPrecisionLabel << std::endl;
 
     gVirtualXRay::LOGGER.logNow("OpenGL renderer:\t") << getOpenGlRenderer() << std::endl;
     gVirtualXRay::LOGGER.logNow("OpenGL version:\t") << getOpenGlVersion() << std::endl;
@@ -254,7 +259,7 @@ int main()
         // full_precision_flag = 32; will work too
         
          auto start_setup_opengl_32 = high_resolution_clock::now();
-         createEnvironment("OPENGL", full_precision_flag);
+         createEnvironment("OPENGL", full_precision_flag, "32-bit precision");
          auto stop_setup_opengl_32 = high_resolution_clock::now();
 
          // Compute an X - ray image
@@ -269,7 +274,7 @@ int main()
          saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-32.tif")).string());
          saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-32.mhd")).string());
 
-         // Interactive visualisation
+         // Interactive visualisation for the 32-bit configuration.
          // The user can rotate the 3D scene and zoom - in and -out in the visualisation window.
          // It can be useful to rotate the visualisation of the 3D environment and zoom in / out
          // to take the best posible screenshots
@@ -297,7 +302,7 @@ int main()
          // half_precision_flag = 0; will work too
 
          auto start_setup_opengl_16 = high_resolution_clock::now();
-         createEnvironment("OPENGL", half_precision_flag);
+         createEnvironment("OPENGL", half_precision_flag, "16-bit precision");
          auto stop_setup_opengl_16 = high_resolution_clock::now();
 
          // Compute an X - ray image
@@ -312,7 +317,6 @@ int main()
          saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-16.tif")).string());
          saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-16.mhd")).string());
 
-         // Interactive visualisation
          renderLoop();
 
          destroy();
@@ -326,7 +330,7 @@ int main()
              false); // Z-buffer
 
          auto start_setup_opengl_mixed = high_resolution_clock::now();
-         createEnvironment("OPENGL", mixed_precision_flag);
+         createEnvironment("OPENGL", mixed_precision_flag, "mixed precision");
          auto stop_setup_opengl_mixed = high_resolution_clock::now();
 
          // Compute an X - ray image
@@ -341,9 +345,8 @@ int main()
          saveLastXRayImage((g_output_path / fs::path("xray_image-opengl-mixed.tif")).string());
          saveLastLBuffer((g_output_path / fs::path("lbuffer-opengl-mixed.mhd")).string());
 
-         // Interactive visualisation
          renderLoop();
-         
+
          destroy();
 
         //// OpenMP

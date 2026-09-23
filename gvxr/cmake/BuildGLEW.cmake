@@ -102,7 +102,7 @@ if (WIN32)
             )
         else (GENERATED_WITH_MSVC GREATER -1)
             SET(GLEW_LIBRARY
-                    ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglew32.lib
+                ${INSTALL_DIR}/${INSTALL_LIBDIR}/libglew32.a
                     CACHE FILEPATH "GLEW library" FORCE
             )
         endif (GENERATED_WITH_MSVC GREATER -1)

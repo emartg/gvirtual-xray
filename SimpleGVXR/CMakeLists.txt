@@ -324,14 +324,13 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
                                   debug     ${PROJECT_BINARY_DIR}/Debug/SimpleGVXR.lib
         )
     else (GENERATED_WITH_MSVC GREATER -1)
-        SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/SimpleGVXR.lib)
+        SET (SimpleGVXR_LIBRARY ${PROJECT_BINARY_DIR}/libSimpleGVXR.a)
     endif (GENERATED_WITH_MSVC GREATER -1)
 ENDIF ()
 
 SET (SimpleGVXR_LIBRARIES
     ${optionalLibs}
     ${requiredLibs}
-    ${SimpleGVXR_LIBRARY}
     ${gVirtualXRay_LIBRARY}
     ${gVirtualXRay_LIBRARIES}
     )

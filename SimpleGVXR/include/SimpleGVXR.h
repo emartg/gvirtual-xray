@@ -809,6 +809,17 @@ void renderLoop(int aWindowID = -1);
 
 
 //------------------------------------------------------------------------------
+/// Set the title of an interactive window.
+/**
+ *  @param aTitle: the title shown by the window manager
+ *  @param aWindowID: the numerical ID of the corresponding window
+ *                    (default value: -1, means that the active window is used)
+ */
+//------------------------------------------------------------------------------
+void setWindowTitle(const std::string& aTitle, int aWindowID = -1);
+
+
+//------------------------------------------------------------------------------
 /// Call this function when the user starts an arc-ball rotation
 /// (e.g. left-mouse button click in the 3-D visualisation window).
 /**

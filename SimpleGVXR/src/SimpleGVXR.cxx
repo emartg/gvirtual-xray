@@ -1672,6 +1672,23 @@ void renderLoop(int aWindowID)
         }
 }
 
+
+//-------------------------------------------------------------
+void setWindowTitle(const std::string& aTitle, int aWindowID)
+//-------------------------------------------------------------
+{
+    if (aWindowID == -1 && !g_p_window_id_stack.empty())
+    {
+        aWindowID = g_p_window_id_stack.back();
+    }
+
+    auto search_window = g_p_window_set.find(aWindowID);
+    if (search_window != g_p_window_set.end() && search_window->second)
+    {
+        search_window->second->setWindowTitle(aTitle);
+    }
+}
+
 //----------------------------
 void showWindow(int aWindowID)
 //----------------------------

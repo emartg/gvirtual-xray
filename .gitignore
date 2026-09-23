@@ -1,7 +1,176 @@
+# -----------------------------------------------------------------------------
+# Operating system and file manager metadata
+# -----------------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# -----------------------------------------------------------------------------
+# Editors and IDEs
+# -----------------------------------------------------------------------------
 .idea/
-bin*
-Wrappers/gvxr.egg-info/
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+
+# -----------------------------------------------------------------------------
+# CMake and native build trees
+# -----------------------------------------------------------------------------
+build/
+build-*/
+cmake-build-*/
 _skbuild/
-pip/wheelhouse/
-pip/*.whl
+out/
+Debug/
+Release/
+RelWithDebInfo/
+MinSizeRel/
+
+# CMake generated files and local configuration
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CTestTestfile.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+install_manifest.txt
+compile_commands.json
+CTestCostData.txt
+Testing/
+*.cmake.user
 CMakeUserPresets.json
+CMakePresets.json
+CMakeLists.txt.user
+
+# -----------------------------------------------------------------------------
+# Visual Studio and native compiler output
+# -----------------------------------------------------------------------------
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.ncb
+*.aps
+*.ilk
+*.pdb
+*.idb
+*.ipch
+*.obj
+*.o
+*.lo
+*.a
+*.lib
+*.exp
+*.dll
+*.so
+*.so.*
+*.dylib
+*.dSYM/
+*.gch
+*.pch
+*.res
+*.rsuser
+*.tlog/
+*.lastbuildstate
+
+# -----------------------------------------------------------------------------
+# Executables and common native profiling/debug output
+# -----------------------------------------------------------------------------
+*.exe
+*.com
+*.out
+*.app
+*.stackdump
+*.dmp
+*.gcda
+*.gcno
+*.profraw
+*.profdata
+bin/
+bin*/
+lib/
+
+# -----------------------------------------------------------------------------
+# Dependencies and third-party build directories
+# -----------------------------------------------------------------------------
+_deps/
+third_party/build/
+vendor/build/
+conan-build/
+conan_home/
+conan_*/
+vcpkg_installed/
+/.cache/
+
+# -----------------------------------------------------------------------------
+# Python tooling, wrappers, and generated distributions
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/lib/
+wheelhouse/
+*.whl
+*.tar.gz
+*.zip
+*.egg
+*.pyc
+
+# -----------------------------------------------------------------------------
+# Logs, reports, profiling data, and temporary files
+# -----------------------------------------------------------------------------
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*.pid
+*.seed
+*.prof
+*.trace
+*.gcov
+
+# -----------------------------------------------------------------------------
+# Local environment and secrets
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.local
+*.secret
+*.pem
+*.key
+
+# -----------------------------------------------------------------------------
+# Project-specific generated output
+# -----------------------------------------------------------------------------
+install/
+pip/wheelhouse/
+Wrappers/gvxr.egg-info/
+screenshots/generated/

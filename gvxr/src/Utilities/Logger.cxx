@@ -28,9 +28,56 @@ gVirtualXRay::Logger gVirtualXRay::LOGGER("");
 using namespace gVirtualXRay;
 
 
+//-------------------------------------------------------------
+void LoggerStreamBuffer::setTargets(std::streambuf* aFileBuffer,
+                                    std::streambuf* aConsoleBuffer)
+//-------------------------------------------------------------
+{
+    m_file_buffer = aFileBuffer;
+    m_console_buffer = aConsoleBuffer;
+}
+
+
+//--------------------------------------------------
+int LoggerStreamBuffer::overflow(int aCharacter)
+//--------------------------------------------------
+{
+    if (aCharacter != traits_type::eof())
+    {
+        const char character = static_cast<char>(aCharacter);
+        if (m_file_buffer) m_file_buffer->sputc(character);
+        if (m_console_buffer) m_console_buffer->sputc(character);
+    }
+
+    return traits_type::not_eof(aCharacter);
+}
+
+
+//--------------------------------------------------------------------------
+std::streamsize LoggerStreamBuffer::xsputn(const char* apText,
+                                           std::streamsize aCount)
+//--------------------------------------------------------------------------
+{
+    if (m_file_buffer) m_file_buffer->sputn(apText, aCount);
+    if (m_console_buffer) m_console_buffer->sputn(apText, aCount);
+    return aCount;
+}
+
+
+//----------------------------
+int LoggerStreamBuffer::sync()
+//----------------------------
+{
+    if (m_file_buffer) m_file_buffer->pubsync();
+    if (m_console_buffer) m_console_buffer->pubsync();
+    return 0;
+}
+
+
 //------------------------------------
 Logger::Logger(const char* aFileName):
 //------------------------------------
+    m_stream(&m_stream_buffer),
     m_last_progress_as_int(-1)
 //------------------------------------
 {
@@ -41,6 +88,7 @@ Logger::Logger(const char* aFileName):
 //-------------------------------------------
 Logger::Logger(const std::string& aFileName):
 //-------------------------------------------
+    m_stream(&m_stream_buffer),
     m_last_progress_as_int(-1)
 //-------------------------------------------
 {
@@ -90,6 +138,7 @@ void Logger::open(const std::string& aFileName)
         // It is open
         else
         {
+            m_stream_buffer.setTargets(m_output.rdbuf(), std::clog.rdbuf());
             m_output << std::endl;
             m_output << std::endl;
             m_output << "--------------------------------------------------------------------------------" << std::endl;
@@ -111,6 +160,7 @@ void Logger::close()
         m_output << "--------------------------------------------------------------------------------" << std::endl;
         m_output.close();
         m_filename.clear();
+        m_stream_buffer.setTargets(nullptr, nullptr);
     }
 }
 
@@ -154,8 +204,8 @@ std::ostream& Logger::logNow(const std::string& aMessage)
 {
     if (is_open())
     {
-        m_output << getNow() << " ---- " << aMessage;
-        return m_output;
+        m_stream << getNow() << " ---- " << aMessage;
+        return m_stream;
     }
     else
     {
@@ -173,8 +223,8 @@ std::ostream& Logger::logError(const std::string& aMessage)
 {
     if (is_open())
     {
-        m_output << getNow() << " (EE) " << aMessage;
-        return m_output;
+        m_stream << getNow() << " (EE) " << aMessage;
+        return m_stream;
     }
     else
     {
@@ -192,8 +242,8 @@ std::ostream& Logger::logWarning(const std::string& aMessage)
 {
     if (is_open())
     {
-        m_output << getNow() << " (WW) " << aMessage;
-        return m_output;
+        m_stream << getNow() << " (WW) " << aMessage;
+        return m_stream;
     }
     else
     {
@@ -288,6 +338,8 @@ Logger& Logger::operator=(const Logger& aLogger)
 //-----------------------------------
 Logger::Logger(const Logger& aLogger)
 //-----------------------------------
+:
+    m_stream(&m_stream_buffer)
 {
     // Do nothing
 }

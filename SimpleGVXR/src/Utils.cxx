@@ -420,20 +420,41 @@ void createWindow(int aWindowID,
 
         if (renderer == "OPENGL")
         {
-            backend_priority.push_back("GLX");
-            backend_priority.push_back("EGL");
+#if defined(_WIN32) || defined(_WIN64)
+            // On Windows, prefer the native GLFW/OpenGL path and do not try
+            // X11/EGL fallbacks that are not available on the platform.
             backend_priority.push_back(renderer);
+#else
+            #ifdef HAS_GLX
+            backend_priority.push_back("GLX");
+            #endif
+
+            #ifdef HAS_EGL
+            backend_priority.push_back("EGL");
+            #endif
+
+            backend_priority.push_back(renderer);
+#endif
         }
         else if (renderer == "EGL")
         {
             backend_priority.push_back("OPENGL");
+#if !(defined(_WIN32) || defined(_WIN64))
+            #ifdef HAS_GLX
             backend_priority.push_back("GLX");
+            #endif
+#endif
             backend_priority.push_back(renderer);
         }
         else if (renderer == "GLX")
         {
             backend_priority.push_back("OPENGL");
+
+#if !(defined(_WIN32) || defined(_WIN64))
+            #ifdef HAS_EGL
             backend_priority.push_back("EGL");
+            #endif
+#endif
             backend_priority.push_back(renderer);
         }
         else if (renderer == "VULKAN")

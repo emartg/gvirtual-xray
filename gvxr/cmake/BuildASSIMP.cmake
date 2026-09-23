@@ -53,7 +53,7 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         )
     else (GENERATED_WITH_MSVC GREATER -1)
         SET(assimp_LIBRARIES
-                ${INSTALL_DIR}/${INSTALL_LIBDIR}/assimp-${assimp_MSVC_VERSION}-mt.lib
+            ${INSTALL_DIR}/${INSTALL_LIBDIR}/libassimp.a
                 CACHE FILEPATH "ASSIMP's libraries." FORCE
         )
     endif (GENERATED_WITH_MSVC GREATER -1)
@@ -122,6 +122,7 @@ ELSE (UNIX AND NOT APPLE)
         BUILD_BYPRODUCTS ${assimp_LIBRARIES}
         CMAKE_ARGS
             ${LOCAL_CMAKE_BUILD_OPTIONS}
+            -DASSIMP_WARNINGS_AS_ERRORS:BOOL=OFF
             -DCMAKE_BUILD_TYPE:STRING=Release
             -DCMAKE_INSTALL_PREFIX:PATH=${INSTALL_DIR}
             -DASSIMP_BUILD_TESTS:BOOL=OFF

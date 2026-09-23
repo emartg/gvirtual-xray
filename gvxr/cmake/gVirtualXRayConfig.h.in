@@ -35,7 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GVXR_GVIRTUAL_XRAY_CONFIG_H
 #define GVXR_GVIRTUAL_XRAY_CONFIG_H
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
 #ifdef HAS_GLEW
 #include "GL/glew.h"
 #endif

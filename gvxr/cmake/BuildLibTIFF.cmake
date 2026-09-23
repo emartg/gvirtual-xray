@@ -37,7 +37,7 @@ if (WIN32 AND ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
         )
     else (GENERATED_WITH_MSVC GREATER -1)
         SET(TIFF_LIBRARIES
-                ${INSTALL_DIR}/${INSTALL_LIBDIR}/tiff.lib
+            ${INSTALL_DIR}/${INSTALL_LIBDIR}/libtiff.a
         )
     endif (GENERATED_WITH_MSVC GREATER -1)
 else ()
