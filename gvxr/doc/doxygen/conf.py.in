@@ -1,0 +1,13 @@
+from cgitb import html
+import glob
+
+extensions = ["breathe"]
+
+html_theme = "sphinx_rtd_theme"
+
+# Breathe configuration
+breathe_default_project = "gVXR"
+
+breathe_projects_source = {
+    "auto" : ( "@gVirtualXRay_BASE_DIR/include/gVirtualXRay@", glob.glob("@gVirtualXRay_BASE_DIR/include/gVirtualXRay@/*.h") )
+}

@@ -1,0 +1,41 @@
+name: gVXR
+channels:
+    - conda-forge
+    - https://software.repos.intel.com/python/conda
+    - ccpi/label/dev
+    # - intel
+    # - astra-toolbox
+    # - ccpi
+dependencies:
+    - python=3.10
+    - ipython
+    - ipykernel
+    - ipyevents=2.0.1
+    - ipympl=0.9.1
+    - ipywidgets=7.7.0
+    - jupyterlab=3.4
+    - mpl-interactions=0.22.0        
+    - numpy
+    # - cma
+    # - libtiff
+    - scikit-image
+    - pillow
+    # - vtk
+    # - SimpleITK
+    - matplotlib
+    - cil=24.1.0
+    - ccpi-regulariser
+    - tigre
+    - astra-toolbox
+    - cudatoolkit
+    - k3d
+    - algotom
+    - pip
+    - pip:
+        # - pymeshlab
+        - git+https://bitbucket.org/spekpy/spekpy_release.git
+        - xpecgen
+        # gVXR from the trunk in the Git repository
+        # - gvxr
+        - git+https://git.code.sf.net/p/gvirtualxray/gitroot
+

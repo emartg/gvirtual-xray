@@ -1,0 +1,34 @@
+FROM nvcr.io/nvidia/l4t-jetpack:r36.4.0
+
+RUN apt-get update
+RUN apt-get install -y \
+    libegl1 \
+    libegl1-mesa \
+    libgl1-mesa-dri \
+    libgles2  \
+    libgbm1 \
+    libgl1 \
+    libglx0 \
+    libglvnd0 \
+    libopengl0 \
+    mesa-utils \
+    mesa-utils-extra \
+    python3-pip
+
+RUN groupadd -g 100 -o gVXR
+RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
+
+USER gVXR
+
+RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
+
+ENV PATH="/home/gVXR/.local/bin:/.local/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
+
+COPY pip/wheelhouse/repaired/gvxr-2.0.11-cp310-cp310-manylinux_2_34_aarch64.whl \
+    /tmp/gvxr-2.0.11-cp310-cp310-manylinux_2_34_aarch64.whl
+
+RUN pip install /tmp/gvxr-2.0.11-cp310-cp310-manylinux_2_34_aarch64.whl
+
+# Change the workdir
+WORKDIR /gvxr

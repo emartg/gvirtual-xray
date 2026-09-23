@@ -1,0 +1,8 @@
+wheel
+build
+scikit-build
+twine
+# cmake==3.25.2
+ninja
+maturin
+numpy>=2.2

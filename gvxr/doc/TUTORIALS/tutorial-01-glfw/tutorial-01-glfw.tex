@@ -1,0 +1,1024 @@
+\documentclass[11pt,oneside,a4paper,final]{article}
+
+\usepackage{ifpdf}
+%HEVEA\pdffalse
+
+\ifpdf
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+
+\renewcommand{\headrulewidth}{0.0pt}
+
+\lhead{}
+\chead{}
+\rhead{}
+\lfoot{}
+\cfoot{Page {\thepage} of \pageref{LastPage}}
+\rfoot{}
+\fi
+
+\usepackage{longtable}
+
+\usepackage[T1]{fontenc}  
+\usepackage{textcomp}  
+\usepackage{lmodern}  
+
+% \usepackage[style=numeric,backend=biber]{biblatex}
+% \usepackage[style=numeric]{biblatex}
+\bibliography{programmer_guide}
+% \usepackage[hidelinks=true]{hyperref}
+
+
+
+\usepackage{hyperref}
+
+\hypersetup{  
+  colorlinks=true,
+  final=true,
+  pdftitle="gVirtualXRay - Tutorial 01 - GLFW",
+  pdfauthor="Dr Franck P. Vidal",  
+  pdfsubject="Creating a Window and an OpenGL Core Profile 3.2 Context 
+Using GLFW"
+}
+
+\usepackage[paper=a4paper,margin=1.6cm]{geometry}	% 1 inch margins all around
+
+\usepackage[british=nohyphenation]{hyphsubst}
+
+
+\usepackage[british]{babel}
+\usepackage{graphicx}
+\usepackage[font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\captionsetup*[subfigure]{position=bottom}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\usepackage{listings}
+ \lstset{ %
+  literate={"}{\textquotedbl}1,
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+%   deletekeywords={...},            % if you want to delete keywords from the given language
+%   escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=C++,                 % the language of the code
+%   morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+% \usepackage[acronym,toc]{glossaries}
+% \makeglossaries
+% \input{../acronyms}
+
+\title{gVirtualXRay -- Tutorial 01: Creating a Window and\\an OpenGL Core 
+	Profile 3.2 Context Using GLFW}
+
+\author{Dr Franck P. Vidal}
+\date{2\textsuperscript{nd} September 2014}
+
+\begin{document}
+ \sloppy
+
+\maketitle
+\vfill
+\begin{center}
+\includegraphics[width=0.5\textwidth]{screenshot}
+\end{center}
+\vfill
+
+
+ \newpage
+\phantomsection
+\addcontentsline{toc}{section}{Table of contents}
+\tableofcontents
+
+\ifpdf
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{List of figures}
+\listoffigures
+
+% \newpage
+% \phantomsection
+% \addcontentsline{toc}{section}{List of tables}
+% \listoftables
+
+% \newpage
+\phantomsection
+\addcontentsline{toc}{section}{List of listings}
+\lstlistoflistings
+\fi
+
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+The complete source code of this tutorial is available in 
+Appendix~\ref{sec:Program Source Code} and on the Subversion (SVN) repository 
+at 
+\verb+example/tutorial_01_glfw/tutorial_01_glfw.cxx+. 
+It can be downloaded here: 
+\url{
+https://sourceforge.net/p/gvirtualxray/code/HEAD/tree/trunk/tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}.
+It shows how to create a window with GLFW\,\footnote{\url{http://www.glfw.org/}} 
+and attach an OpenGL context to it. 
+Two cubes are displayed (see Figure~\ref{fig:scene}). 
+\begin{figure}[tbh]
+ \centering
+ \includegraphics[width=0.5\textwidth]{screenshot}
+ \caption{\label{fig:scene} Screen capture of the tutorial.}
+\end{figure}
+They both rotate automatically. 
+The rendering makes use of OpenGL Shading Language (GLSL) as the fix rendering 
+pipeline and direct 
+rendering are both depreciated in any modern computer graphics applications. 
+
+It is an introductory tutorial, for more details, the reader may refer to the 
+code (it is well documented) and the 
+Doxygen\,\footnote{\url{http://www.doxygen.org/}} documentation of the 
+project\,\footnote{\url{http://gvirtualxray.sourceforge.net/documentation.php}}
+. 
+
+The tutorial is organised as follows:
+\begin{itemize}
+ \item Section~\ref{sec:Header inclusion} shows the header files to include. 
+
+ \item Section~\ref{sec:Name Spaces} shows some of the name spaces that can be 
+	included to lighten the code. 
+	% How to set up all the main components of the simulation is describe in 
+
+ \item Section~\ref{sec:Global Variables} shows the global variables that are 
+	used. 
+
+ \item Section~\ref{sec:Function Declarations} what typical functions have to 
+	be declared in a basic GLFW program. 
+
+ \item Section~\ref{sec:Initialise GLFW} shows how to initialise GLFW. 
+
+ \item Section~\ref{sec:Initialise GLEW} shows how to initialise 
+    GLEW\,\footnote{\url{glew.sourceforge.net/}}. 
+
+ \item Section~\ref{sec:Initialise OpenGL} shows how to initialise OpenGL. 
+
+ \item How to load 3D objects is explained in Section~\ref{sec:Load Objects} 
+
+ \item They are displayed in Section~\ref{sec:Display Scene}.
+
+ \item Section~\ref{sec:Idle Callback} shows the idle callback. 
+
+ \item Section~\ref{sec:Quit Callback} shows the routine that is called when 
+  the program shuts.
+
+ \item Section~\ref{sec:frame buffer callback} shows what is done when the size 
+of the frame buffer changes, i.e.~when the window is resized.
+
+ \item Section~\ref{sec:Keyboard Callback} shows how to handle the keyboard.
+
+ \item Section~\ref{sec:Scroll button callback} shows how to handle the 
+  scroll button.
+ 
+ \item Section~\ref{sec:Error Callback} deals with the error callback. 
+ 
+ \item Section~\ref{sec:Next Tutorial} gives a preview of what the next 
+  tutorial will be about.
+ 
+ \item Appendix~\ref{sec:Program Source Code} shows the source code of this 
+	tutorial. 
+	
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Header inclusion}
+\label{sec:Header inclusion}
+
+Listing~\ref{lst:header} shows i) the macros that have to be defines to include 
+OpenGL core profile hears and ii) the header files that need to be included to 
+build a simple program based on the GLFW 
+library:
+\begin{itemize}
+ \item \verb+GL/glew.h+ is the GLEW header file. It can be found at 
+  \url{http://glew.sourceforge.net/}. GLEW is used to ensure that there is no 
+  undefined references when the Windows executable is created.
+ \item \verb+GL3_PROTOTYPES+ is a macro that ensures that we are using opengl's 
+core profile only. It has to be included before any other OpenGL header 
+inclusion (Mac users only).
+ \item \verb+GL_GLEXT_PROTOTYPES+ is a macro that ensures that we are using 
+OpenGL's core profile only. It has to be included before any other OpenGL header 
+inclusion (Windows or Linux users).
+ \item \verb+GLFW_INCLUDE_GLCOREARB+ is a macro that tells GLFW to include the 
+OpenGL core profile header. It has to be included before any other OpenGL header 
+inclusion (all users).
+ \item \verb+glfw3.h+ is the main GLFW header file.
+ \item \verb+iostream+ is used for output streams.
+ \item \verb+exception+ is used for C++ exceptions.
+ \item \verb+cstdlib+ defines return status (\verb+EXIT_SUCCESS+ and 
+	\verb+EXIT_FAILURE+).
+ \item \verb+gVirtualXRay/Types.h+ defines new types, e.g 
+\verb+RATIONAL_NUMBER+, 
+	\verb+VEC2+, \verb+VEC3+ and \verb+MATRIX4+ to name a few.
+ \item \verb+gVirtualXRay/Units.h+ defines units such as metre, kilometre, 
+electronvolt, 
+	kiloelectron volt, gram, kilogram, etc.
+ \item \verb+gVirtualXRay/OpenGLUtilities.h+ defines some utility functions 
+about OpenGL, 
+	e.g. matrix stacks, how to set the projection matrix, etc.
+ \item \verb+gVirtualXRay/PolygonMesh.h+ corresponds to a class used to handle 
+three-dimensional (3D) triangle meshes.
+ \item \verb+gVirtualXRay/Shader.h+ corresponds to a class that handles 
+(GLSL) programs.
+ \item \verb+buildCube.h+ is used to create the triangle mesh of a cube.
+\end{itemize}
+
+\begin{center}
+\lstinputlisting[firstline=63, lastline=99, caption=Header inclusion., 
+label=lst:header]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Name Spaces}
+\label{sec:Name Spaces}
+
+Listing~\ref{lst:name space} shows the name spaces that can be selected:
+\begin{itemize}
+ \item \verb+gVirtualXRay+ includes graphics elements such as \verb+PolygonMesh+ 
+	and utilities such as \verb+Exception+. 
+ \item \verb+std+ is used for output streams and exceptions.
+\end{itemize}
+
+\begin{center}
+\lstinputlisting[firstline=102, lastline=106, caption=Name spaces., 
+label=lst:name space]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Global Variables}
+\label{sec:Global Variables}
+
+Listing~\ref{lst:global variables} shows the global variables that are used:
+\begin{itemize}
+	\item \verb+GLsizei g_window_width+ keeps track of the window width.
+
+	\item \verb+GLsizei g_window_height+ keeps track of the window height.
+	
+	\item \verb+GLFWwindow* g_p_window_id+ is the GLFW window ID.
+	
+	\item \verb+Shader g_display_shader+ is the shader program used to 
+		display the 3D scene
+	
+	\item \verb+PolygonMesh g_polygon_mesh_1+ is the polygon mesh of the first 
+		3D object.
+	
+	\item \verb+PolygonMesh g_polygon_mesh_2+ is the polygon mesh of the second 
+		3D object.
+
+	\item \verb+MATRIX4 g_object_1_rotation_matrix+ corresponds to the 
+		transformation matrix of the first 3D object.
+	
+	\item \verb+MATRIX4 g_object_2_rotation_matrix+corresponds to the 
+		transformation matrix of the second 3D object.
+
+	\item \verb+vector<double> g_p_vertex_set_1+ is an array containing 
+		the vertices of the first 3D object.
+		
+	\item \verb+vector<unsigned char> g_p_index_set_1+ is an array 
+		containing vertex indices to build triangles from 
+		\verb+g_p_vertex_set_1+.
+
+	\item \verb+vector<float> g_p_vertex_set_2+ is an array containing 
+		the vertices of the second 3D object. Note that no index is used in 
+		this case.
+
+	\item \verb+RATIONAL_NUMBER g_zoom+ controls the zoom.
+
+	\item \verb+const GLchar* g_vertex_shader+ is the source code of the vertex 
+		shader.
+
+	\item \verb+const GLchar* g_fragment_shader+ is the source code of the 
+		fragment shader.
+\end{itemize}
+
+
+\begin{center}
+\lstinputlisting[firstline=109, lastline=165, caption=Global variables., 
+label=lst:global variables]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Function Declarations}
+\label{sec:Function Declarations}
+
+Listing~\ref{lst:function declarations} shows the typical functions 
+that have to be declared in a basic GLFW program:
+\begin{itemize}
+ \item \verb+initGLFW+ is used i) to initialise GLFW, ii) to create an OpenGL 
+	context, iii) to create a window, and iv) attach the OpenGL context to the 
+	window (see Section~\ref{sec:Initialise GLFW}).
+ \item \verb+initGLEW+ is used to initialise GLEW (see 
+	Section~\ref{sec:Initialise GLEW}).
+ \item \verb+initGL+ is used to initialise some states of OpenGL, e.g. the 
+	background colour and enable the Z-buffer (see 
+	Section~\ref{sec:Initialise OpenGL}).
+ \item \verb+load3DObjects+ loads the 3D geometry of two cubes (see 
+	Section~\ref{sec:Load Objects}).
+ \item \verb+displayCallback+ render the two cubes on the screen (see 
+	Section~\ref{sec:Display Scene}).
+ \item \verb+idleCallback+ is an idle callback 
+	(see Section~\ref{sec:Idle Callback}). It is called once every event 
+	loop and can be used to perform animation.
+ \item \verb+quitCallback+ is call when the program terminates  (see 
+	Section~\ref{sec:Quit Callback}). It closes the window and cleans up 
+	GLFW.
+ \item \verb+framebufferSizeCallback+ is called every time the frame buffer 
+	size changes (see Section~\ref{sec:frame buffer callback}). It initialises 
+	the viewport size and the projection matrix.
+ \item \verb+keyCallback+ is called every time a key is pressed or released on 
+	the keyboard (see Section~\ref{sec:Keyboard Callback}). It can be used to 
+	close the window when the \verb+escape+ key is pressed.
+\item \verb+scrollCallback+ processes the mouse scroll button. It can be used 
+	to zoom in and out (see Section~\ref{sec:Scroll button callback}).
+ \item \verb+errorCallback+ is called to throw an exception when GLFW generates 
+	an error (see Section~\ref{sec:Error Callback}).
+\end{itemize}
+
+\begin{center}
+\lstinputlisting[firstline=168, lastline=181, caption=Function declarations., 
+label=lst:function declarations]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Initialise GLFW}
+\label{sec:Initialise GLFW}
+
+Listing~\ref{lst:Initialise GLFW} shows how to initialise GLFW to create an 
+OpenGL core profile 3.2 context and how to attach a window to it. There are 
+nime main steps:
+\begin{itemize}
+    \item Register an error callback
+    \item Initialise the GLFW library.
+    \item If it cannot be initialised, an exception is thrown.
+    \item Enable OpenGL 3.2 (this is compulsory)
+    \item Enable anti-aliasing (this is optional).
+    \item Create a windowed mode window and its OpenGL context
+    \item If the window has not been created, an exception is thrown.
+    \item Make the window's context current
+    \item Register GLFW callbacks
+\end{itemize}
+
+\begin{center}
+\lstinputlisting[firstline=248, lastline=289, caption=Initialise GLFW., 
+label=lst:Initialise GLFW]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Initialise GLEW}
+\label{sec:Initialise GLEW}
+
+Listing~\ref{lst:Initialise GLEW} shows how to initialise GLEW when a Windows 
+platform is used.
+
+\begin{center}
+\lstinputlisting[firstline=292, lastline=306, caption=Initialise GLEW., 
+label=lst:Initialise GLEW]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Initialise OpenGL}
+\label{sec:Initialise OpenGL}
+
+Listing~\ref{lst:Initialise OpenGL} shows how to initialise some OpenGL states 
+(Z-buffer, and background colour) and check OpenGL's error status. 
+
+\begin{center}
+\lstinputlisting[firstline=309, lastline=322, caption=Initialise OpenGL., 
+label=lst:Initialise OpenGL]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Load 3D Objects}
+\label{sec:Load Objects}
+
+Listing~\ref{lst:Load_Objects} shows how to create 3D objects. It 
+implements 
+two cubes. The first one makes use of a vertex list and an index list (see 
+Figure~\ref{fig:cube_01}). The second cube only makes use of a vertex list. 
+Vertices are repeated several times. This is because each vertex is shared by 
+different triangles. The second cube is therefore much bigger in term of 
+memory usage. Listing~\ref{lst:Load_Objects} shows that our implementation 
+supports both type of topology.
+
+\begin{figure}[tbh]
+ \centering
+ \ifpdf
+  \subfloat[Geometry.]{\includegraphics[width=0.2\textwidth]{cube_01}}
+  \subfloat[Vertex list.]{
+    \raisebox{3em}{\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+	0 & -2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	1 & -2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	2 &  2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	3 &  2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	4 & -2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	5 & -2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+	6 &  2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	7 &  2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+\end{tabular}}
+ }
+\subfloat[Index list.]{
+\raisebox{1em}{
+\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Face List}} \\
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \textbf{i} & \textbf{j} & \textbf{k} \\
+	\hline
+	Top face & 1 & 2 & 0 \\
+	\hline
+	Top face & 2 & 1 & 3 \\
+	\hline
+	Bottom face & 6 & 5 & 4 \\
+	\hline
+	Bottom face & 5 & 6 & 7 \\
+	\hline
+	Front face & 5 & 3 & 1 \\
+	\hline
+	Front face & 3 & 5 & 7 \\
+	\hline
+	Back face & 2 & 4 & 0 \\
+	\hline
+	Back face & 4 & 2 & 6 \\
+	\hline
+	Left face & 5 & 0 & 4 \\
+	\hline
+	Left face & 0 & 5 & 1 \\
+	\hline
+	Right face & 2 & 7 & 6 \\
+	\hline
+	Right face & 7 & 2 & 3 \\
+	\hline
+\end{tabular}}}
+\else
+  Geometry.\\{\includegraphics[width=0.2\textwidth]{cube_01}}\\[1em]
+  
+  Vertex list.\\{
+    {\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+	0 & -2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	1 & -2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	2 &  2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	3 &  2.5 cm &  2.5 cm &  2.5 cm \\
+	\hline
+	4 & -2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	5 & -2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+	6 &  2.5 cm & -2.5 cm & -2.5 cm \\
+	\hline
+	7 &  2.5 cm & -2.5 cm &  2.5 cm \\
+	\hline
+\end{tabular}}
+ }\\[1em]
+
+ Index list.\\{
+{
+\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Face List}} \\
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \textbf{i} & \textbf{j} & \textbf{k} \\
+	\hline
+	Top face & 1 & 2 & 0 \\
+	\hline
+	Top face & 2 & 1 & 3 \\
+	\hline
+	Bottom face & 6 & 5 & 4 \\
+	\hline
+	Bottom face & 5 & 6 & 7 \\
+	\hline
+	Front face & 5 & 3 & 1 \\
+	\hline
+	Front face & 3 & 5 & 7 \\
+	\hline
+	Back face & 2 & 4 & 0 \\
+	\hline
+	Back face & 4 & 2 & 6 \\
+	\hline
+	Left face & 5 & 0 & 4 \\
+	\hline
+	Left face & 0 & 5 & 1 \\
+	\hline
+	Right face & 2 & 7 & 6 \\
+	\hline
+	Right face & 7 & 2 & 3 \\
+	\hline
+\end{tabular}}}
+\fi
+ \caption{\label{fig:cube_01} Topology of the first cube.}
+\end{figure}
+
+\begin{figure}[tbh]
+ \centering
+ \ifpdf
+ \subfloat[Geometry.]{\includegraphics[width=0.35\textwidth]{cube_02}}
+\subfloat[Vertex list.]{
+\raisebox{2cm}{\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+% 	// Top face
+	 0 & -2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+	 1 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	 $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+	\hline
+% 	 2 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 3 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 4 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	 5 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Bottom face
+% 	 6 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 7 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	 8 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 9 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	10 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	11 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Front face
+% 	12 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	13 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	14 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	15 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	16 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	17 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Back face
+% 	18 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	19 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	20 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	21 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	22 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	23 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% % 	// Left face
+% 	24 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	25 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	26 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	27 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	28 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	29 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Right face
+% 	30 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	31 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	32 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	33 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+	34 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	35 & 2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+\end{tabular}}}
+\else
+ Geometry.\\{\includegraphics[width=0.35\textwidth]{cube_02}}\\[1em]
+ 
+Vertex list.\\{
+{\begin{tabular}{|c|c|c|c|}
+	\cline{2-4}
+	\multicolumn{1}{c|}{} & \multicolumn{3}{c|}{\textbf{Vertex List}} \\
+	\hline
+	\textbf{Vertex ID} & \textbf{x} & \textbf{y} & \textbf{z} \\
+	\hline
+% 	// Top face
+	 0 & -2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+	 1 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	 $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+	\hline
+% 	 2 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 3 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 4 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	 5 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Bottom face
+% 	 6 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 7 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	 8 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	 9 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	10 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	11 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Front face
+% 	12 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	13 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	14 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	15 & 2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% 	16 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	17 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% % 	// Back face
+% 	18 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	19 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	20 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	21 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	22 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	23 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% % 	// Left face
+% 	24 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	25 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	26 & -2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	27 & -2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	28 & -2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	29 & -2.5 cm &  2.5 cm & 2.5 cm \\
+% 	\hline
+% % 	// Right face
+% 	30 & 2.5 cm &  2.5 cm & -2.5 cm \\
+% 	\hline
+% 	31 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+% 	32 & 2.5 cm & -2.5 cm & -2.5 cm \\
+% 	\hline
+% 	33 &  2.5 cm & -2.5 cm &  2.5 cm \\
+% 	\hline
+	34 & 2.5 cm &  2.5 cm & -2.5 cm \\
+	\hline
+	35 & 2.5 cm &  2.5 cm & 2.5 cm \\
+	\hline
+\end{tabular}}}
+\fi
+ \caption{\label{fig:cube_02} Topology of the second cube.}
+\end{figure}
+
+\begin{itemize}
+  \item \verb+buildCube(length_1, cube_centre, g_p_vertex_set_1, +
+    \verb+g_p_index_set_1)+ creates the data required to model a cube using 
+    vertex data and index data. Its length is \verb+length_1+ and it is centred 
+    on \verb+cube_centre+ (0, 0, 0).
+
+  \item \verb+buildCube(length_2, cube_centre, g_p_vertex_set_2)+ creates the 
+    data of another cube, but using vertex data only. Its length is 
+    \verb+length_2+ and it is also centred on 
+    \verb+cube_centre+.
+
+  \item \verb+g_polygon_mesh_1.setExternalData(GL_TRIANGLES,+ 
+    \verb+ &g_p_vertex_set_1, &g_p_index_set_1, +\\ \verb+true, +
+    \verb+GL_STATIC_DRAW)+ loads both the vertex (\verb+&g_p_vertex_set_1+) and 
+    index (\verb+&g_p_index_set_1+) data of the geometry. 
+    \verb+GL_TRIANGLES+ indicates that the mesh corresponds to a triangle mesh. 
+    \verb+true+ means that the vertex buffer object (VBO) should be 
+created instantly if 
+    possible. 
+    \verb+GL_STATIC_DRAW+ is used because the (VBO) data will be set once 
+    and used many times.
+     
+  \item \verb+g_polygon_mesh_2.setExternalData(GL_TRIANGLES,+ 
+    \verb+ &g_p_vertex_set_2, true, +\\
+    \verb+GL_STATIC_DRAW)+ loads the vertex (\verb+&g_p_vertex_set_2+) data of 
+    the geometry. There is no index data for this mesh. 
+\end{itemize}
+
+\begin{center}
+\lstinputlisting[label=lst:Load_Objects,
+    firstline=325, lastline=353, 
+    caption=Create 3D objects.]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Display the 3D Scene}
+\label{sec:Display Scene}
+
+Listing~\ref{lst:Display_Scene} shows how to display the 3D objects. 
+\begin{itemize}
+ \item 
+    // Clear the buffers
+    \verb+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)+ clears both the 
+      fragment and Z buffers.
+
+ \item \verb+pushShaderProgram()+ adds the current shader program to the shader 
+    stack. It may become handy when multiple shaders are used.
+
+ \item \verb+g_display_shader.enable()+ enables the given shader program.
+
+ \item Its unique OpenGL ID can be retrieved with 
+    \verb+g_display_shader.getProgramHandle()+.
+
+ \item The status of the frame buffer object (FBO) can be checked with 
+    \verb+checkFBOErrorStatus(__FILE__, __FUNCTION__, __LINE__)+. 
+    If an error had occurred, then an exception will be thrown.
+
+ \item The status of the OpenGL's error flag can be checked with 
+    \verb+checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__)+. 
+    If an error had occurred, then an exception will be thrown.
+
+ \item \verb+g_current_projection_matrix+ is the current projection matrix. 
+ \verb+g_current_modelview_matrix+ is the current modelling-viewing matrix. 
+  Section~\ref{sec:frame buffer callback} shows how it can be set. 
+  Using a shader program, when the fixed pipeline functions are disabled (as in 
+  modern OpenGL implementation), the programmer has to supply the projection 
+  and modelling-viewing matrices to the shader program. This is what Lines~22 
+to~30 are taking care of in Listing~\ref{lst:Display_Scene}.
+
+ \item To store the current transformation matrices, 
+    \verb+pushModelViewMatrix()+ and \verb+pushProjectionMatrix()+ are used. 
+    They replace the old \verb+glMatrixMode+ and \verb+glPushMatrix+, which are 
+    no longer available in modern OpenGL.
+
+  \item To translate the 1\textsuperscript{st} object, write
+    \verb+g_current_modelview_matrix *=+\\
+    \verb+MATRIX4::buildTranslationMatrix(VEC3(8.0 * cm, 0.0, 0.0))+. This is 
+    similar to the old function \verb+glTranslate+, which is now depreciated. 
+
+   \item To rotate this object, write 
+     \verb+g_current_modelview_matrix *= g_object_1_rotation_matrix+. This is 
+    similar to the old function \verb+glRotate+, which is now depreciated. 
+
+  \item To apply the changes to the shader program, call 
+    \verb+applyModelViewMatrix()+.
+    
+  \item The 1\textsuperscript{st} polygon mesh is displayed with 
+    \verb+g_polygon_mesh_1.display()+.
+
+  \item The transformation matrices are restored from the stack using 
+    \verb+popModelViewMatrix()+ and \verb+popProjectionMatrix()+.
+
+  \item The transformation matrices are stored in the stack using 
+    \verb+pushModelViewMatrix()+ and \verb+pushProjectionMatrix()+.
+
+  \item To translate the 2\textsuperscript{nd} object, write
+    \verb+g_current_modelview_matrix *=+\\
+    \verb+MATRIX4::buildTranslationMatrix(VEC3(-8.0 * cm, 0.0, 0.0))+.
+
+   \item To rotate this object, write 
+     \verb+g_current_modelview_matrix *= g_object_2_rotation_matrix+.
+
+  \item To apply the changes to the shader program, call 
+    \verb+applyModelViewMatrix()+.
+
+  \item The 2\textsuperscript{nd} object is displayed by 
+    \verb+g_polygon_mesh_2.display()+.
+
+  \item The transformation matrices are restored from the stack using 
+    \verb+popModelViewMatrix()+ and \verb+popProjectionMatrix()+.
+
+  \item \verb+popShaderProgram()+ disables the current shader and restores the 
+    previous shader from the stack.
+
+  \item Finally, we check the error status of both OpenGL and the (FBO).
+
+\end{itemize}
+
+
+\begin{center}
+\lstinputlisting[label=lst:Display_Scene,
+    firstline=356, lastline=435,
+    caption=display the 3D scene.]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Idle Callback}
+\label{sec:Idle Callback}
+
+In the idle callback the rotation matrices are updated to create an animation 
+(see Listing~\ref{lst:Idle callback}). 
+\verb+g_object_1_rotation_matrix.rotate(1.0, VEC3(1.0, 0.0, 0.0))+ multiplies 
+the transformation matrix (\verb+g_object_1_rotation_matrix+) by a rotation 
+matrix defined by angle in degrees (\verb+1.0+ in this example) and a rotation 
+axis (\verb+VEC3(1.0, 0.0, 0.0)+).
+
+\begin{center}
+\lstinputlisting[firstline=438, lastline=445, caption=Idle callback., 
+label=lst:Idle callback]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quit Callback}
+\label{sec:Quit Callback}
+
+Listing~\ref{lst:Quit callback} shows how to clean up GLFW. 
+If the window exists, then it is destroyed. 
+Finally, the GLFW application is terminated. 
+
+\begin{center}
+\lstinputlisting[firstline=448, lastline=462, caption=Quit callback., 
+label=lst:Quit callback]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Frame Buffer Size Callback}
+\label{sec:frame buffer callback}
+
+This callback is called when the size of the frame buffer changes, that is to 
+say when the size of the window changes. In this function three main things are 
+performed (see Listing~\ref{lst:frame buffer callback}).
+\begin{itemize}
+ \item Set the OpenGL's viewport with \verb+glViewport+.
+ 
+ \item Set the projection matrix. In this example; we use 
+    \verb+loadPerspectiveProjectionMatrix+ to set 
+    \verb+g_current_projection_matrix+. It is similar to \verb+gluPerspective+, 
+    which is not available in modern OpenGL.
+ 
+ \item Set the modelling-viewing transformation. In this example; we use 
+    \verb+loadLookAtModelViewMatrix+ to set 
+    \verb+g_current_modelview_matrix+. It is similar to \verb+gluLookAt+, 
+    which is not available in modern OpenGL.
+ 
+\end{itemize}
+
+\begin{center}
+\lstinputlisting[firstline=465, lastline=495, caption=Change of frame buffer 
+size callback., 
+label=lst:frame buffer callback]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Keyboard Callback}
+\label{sec:Keyboard Callback}
+
+Listing~\ref{lst:Keyboard Callback} shows a typical GLFW keyboard callback. 
+Here the window is closed when the user presses \verb+Q+ or \verb+Esc+.
+
+\begin{center}
+\lstinputlisting[firstline=498, lastline=516, caption=Keyboard callback., 
+label=lst:Keyboard Callback]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Scroll Button Callback}
+\label{sec:Scroll button callback}
+
+The zoom is updated with the mouse wheel 
+(see Listing~\ref{lst:Scroll button callback}). 
+To update the modelling-viewing matrix, the Frame Buffer Size Callback is 
+called.
+
+\begin{center}
+\lstinputlisting[firstline=519, lastline=532, caption=Scroll button callback., 
+label=lst:Scroll button callback]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Error Callback}
+\label{sec:Error Callback}
+
+In the error callback an exception is thrown with the details of the error 
+(see Listing~\ref{lst:Error Callback}).
+
+\begin{center}
+\lstinputlisting[firstline=535, lastline=541, caption=Error callback., 
+label=lst:Error Callback]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+
+\section{Next Tutorial...}
+\label{sec:Next Tutorial}
+
+In the next tutorial:
+\begin{itemize}
+	\item Load the shader from a file compressed using 
+		the Zlib\,\footnote{\url{http://www.zlib.net/}}
+%  \item  You will see how to get rid of OpenGL's fixed pipeline (which is now 
+% depreciated). 
+%  
+%  \item You will see how to get rid of OpenGL's matrix stack (which is now 
+% depreciated).
+% 
+	\item We will see how to create an efficient mouse control to turn the 
+		3D scene. 
+% 
+%  \item You will also see how to update the topology of the triangle meshes. 
+%  This is important in medical simulations with soft tissue deformations. 
+\end{itemize}
+
+
+% % \newpage
+% \printglossary[type=\acronymtype] 
+
+\appendix
+\section{Program Source Code}
+\label{sec:Program Source Code}
+
+\begin{center}
+  \lstinputlisting[caption=All the source code of this tutorial., 
+  label=lst:Program Source Code,numbers=none]{../../../tutorials/tutorial_01_glfw/tutorial_01_glfw.cxx}
+\end{center}
+
+% 
+% \newpage
+% \phantomsection
+% \addcontentsline{toc}{section}{References}
+% \printbibliography
+% 
+
+\end{document}

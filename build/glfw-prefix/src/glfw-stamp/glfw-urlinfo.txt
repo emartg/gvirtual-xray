@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/glfw-prefix/src/glfw-stamp/download-glfw.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/glfw-prefix/src/glfw-stamp/verify-glfw.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/glfw-prefix/src/glfw-stamp/extract-glfw.cmake
+source_dir=C:/Dev/gVirtualXray/build/glfw-source
+work_dir=C:/Dev/gVirtualXray/build
+url(s)=https://github.com/glfw/glfw/releases/download/3.3.10/glfw-3.3.10.zip
+hash=MD5=ca85f61c76a041e8be1a9f6e76e189f6
+      no_extract=
+

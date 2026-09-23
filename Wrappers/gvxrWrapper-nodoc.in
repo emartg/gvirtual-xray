@@ -1,0 +1,99 @@
+%module @module@
+
+%{
+#define SWIG_FILE_WITH_INIT
+#define SWIG_PYTHON_CAST_MODE
+//#define SWIG_PYTHON_EXTRA_NATIVE_CONTAINERS
+
+#include "SimpleGVXR.h"
+#include "acquisition.h"
+#include "detector.h"
+#include "ImplicitSurface.h"
+#include "IsoSurface.h"
+#include "sample.h"
+#include "source.h"
+#include "Utils.h"
+#include "visualisation.h"
+%}
+
+%include <std_pair.i>
+%include <std_vector.i>
+%include <std_string.i>
+%include <std_except.i>
+%include <exception.i>
+%include <stdint.i>
+
+//namespace std {
+//  typedef ::uint32_t uint32_t;
+//}
+
+%include "@CMAKE_CURRENT_SOURCE_DIR@/../numpy.i"
+%init %{
+import_array();
+%}
+
+//%include "@SimpleGVXR_DOC_I_FILE@"
+
+namespace std {
+    %template(VectorStr) std::vector<std::string>;
+    %template(VectorInt32) std::vector<int>;
+    %template(VectorUInt32) std::vector<std::uint32_t>;
+    %template(VectorInt16) vector<short>;
+    %template(VectorUInt16) vector<unsigned short>;
+    %template(VectorFP32) std::vector<float>;
+    %template(VectorFP64) std::vector<double>;
+    %template(VVectorFP32) std::vector<std::vector<float> >;
+    %template(VVectorFP64) std::vector<std::vector<double> >;
+    %template(VVectorUInt16) std::vector<std::vector<unsigned short> >;
+    %template(VVVectorFP32) std::vector<std::vector<std::vector<float> > >;
+    %template(VVVectorFP64) std::vector<std::vector<std::vector<double> > >;
+    %template(VVVectorInt16) std::vector<std::vector<std::vector<std::int16_t> > >;
+    %template(VVVectorUInt16) std::vector<std::vector<std::vector<unsigned short> > >;
+    %template(VectorPFP64) std::vector<std::pair<double, double> >;
+    %template(VectorPFP32) std::vector<std::pair<float, float> >;
+    %template(VectorPUInt32_FP32) std::vector<std::pair<std::uint32_t, float> >;
+};
+
+%exception
+{
+    try
+    {
+        $action
+    }
+    catch(const std::exception& e)
+    {
+        SWIG_exception(SWIG_RuntimeError, e.what());
+    }
+    catch(...)
+    {
+        SWIG_exception(SWIG_UnknownError, "");
+    }
+}
+
+// Process symbols in header
+%include "SimpleGVXR.h"
+
+%define %apply_numpy_typemaps(TYPE)
+%apply (float* INPLACE_ARRAY2, int DIM1, int DIM2) {(float* array, int dim1, int dim2)};
+%apply (double* INPLACE_ARRAY2, int DIM1, int DIM2) {(double* array, int dim1, int dim2)};
+%apply (unsigned short* INPLACE_ARRAY2, int DIM1, int DIM2) {(unsigned short* array, int dim1, int dim2)};
+//%apply (float* ARGOUT_ARRAY2, int DIM1, int DIM2) {(float* array, int dim1, int dim2)};
+//%apply (unsigned short* ARGOUT_ARRAY2, int DIM1, int DIM2) {(unsigned short* array, int dim1, int dim2)};
+%enddef    /* %apply_numpy_typemaps() macro */
+%apply_numpy_typemaps(float)
+%include "acquisition.h"
+
+%include "detector.h"
+%include "ImplicitSurface.h"
+
+%apply (float* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(float* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
+%apply (int* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(int* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
+%apply (unsigned short* INPLACE_ARRAY3, int DIM1, int DIM2, int DIM3) {(unsigned short* apVolume, int aNumberOfVoxelsZ, int aNumberOfVoxelsY, int aNumberOfVoxelsX)};
+%include "IsoSurface.h"
+
+%include "sample.h"
+%include "source.h"
+%include "Utils.h"
+%include "visualisation.h"
+
+

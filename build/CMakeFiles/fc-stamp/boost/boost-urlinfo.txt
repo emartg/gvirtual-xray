@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/CMakeFiles/fc-stamp/boost/download-boost.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/CMakeFiles/fc-stamp/boost/verify-boost.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/CMakeFiles/fc-stamp/boost/extract-boost.cmake
+source_dir=C:/Dev/gVirtualXray/build/_deps/boost-src
+work_dir=C:/Dev/gVirtualXray/build/_deps
+url(s)=https://archives.boost.io/release/1.87.0/source/boost_1_87_0.zip
+hash=MD5=78b0a6c31fc0cc78060455b6df38cf4a
+      no_extract=
+

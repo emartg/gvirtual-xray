@@ -1,0 +1,57 @@
+#/control/execute ../../../../mac/visu.mac
+/vis/disable
+
+
+/control/execute ../../../../mac/verbose.mac
+
+
+/gate/geometry/setMaterialDatabase ../../../../data/GateMaterials.db
+
+
+# World
+/control/execute ../../../../mac/world.mac
+
+
+# Physics list
+/control/execute ../../../../mac/physics.mac
+
+
+# Insert phantom
+#/control/execute ../../../../mac/phantom.mac
+
+
+# Detection plane 1
+/control/execute ../../../../mac/scintillateur.mac
+/gate/DetectorPlane1/setMaterial              CsI
+/gate/DetectorPlane1/geometry/setZLength      0.6 mm
+
+
+# Dose actor
+/control/execute ../../../../mac/dose-actor.mac
+/gate/actor/DetectorActor1/save                    output/white.mha
+
+
+# Energy spectrum actor
+#/control/execute ../../../../mac/energy-spectrum-actor.mac
+
+
+# Phase space actor
+#/control/execute ../../../../mac/phase-space-actor.mac
+
+
+# Save particles stats
+#/gate/actor/addActor  SimulationStatisticActor stat
+#/gate/actor/stat/save output/stats-scintillator.txt
+
+
+/gate/run/initialize
+
+
+# Beam
+/control/execute ../../../../mac/source-80-keV.mac
+
+
+/control/execute ../../../../mac/start.mac
+
+
+exit

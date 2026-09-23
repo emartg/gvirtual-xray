@@ -1,0 +1,81 @@
+# Replace with your SourceForge user name
+SF_UNAME=your_name
+
+# Display your public signature
+cat ~/.ssh/cluster.pub
+
+# Upload it onto your SourceForge account
+# The URL is: https://sourceforge.net/auth/shell_services
+
+# Install conan
+export PATH="$HOME/.local/bin:$PATH"
+python3 -m pip install     conan
+conan profile detect --force
+
+# Retrieve the code
+git clone ssh://${SF_UNAME}@git.code.sf.net/p/gvirtualxray/gitroot gvirtualxray-gitroot
+
+# Change the branch
+cd gvirtualxray-gitroot
+git checkout amd_hackhathon
+
+# Install dependencies
+conan install conanfile-amd-aac6.txt     -s build_type=Release     --output-folder=$HOME/conan-install     --build=missing
+
+# Configure the project
+cmake -S . \
+    -B ../gvirtualxray-build \
+    -DCMAKE_INSTALL_PREFIX=$HOME/.local \
+    -DCMAKE_TOOLCHAIN_FILE:FILEPATH=$HOME/conan-install/build/Release/generators/conan_toolchain.cmake \
+    -DBUILD_TESTING:BOOL=ON \
+    -DBUILD_SIMPLEGVXR:BOOL=ON \
+    -DBUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON \
+    -DGLEW_USE_STATIC_LIBS:BOOL=ON \
+    -DBUILD_DEMOS:BOOL=ON \
+    -DUSE_OPENGL:BOOL=OFF \
+    -DUSE_assimp:BOOL=ON \
+    -DUSE_GLAD:BOOL=OFF \
+    -DUSE_GLEW:BOOL=OFF \
+    -DUSE_GLFW:BOOL=OFF \
+    -DUSE_FFTW3:BOOL=OFF \
+    -DUSE_FREETYPE:BOOL=OFF \
+    -DUSE_GDCM:BOOL=OFF \
+    -DUSE_LIBTIFF:BOOL=ON \
+    -DUSE_SYSTEM_BOOST:BOOL=ON \
+    -DUSE_SYSTEM_GLEW:BOOL=OFF \
+    -DUSE_SYSTEM_GLAD:BOOL=OFF \
+    -DUSE_SYSTEM_GLFW:BOOL=OFF \
+    -DUSE_SYSTEM_ZLIB:BOOL=ON \
+    -DUSE_SYSTEM_FREETYPE:BOOL=OFF \
+    -DUSE_SYSTEM_XRAYLIB:BOOL=OFF \
+    -DUSE_SYSTEM_ASSIMP:BOOL=ON \
+    -DUSE_SYSTEM_LIBTIFF:BOOL=ON \
+    -DUSE_SYSTEM_GTEST:BOOL=ON
+
+# Build
+cd ../gvirtualxray-build
+
+# Compilation on the compute node, not the login node
+salloc --cpus-per-gpu=40 --gpus=1
+
+# Use the following command to compile on the compute node
+srun make -j40
+
+
+# At the end of the session, kill the job
+# Identify the job with
+squeue -u $USER
+
+# The output will look like this:
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+               881 1CN192C4G interact  frvidal  R       9:01      1 ppac-pl1-s24-16
+
+# Find the JOBID, 881 in the example above
+# Kill the job
+scancel 881
+
+
+
+
+
+

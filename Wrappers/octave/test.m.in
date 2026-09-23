@@ -1,0 +1,84 @@
+% Load module
+gvxrOctave
+pkg load image
+
+% Print the libraries' version
+disp(gvxrOctave.getVersionOfCoreGVXR());
+disp(gvxrOctave.getVersionOfSimpleGVXR());
+
+% Create an OpenGL context
+disp("Create an OpenGL context");
+gvxrOctave.createWindow();
+gvxrOctave.setWindowSize(512, 512);
+
+% Set up the beam
+disp("Set up the beam")
+gvxrOctave.setSourcePosition(-40.0,  0.0, 0.0, "cm");
+gvxrOctave.usePointSource();
+%gvxrOctave.useParallelBeam();
+gvxrOctave.setMonoChromatic(0.08, "MeV", 1000);
+
+% Set up the detector
+disp("Set up the detector");
+gvxrOctave.setDetectorPosition(10.0, 0.0, 0.0, "cm");
+gvxrOctave.setDetectorUpVector(0, 1, 0);
+gvxrOctave.setDetectorNumberOfPixels(640, 320);
+gvxrOctave.setDetectorPixelSize(0.5, 0.5, "mm");
+
+% Load the data
+disp("Load the data");
+gvxrOctave.loadSceneGraph("@CMAKE_CURRENT_BINARY_DIR@/welsh-dragon-small.stl", "mm");
+
+for i = gvxrOctave.getNumberOfChildren("root")
+    label = gvxrOctave.getChildLabel("root", i - 1);
+    disp(strcat("Move ", label, " to the centre"));
+    gvxrOctave.moveToCentre(label);
+
+    %disp("Move the mesh to the center");
+    %gvxrOctave.moveToCenter(label);
+
+    disp(strcat("Set ", label, "'s Hounsfield unit"));
+    gvxrOctave.setHU(label, 1000)
+endfor
+
+% Compute an X-ray image
+disp("Compute an X-ray image");
+gvxrOctave.disableArtefactFiltering();
+% Not working anymore gvxrOctave.enableArtefactFilteringOnGPU();
+% Not working anymore gvxrOctave.enableArtefactFilteringOnCPU();
+temp_x_ray_image = gvxrOctave.computeXRayImage();
+x_ray_image = flipud(cell2mat(cell2mat(temp_x_ray_image'(1,:))));
+
+% Save the last image into a file
+disp("Save the last image into a file");
+gvxrOctave.saveLastXRayImage();
+gvxrOctave.saveLastLBuffer();
+
+% Normalise the image between 0 and 1
+np_normalised_image = ((x_ray_image-min(x_ray_image(:)))/max(x_ray_image(:)));
+
+% Save the normalised image
+imwrite(np_normalised_image, 'x_ray_image.png', "png");
+
+% Show the image
+imagesc(x_ray_image);
+colorbar("location", "South");
+colormap("gray");
+set(gca,'dataAspectRatio',[1 1 1]);
+
+% Display the 3D scene (no event loop)
+gvxrOctave.displayScene();
+
+
+% Display the 3D scene (no event loop)
+% Run an interactive loop
+% (can rotate the 3D scene and zoom-in)
+% Keys are:
+% Q/Escape: to quit the event loop (does not close the window)
+% B: display/hide the X-ray beam
+% W: display the polygon meshes in solid or wireframe
+% N: display the X-ray image in negative or positive
+% H: display/hide the X-ray detector
+gvxrOctave.renderLoop();
+
+exit;

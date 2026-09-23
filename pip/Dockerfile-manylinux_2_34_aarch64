@@ -1,0 +1,91 @@
+# set base image (host OS)
+FROM quay.io/pypa/manylinux_2_34_aarch64
+
+# Install RPMs
+RUN yum clean all && yum -y update
+RUN yum install -y \
+    figlet \
+    libGL-devel libGLU-devel \
+    mesa-libEGL-devel \
+    mesa-libgbm-devel \
+    libXcursor-devel \
+    libXi-devel \
+    libXinerama-devel \
+    libXrandr-devel \
+    libfontenc-devel \
+    libXaw-devel \
+    libXcomposite-devel \
+    libXdmcp-devel \
+    libXtst-devel \
+    libxkbfile-devel \
+    libXres-devel \
+    libXScrnSaver-devel \
+    xcb-util-wm-devel \
+    xcb-util-image-devel \
+    xcb-util-keysyms-devel \
+    xcb-util-renderutil-devel \
+    libXdamage-devel \
+    libXxf86vm-devel \
+    libXv-devel \
+    xcb-util-devel \
+    libuuid-devel \
+    xcb-util-cursor-devel \
+    doxygen \
+    python-sphinx \
+    python-pip \
+    python-sphinx_rtd_theme
+
+RUN python3 -m pip install     sphinx_book_theme
+RUN python3 -m pip install     conan
+RUN /usr/local/bin/python3.15 -m pip install jinja2
+
+# Install GLEW by hand, i.e. not using Conan due to issue when creating the Python wheel with Manylinux
+WORKDIR /tmp
+RUN curl -O -L "https://github.com/nigels-com/glew/releases/download/glew-2.3.1/glew-2.3.1.tgz"
+RUN tar zxfp glew-2.3.1.tgz
+WORKDIR /tmp/glew-2.3.1
+RUN cmake -S build/cmake/ -B cmake-build \
+    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON \
+    -DGLEW_EGL:BOOL=ON \
+    -DGLEW_OSMESA:BOOL=OFF \
+    -DGLEW_X11:BOOL=ON \
+    -DBUILD_SHARED_LIBS:BOOL=OFF
+WORKDIR /tmp/glew-2.3.1/cmake-build
+RUN cmake --build .
+RUN cmake --install .
+
+RUN groupadd -g 100 -o gVXR
+RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
+
+USER gVXR
+WORKDIR /home/gVXR
+
+ENV PATH="/home/gVXR/.local/bin:/.local/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
+
+RUN conan profile detect --force
+
+WORKDIR /io
+
+COPY ./conanfile.txt /tmp/conanfile.txt
+
+RUN conan install /tmp/conanfile.txt \
+    -s build_type=Release \
+    --output-folder=/home/gVXR/conan-install \
+    --build=missing
+
+RUN conan install /tmp/conanfile.txt \
+    -s build_type=Debug \
+    --output-folder=/home/gVXR/conan-install \
+    --build=missing
+
+RUN python3 -m pip install ninja breathe
+
+RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
+
+RUN figlet "Build gVXR Python wheels for Linux $(uname -m)" >> ~gVXR/.splash
+RUN figlet "Using $AUDITWHEEL_PLAT" >> ~gVXR/.splash
+RUN echo "cat ~gVXR/.splash" >> ~gVXR/.bashrc
+
+
+#CMD bash test.sh

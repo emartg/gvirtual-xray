@@ -1,0 +1,1 @@
+ conda install conda-forge::sphinx conda-forge::sphinx_rtd_theme conda-forge::breathe

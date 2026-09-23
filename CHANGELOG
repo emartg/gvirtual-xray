@@ -1,0 +1,226 @@
+# Changelog
+All notable changes to gVirtualXray will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
+to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+- TBA
+
+### Changed
+- TBA
+
+### Fixed
+- TBA
+
+## [2.1.0] - 2026-06-09
+
+### Added
+- OpenMP backend on CPU (it's slow, but it is a possible solution when a GPU is not available).
+- Compute the peak signal-noise ratio (PSNR) over a given number of rotations around the sample.
+- Can query the GPU to retrieve the largest possible number of energy bin in the spectrum.
+- Can query the GPU to retrieve the largest possible number of pixels of the detector.
+- Make it possible to resize the detector: the pixel pitch is adjusted, whist the number of pixels remain the same.
+- Expose the generation of iso-surfaces using the Marching Cubes algorithm.
+- Compute the pixel size in radiograph (taken in the middle of the sample bounding box).
+- Generate a report to show the size of the sample on the detector. It can be useful to assess the theoretical
+  visibility of defects.
+- Integration of two digital twins (Python only), the DTHE at INSA Lyon, and the DIAD beamline at
+  the Diamond Light Source.
+- Can retrieve the total incident energy without the energy response of the detector.
+- Integration with Numpy (computeXRayImage and makeIsoSurface).
+- Can set the number of photons per cm2 at one metre.
+- Integrate https://github.com/kylechampley/XrayPhysics to generate X-ray tube spectra.
+- Filter the spectra using xraylib.
+- Use of mixed-precision floating point numbers.
+- Compute the optimal source-object distance for a given cone-beam geometry.
+- Move the sample by adjusting the source-object distance for a given cone-beam geometry.
+- Add the detector gain to emulate under and overexposure.
+- Make it possible to save the images in unsigned short, either with gain applied, or white level after
+  flat-field correction.
+- Can compute the source-detector distance, the object-detector distance and the source-object distance.
+- Make it possible to detect the lack of OpenGL and create one automatically using createOpenGLContext().
+- Make it possible to choose the CPU architecture (aarch64 or x86_64) to build Python wheels with Manylinux 2.34.
+- Add a functionality in gvxr-core and SimpleGVXR to handle inherent filters.
+- Can compute the effective atomic numbers of heterogeneous materials.
+- Can save STL file in either binary (default in SimpleGVXR) or ASCII formats.
+- Add accessors to FOV, magnification, SOD, SDD, and ODD.
+
+### Changed
+- In the core API, the method Mixture::getWeightSet() is renamed Mixture::getMassWeightSet.
+- Make it possible to set the inherent filtration in the functions as follows:
+    - gvxrPython3.utils.getSpectrumSpekpy
+    - gvxrPython3.utils.getSpekpySpectrum
+    - gvxrPython3.utils.getSpectrumXpecgen
+    - gvxrPython3.utils.getXpecgenSpectrum
+    - gvxrPython3.utils.loadSpectrumSpekpy
+    - gvxrPython3.utils.loadSpectrumXpecgen
+    - gvxrPython3.utils.loadSpekpySpectrum
+    - gvxrPython3.utils.loadXpecgenSpectrum
+  The default values are: 0.5 mm of Al.
+
+### Fixed
+- Ray tracing on CPU now works.
+- gauss2d has a signed/unsigned int issue.
+- Make sure the unit of length is applied when creating a mesh with makeIsoSurface.
+
+## [2.0.10] - 2025-02-17
+
+### Added
+- Print out some of the compilation parameters that can be turned on/off
+- Can interactively change the markers' size in the 3D visualisation
+- Make it possible to set a mixture using symbols for the chemical elements and make the weight of one of the elements the balance of the others.
+- Ignore energy bins that do not contribute to the spectrum.
+
+## [2.0.9] - 2025-02-06
+
+### Fixed
+- All the functions of SimpleGVXR are documented using Doxygen and are available in Python.
+
+## [2.0.8] - 2024-08-01
+
+### Added
+- Rotation of the source centre on its focal spot or any arbitrary rotation centre.
+- Show the 1st pixel position in the 3D visualisation.
+- Show the detector centre in the 3D visualisation.
+- Show the world's origin.
+- Can tilt the detector.
+- Rotation axis for CT scan acquisition can be overwritten.
+- Exporter to JSON file (Python only)
+- Add new scintillators: Gd2O2S DRZ-Plus, NaI, and others from https://doi.org/10.1016/j.nima.2015.08.041.
+- There is a new function (`getSupportedScintillatorMaterials`) to find which scintillator materials are supported.
+- There is now a function to perform a CT scan in C++. It makes it possible to save the CT scan acquisition parameters in a JSON file.
+- It is now possible to hide a window.
+- It is now possible to use the close window widget (i.e. clicking on cross at top of the window).
+- Add an interface in SimpleGVXR to the implicit modelling functionalities. It is now possible to create virtual samples using metaballs.
+- Can now invert face normals (it was previously restricted to vertex normals).
+- When the marching cubes is used to create a surface from a 3D volume made of voxels, the volume is padded first to ascertain the surface is closed.
+- Add new phantoms:
+    - Added a step wedge phantom that a user can tweak (e.g. number of steps, width, height, etc.)
+    - Make it possible to create a phantom made of a cylinder with sphere inserts.
+    - It is possible to create a cuboid that corresponds to some kind of foam.
+- Can use the `loadMeshFile` function and set the parent. It is useful when adding one mesh into another one. This way, if the parent is moved, the children follow.
+- Can move a visualisation window from the code.
+
+## [2.0.7] - 2023-11-08
+
+### Added
+- Can create cuboids. It's simpler for the user than a cube that is rescaled.
+- The smallest total energy for a bin is 1 eV instead of 0.
+- Can now set the X-ray tube voltage to generate a beam spectrum. The method is not enabled, tho.
+- The focal spot can be a square shape.
+- The focal spot can be a square rectangle.
+- It is now possible to have a detector that is not perpendicular to the vector from the source to the centre of the detector.
+
+## [2.0.6] - 2023-05-23
+
+### Added
+- Add Poisson noise
+- Can generate flat field images, with and without Poisson noise
+- Can set the total number of photons. This is useful when using a complex polychromatic spectrum with Poisson noise.
+- Enable the use of software rendering using Mesa.
+- Support spectral imaging.
+
+## [2.0.5] - 2023-03-08
+
+### Fixed
+- Both versions 2.0.4 & 2.0.5 are the same due to mishandling on pypi.
+
+## [2.0.4] - 2023-03-08
+
+### Fixed
+- Fix bug in loading the spectrum from a text file (JSON)
+- Fix bug in converting voxel data in HU to mu. There must have been an infinite loop.
+
+## [2.0.3] - 2023-01-13
+
+### Added
+- Add focal spot to json2gvxr.py (Python).
+- Add plugins for CIL (Python).
+- Create functions to extract the beam spectrum from the JSON file without loading the spectrum (Python).
+
+### Fixed
+- When json2gvxr.py is used, file path in json files are relative to the json file, not the python script (Python).
+
+## [2.0.2] - 2022-10-09
+
+### Added
+- The plan is to use 2.0.2 for the training at IBSim-4i 2022.
+- Can assess the topology of meshes.
+- Add the detector impulse response (as a LSF).
+
+### Fixed
+- Broadcast the C++ exceptions (throw) to Python (except).
+- Better handling of exiting without explicitly calling destroyAllWindows().
+- Better support of EGL.
+- Include json2gvxr.py and utils.py in the Python package.
+
+## [2.0.1] - 2022-08-05
+
+### Added
+- Add support for GLAD as an alternative to GLEW.
+
+### Removed
+- Get rid off all the OpenGL 2.x code.
+
+### Fixed
+- Do not link against libpython3 in Manylinux to fix issues with the repaired wheels.
+- OpenGL windows are made visible if needed when `renderLoop` is called.
+
+## [2.0.0] - 2022-08-02
+
+### Added
+- pip wheels can be build for Linux and Windows.
+
+## [1.1.5] - 2021-07-06
+
+### Fixed
+- Move the OpenGL creation into gvxr-core
+- Make sure it compiles on MS Window, Mac OS X, and GNU/Linux (desktop & supercomputer)
+
+## [1.1.4] - 2020-09-08
+
+### Fixed
+- Now fully support EGL context
+- Compiles on SuperComputing Wales
+- Successful run of unit tests on SuperComputing Wales
+
+## [1.1.3] - 2020-09-03
+
+### Added
+- Can load meshes from RAM
+
+### Fixed
+- Improve Numpy support
+- See log for further bug fixes
+
+## [1.1.2] - 2020-08-21
+
+### Added
+- Added files in root:
+    - CHANGELOG (this file)
+    - INSTALL.txt
+    - LICENSE.txt
+    - ORGANIZATION
+    - README.md
+    - VERSION.txt
+- Added EGL support for when the computer has no screen
+- Can read ASCII STL files
+- Can load meshes from arrays
+- Added a GUI
+
+### Fixed
+- Ease the installation from source
+
+## [1.1.1] - 2020-01-16
+
+### Added
+- See log for a list
+
+## [1.0.0] - 2014-12-20
+
+### Added
+- First release ever
+

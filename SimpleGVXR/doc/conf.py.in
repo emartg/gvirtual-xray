@@ -1,0 +1,23 @@
+from cgitb import html
+
+extensions = ["breathe"]
+
+html_theme = "sphinx_book_theme"
+
+# Breathe configuration
+breathe_default_project = "SimpleGVXR"
+
+breathe_projects_source = {
+    "auto" : ( "@SimpleGVXR_BASE_DIR@/include", 
+        [
+            "SimpleGVXR.h", 
+            "acquisition.h",
+            "detector.h", 
+            "ImplicitSurface.h", 
+            "sample.h", 
+            "source.h", 
+            "Utils.h", 
+            "visualisation.h"
+        ]
+    )
+}

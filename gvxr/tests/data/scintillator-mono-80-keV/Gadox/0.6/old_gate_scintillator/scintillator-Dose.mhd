@@ -1,0 +1,13 @@
+ObjectType = Image
+NDims = 3
+BinaryData = True
+BinaryDataByteOrderMSB = False
+CompressedData = False
+TransformMatrix = 1 0 0 0 1 0 0 0 1
+Offset = -215.25 -215.25 0
+CenterOfRotation = 0 0 0
+ElementSpacing = 1.5 1.5 0.6
+DimSize = 288 288 1
+AnatomicalOrientation = ???
+ElementType = MET_FLOAT
+ElementDataFile = scintillator-Dose.raw

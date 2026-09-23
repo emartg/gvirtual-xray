@@ -1,0 +1,102 @@
+#
+#
+# Copyright 2011-2023, Dr Franck P. Vidal, School of Computer science and 
+# Engineering, Bangor University. All rights reserved.
+#
+# Copyright 2024-, Prof Franck P. Vidal, Computed Tomography, 
+# Scientific Computing, Science and Technology Facilities Council (STFC). 
+# All rights reserved
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the names of the Bangor University and STFC nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "scikit-build>=0.15.0",
+    "cmake>=3.26",
+    #"conan>=2.0.0"
+    #"swig; platform_system!='Windows'",
+    "numpy>=2.2",
+    #"make"
+    "ninja",
+    "swig"
+]
+build-backend = "setuptools.build_meta"
+
+
+
+[project]
+name = "gvxr"
+version = "2.1.0"
+authors = [
+  { name="Prof Franck P. Vidal" }
+]
+description="gVirtualXray (gVXR) Bindings to simulate realist X-ray attenuation images in microseconds from triangle meshes."
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = [
+#    #"xpecgen>=1.3.0",
+#    "spekpy",
+#    "scikit-image",
+    "numpy",
+#    "matplotlib",
+#    "pillow",
+#    "pytest",
+#    "pandas",
+    "json5"
+]
+
+classifiers = [
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Environment :: GPU",
+    "Development Status :: 4 - Beta",
+    "Environment :: MacOS X",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries"
+]
+
+[project.urls]
+"Homepage" = "https://gvirtualxray.sourceforge.io/"
+"Bug Tracker" = "https://sourceforge.net/p/gvirtualxray/tickets/"
+
+[tool.ruff]
+line-length =  120

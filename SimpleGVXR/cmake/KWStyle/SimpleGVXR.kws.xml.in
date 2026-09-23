@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Features are documented on https://kitware.github.io/KWStyle/resources/features.html -->
+
+<!--  The name of the project will appear on the title of the generated HTML pages -->
+<Project>SimpleGVXR -- http://gvirtualxray.sourceforge.net/</Project>
+
+<!-- Location of the project's logo to appear on the HTML pages. (The logo is copied automatically in the HTML/images directory) -->
+<!--ProjectLogo>../../doc/logo.png</ProjectLogo-->
+
+<!-- Location of the KWStyle logo to appear on the HTML pages. (The logo is copied automatically in the HTML/images directory) -->
+<KWStyleLogo>@SimpleGVXR_BASE_DIR@/cmake/KWStyle/KWSTYleLogo.jpg</KWStyleLogo>
+
+<!-- If the number of errors for a given test is above the given threshold the errors appears red on the dashboard -->
+<ErrorThreshold>1</ErrorThreshold>
+
+<Description>
+
+<!-- Number of characters per line -->
+<LineLength>81</LineLength>
+
+<InternalVariables>
+  <regex>m_[a-z]</regex>   <!-- Internal variables should match a particular regular expression -->
+  <alignment>0</alignment>
+  <private>0</private>     <!-- Internal variables should be in the protected or private section -->
+</InternalVariables>
+
+<!-- Semicolons should be unique and no space between the semicolon and the end of the phrase. Also unecessary semicolons are checked. -->
+<SemicolonSpace>0</SemicolonSpace>
+
+<!-- Check if the order of the declaration matches a pattern composed of Public,Protected and Private -->
+<DeclarationOrder>
+    <public>0</public>
+    <protected>1</protected>
+    <private>2</private>
+</DeclarationOrder>
+
+<!-- The File should have only one new line at the end of the file -->
+<EndOfFileNewLine>true</EndOfFileNewLine>
+
+<!-- The file should not have any tabulations -->
+<Tabs>1</Tabs>
+
+<!-- The number of extra spaces at the end of the line should not exceed a certain number. -->
+<Spaces>0</Spaces>
+
+<!-- The Indentation should match a specific pattern  -->
+<Indent>
+    <type>SPACE</type>
+    <size>4</size>
+    <noHeader>true</noHeader>
+    <allowBlockLine>true</allowBlockLine>
+</Indent>
+
+<!-- The header should respect a given template (specified as a file) -->
+<Header>
+    <location>@SimpleGVXR_BASE_DIR@/cmake/KWStyle/dummyheader.h</location>
+    <checkSpacesEndOfLine>false</checkSpacesEndOfLine>
+    <cvsFormat>true</cvsFormat>
+</Header>
+
+<!-- #ifndef/#define should match a pattern composed of <NameOfClass> and <Extension> -->
+<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+
+<Typedefs>
+    <regex>[A-Z]</regex>        <!-- Typedefs should match a regular Expression -->
+    <alignment>true</alignment> <!-- Typedefs should be align one with the other -->
+</Typedefs>
+
+<!-- The first namespace in the file should match a specific word -->
+<Namespace>SimpleGVXR</Namespace>
+
+<!-- The name of the class should match the name of the file plus/minus some characters -->
+<NameOfClass>
+    <name>[NameOfClass]</name>
+    <prefix>gvxr</prefix>
+</NameOfClass>
+
+<Comments>
+    <begin>/**</begin>
+    <middle> *</middle>
+    <end>*/<end>
+    <emptyLineBeforeClass>true</emptyLineBeforeClass>
+    <checkWrongComment>true</checkWrongComment>        <!-- Comments in the files should be correct. -->
+                                                       <!-- Right now checking if two consecutive words are not the same. -->
+                                                       <!-- Spelling mistake.  -->
+    <checkMissingComments>false</checkMissingComments> <!-- Each class definition should have a comment starting with \class -->
+</Comments>
+
+<!-- The number of successive empty lines should not be greater than a given number. -->
+<EmptyLines>2</EmptyLines>
+
+<!-- Template parameters should match a regular expression -->
+<Template>T</Template>
+
+<!-- Check if there are spaces for operators: i.e a=b v.s. a = b  -->
+<Operator>
+    <spaceBefore>1</spaceBefore>
+    <spaceAfter>1</spaceAfter>
+</Operator>
+
+<!-- Words in the black list cannot be found in the files to be checked. -->
+<!--BlackList>myBlackList.txt</BlackList-->
+
+<!-- Check the regular expression for struct.  -->
+<Struct>
+    <regex>[a-z]</regex>
+</Struct>
+
+<!-- Check if there is one or more statements per line. -->
+<StatementPerLine>
+    <maxNumber>1</maxNumber>
+    <checkInline>true</checkInline>
+</StatementPerLine>
+
+<!-- Check if there is one or more variables per line. -->
+<VariablePerLine>
+    <maxNumber>1</maxNumber>
+</VariablePerLine>
+
+<!-- Check if the code has some characters outside [0,127] in the ASCII table -->
+<BadCharacters>true</BadCharacters>
+
+<MemberFunctions>
+    <regex>[a-z]</regex> <!-- Check Regular Expression for Member Functions  -->
+    <length>100</length> <!-- Check the number of line of the current member function -->
+</MemberFunctions>
+
+<Functions>
+    <regex>[a-z]</regex> <!-- Check if the function respect regular expressions  -->
+    <length>100</length> <!-- Check the number of line of the current member function -->
+</Functions>
+
+</Description>

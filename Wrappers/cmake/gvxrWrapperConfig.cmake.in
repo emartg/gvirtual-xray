@@ -1,0 +1,105 @@
+#
+#
+# Copyright (c) 2019, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# http://www.fpvidal.net/
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the Bangor University nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+#-----------------------------------------------------------------------------
+#
+# SimpleGVXRConfig.cmake - SimpleGVXR CMake configuration file for external projects.
+#
+# This file is configured by SimpleGVXR and used by the UseSimpleGVXR.cmake module
+# to load SimpleGVXR's settings for an external project.
+@SimpleGVXR_CONFIG_CODE@
+
+
+# The version number
+SET(SimpleGVXR_VERSION_MAJOR "@SimpleGVXR_VERSION_MAJOR@")
+SET(SimpleGVXR_VERSION_MINOR "@SimpleGVXR_VERSION_MINOR@")
+SET(SimpleGVXR_VERSION_PATCH "@SimpleGVXR_VERSION_PATCH@")
+
+
+# The project name
+SET(SimpleGVXR_PROJECT_NAME "@PROJECT_NAME@")
+
+
+# The email address
+SET(SimpleGVXR_EMAIL "@EMAIL@")
+
+
+# The mainwebsite
+SET(SimpleGVXR_MAIN_WEBSITE "@MAIN_WEBSITE@")
+
+
+# The main package name
+SET(SimpleGVXR_MAIN_PACKAGE_NAME "@MAIN_PACKAGE_NAME@")
+
+
+# The main package version
+SET(SimpleGVXR_MAIN_PROJECT_VERSION "@MAIN_PROJECT_VERSION@")
+
+
+# The copyright string
+SET(SimpleGVXR_COPYRIGHT_STRING "@COPYRIGHT_STRING@")
+
+
+# Whether SimpleGVXR was built with shared libraries.
+SET(SimpleGVXR_BUILD_SHARED "@SimpleGVXR_BUILD_SHARED_LIBS@")
+
+
+# C++ version
+SET(SimpleGVXR_CMAKE_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
+
+
+# C flags
+SET(SimpleGVXR_CMAKE_C_FLAGS "@CMAKE_C_FLAGS@")
+
+
+# C++ flags
+SET(SimpleGVXR_CMAKE_CXX_FLAGS "@CMAKE_CXX_FLAGS@")
+
+
+# Base directory
+SET(SimpleGVXR_BASE_DIR "@SimpleGVXR_BASE_DIR@")
+
+
+# Include directory
+SET(SimpleGVXR_INCLUDE_DIR  "@SimpleGVXR_INSTALL_PREFIX@/include")
+SET(SimpleGVXR_INCLUDE_DIRS "@SimpleGVXR_INCLUDE_DIRS@" "@SimpleGVXR_INSTALL_PREFIX@/third_party/include")
+
+
+# SimpleGVXR library
+SET(SimpleGVXR_LIBRARY      "@SimpleGVXR_LIBRARY@")
+SET(SimpleGVXR_LIBRARY_DIRS "@SimpleGVXR_INSTALL_PREFIX@"
+"@SimpleGVXR_INSTALL_PREFIX@/lib" "@SimpleGVXR_INSTALL_PREFIX@/lib64" "@SimpleGVXR_INSTALL_PREFIX@/third_party/lib" "@SimpleGVXR_INSTALL_PREFIX@/third_party/lib64" "@SimpleGVXR_LIBRARY_DIRS@")
+SET(SimpleGVXR_LIBRARIES    "@SimpleGVXR_LIBRARIES@")
+
+
+# The location of the UseSimpleGVXR.cmake file.
+SET(SimpleGVXR_USE_FILE "@SimpleGVXR_USE_FILE@")

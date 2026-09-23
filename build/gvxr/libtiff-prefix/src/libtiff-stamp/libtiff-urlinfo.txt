@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/gvxr/libtiff-prefix/src/libtiff-stamp/download-libtiff.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/gvxr/libtiff-prefix/src/libtiff-stamp/verify-libtiff.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/gvxr/libtiff-prefix/src/libtiff-stamp/extract-libtiff.cmake
+source_dir=C:/Dev/gVirtualXray/build/gvxr/LibTIFF-source
+work_dir=C:/Dev/gVirtualXray/build/gvxr
+url(s)=http://download.osgeo.org/libtiff/tiff-4.4.0.zip
+hash=MD5=81b88f590c77dbfb9eb8e3b2c1843e77
+      no_extract=
+

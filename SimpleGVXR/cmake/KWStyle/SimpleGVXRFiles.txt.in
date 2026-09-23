@@ -1,0 +1,5 @@
+@SimpleGVXR_BASE_DIR@/*.h
+#@SimpleGVXR_BASE_DIR@/*.inl
+@SimpleGVXR_BASE_DIR@/*.cxx
+@SimpleGVXR_BASE_DIR@/tests/*.cxx
+

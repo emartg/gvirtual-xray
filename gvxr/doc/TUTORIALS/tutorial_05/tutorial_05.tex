@@ -1,0 +1,293 @@
+\documentclass[12pt]{report}
+
+\input{./inclure.tex}
+
+\pagestyle{fancy}
+\fancyhead[L]{}
+\fancyhead[R]{}
+\fancyfoot[L]{}
+\fancyfoot[R]{}
+
+
+\begin{document}
+
+\newlength{\larg}
+\setlength{\larg}{14.5cm}
+\lstset{inputencoding=utf8/latin1}
+\title{
+{\rule{\larg}{1mm}}\vspace{7mm}
+\begin{tabular}{p{0cm} c}
+   & { {\textbf{Tutorial}}} \\
+   & {\huge Lighting and shadow mapping} \\
+\end{tabular}\\
+\vspace{2mm}
+{\rule{\larg}{1mm}}
+\vspace{2mm} \\
+\begin{tabular}{p{11cm} r}
+   & {\large  25/08/2016}
+\end{tabular}\\
+\vspace{2cm}
+\large{\textit{} \\
+BANGOR UNIVERSITY\\
+School of Computer Science}
+\vspace{5cm}
+}
+\author{\begin{tabular}{p{13.7cm} r}
+Andréas MEULEMAN
+\end{tabular}\\
+\hline }
+\date{}
+\maketitle
+
+\chapter{Introduction}
+
+	The complete source code of this tutorial is available on the Subversion (SVN) repository at $tutorials/tutorial\_05\_qt4$. 
+	
+	$DepthMap$ is a class to handle and generate a depth map of a set of polygon mesh using a framebuffer. We are going to use this class to create a shadow map and the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$ will enable us to get lightings easely.
+	
+\chapter{includes}
+
+These are to use the shaders $display\_realistic\_gl3.vert$ and $display\_realistic\_gl3.frag$:
+\begin{lstlisting}
+#include "display_realistic_gl3.frag.h"
+#include "display_realistic_gl3.vert.h"
+
+#ifndef GVXR_MATRIX4X4_H
+#include "gVirtualXRay/Matrix4x4.h"
+#endif
+
+#ifndef GVXR_SHADER_H
+#include "gVirtualXRay/Shader.h"
+#endif
+\end{lstlisting}
+
+We have to include the header of the class we are going to use:
+\begin{lstlisting}
+#include "gVirtualXRay/DepthMap.h"
+\end{lstlisting}
+
+\chapter{Add lighting}
+
+\subsection{Initialize variables}
+
+The display shader requires a light direction for lighting, we have to initialize it before the rendering:
+
+\begin{lstlisting}
+	m_light_direction = VEC3(-1, 3, -0.5);
+	m_light_direction.normalize();
+\end{lstlisting}
+
+we also have to initialize the light colours:
+
+\begin{lstlisting}
+ 	// Define the light colours here
+   	GLfloat light_global_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+   	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+   	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+   	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+\end{lstlisting}
+
+\subsection{Define uniforms inputs for the display shader}
+
+To make the display shader use lighting: 
+
+\begin{lstlisting}
+        // Handle for shader variables
+    	GLuint handle(0);
+
+        //use lighting
+        GLint lighting;
+        lighting = 1;
+        handle = glGetUniformLocation(shader_id,"g_use_lighting");
+        glUniform1iv(handle, 1, &lighting);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+The light direction and colours:
+
+\begin{lstlisting}
+        handle = glGetUniformLocation(shader_id, "light_global_ambient");
+        glUniform4fv(handle, 1, &light_global_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_ambient");
+        glUniform4fv(handle, 1, &light_ambient[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_diffuse");
+        glUniform4fv(handle, 1, &light_diffuse[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_specular");
+        glUniform4fv(handle, 1, &light_specular[0]);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "light_direction");
+        glUniform3f(handle, m_light_direction.getX(), m_light_direction.getY(), m_light_direction.getZ());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+Set the projection and the model matrix: 
+\begin{lstlisting}
+    	handle = glGetUniformLocation(shader_id, "g_projection_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_projection_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+        handle = glGetUniformLocation(shader_id, "g_modelview_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, g_current_modelview_matrix.get());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+In case we want the light direction to be fixed to the camera, we have to send the model matrix for the normal vectors:
+\begin{lstlisting}
+        MATRIX4 normal_matrix(g_current_modelview_matrix);
+        handle = glGetUniformLocation(shader_id, "g_normal_matrix");
+        glUniformMatrix3fv(handle, 1, GL_FALSE, normal_matrix.get3x3());
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+
+\chapter{Add shadows}
+
+\subsection{Build the object}
+
+	the constructor of $DepthMap$ has a parameters of type $unsigned$ $int$: $texture\_size$. It represent the size in pixels of the side of the texture used for the depht map. Its default value is 8192 but it can be modified depending on the graphic card's amount of vram.
+	
+\subsection{Build the shadow map matrix}
+
+We build the shadow map projection matrix for an orthogonal projection of everything within the coordinates $[-10, 10]$ of all the axis: 
+
+\begin{lstlisting}
+    	gVirtualXRay::Matrix4x4<GLfloat> shadowProjectionMatrix(gVirtualXRay::buildOrthoProjectionMatrix(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f));
+\end{lstlisting}
+
+The we create the shadow map view matrix using the light direction:
+\begin{lstlisting}
+    	gVirtualXRay::Matrix4x4<GLfloat> shadowViewMatrix(gVirtualXRay::buildLookAtModelViewMatrix(
+    			m_light_direction,
+    			gVirtualXRay::VEC3(0.f, 0.f, 0.f),
+    			gVirtualXRay::VEC3(0.f, 1.f, 0.f)
+    		));
+\end{lstlisting}
+
+We multiply the shadow view matrix by the scene model matrix:
+
+\begin{lstlisting}
+    	shadowViewMatrix *= m_scene_rotation_matrix;
+\end{lstlisting}
+
+\subsection{Render to the shadow map}
+
+First, we create the vector of polygon meshes containing all the meshes that will cast shadows on other objects:
+
+\begin{lstlisting}
+    	std::vector<PolygonMesh*> polygon_mesh_set;
+    	polygon_mesh_set.push_back(&m_blue_cube_mesh);
+    	polygon_mesh_set.push_back(&m_red_cube_mesh);
+\end{lstlisting}
+
+\subsubsection{In case all the polygon meshes share the same model matrix}
+
+We multiply the shadow model view matrix by the models projection matrix:
+
+\begin{lstlisting}
+    	shadowViewMatrix *= m_meshes_model_matrix;
+\end{lstlisting}
+
+We create the shadow MVP matrix by multiplying the projection and the model view matrix:
+
+\begin{lstlisting}
+    	gVirtualXRay::Matrix4x4<GLfloat> shadow_matrix=shadowProjectionMatrix*shadowViewMatrix;
+\end{lstlisting}
+
+We use the overload of the $render$ function that doesn't use a different matrix per polygon mesh:
+
+\begin{lstlisting}
+    	//render to the shadow map
+        m_shadow_map.render(polygon_mesh_set, shadow_matrix);
+\end{lstlisting}
+
+\subsubsection{In case the polygon meshes have different model matrix}
+
+We don't multiply the shadow matrix by the model projection matrix and we build the vector of matrixes:
+
+\begin{lstlisting}
+	std::vector<Matrix4x4<float > > matrix_set;
+	matrix_set.push_back(m_blue_cube_model_matrix);
+	matrix_set.push_back(m_red_cube_model_matrix);
+\end{lstlisting}
+
+We use the overload of $render$ that uses a different matrix per polygon mesh:
+
+\begin{lstlisting}
+    	//render to the shadow map
+        m_shadow_map.render(polygon_mesh_set, shadow_matrix, matrix_set);
+\end{lstlisting}
+
+In that case, we obviously need to change the model view matrix and the normal matrix for all the polygon meshes before defining the display shader inputs.
+
+\subsection{use the shadow map}
+
+We have to send the shadow matrix to the display shader:
+
+\begin{lstlisting}
+        handle = glGetUniformLocation(shader_id, "g_shadow_map_matrix");
+        glUniformMatrix4fv(handle, 1, GL_FALSE, shadow_matrix.get());
+        gVirtualXRay::checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+and the shadow map texture:
+
+\begin{lstlisting}
+        //Bind the shadow map texture in texture unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_shadow_map.getMapTexture());
+
+        handle = glGetUniformLocation(shader_id, "g_shadow_map");
+        glUniform1i(handle,0);
+        checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+\end{lstlisting}
+
+\chapter{Display the polygon meshes using OpenGL}
+
+Now we just have to define the shader's inputs of the polygon meshes to be rendered and to display them:
+
+\begin{lstlisting}
+	    // Get the material
+	    Material& material(m_blue_cube_mesh->getMaterial());
+
+	    // Define colours inshader
+	    GLuint handle(glGetUniformLocation(aShaderID, "material_ambient"));
+	    glUniform4fv(handle, 1, &(material.getAmbientColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_diffuse");
+	    glUniform4fv(handle, 1, &(material.getDiffuseColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_specular");
+	    glUniform4fv(handle, 1, &(material.getSpecularColour()[0]));
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+
+	    handle = glGetUniformLocation(aShaderID, "material_shininess");
+	    glUniform1f(handle, material.getShininess());
+	    checkOpenGLErrorStatus(__FILE__, __FUNCTION__, __LINE__);
+	    
+	    m_blue_cube_mesh.display;
+\end{lstlisting}
+
+This must be done for all the meshes.
+
+\chapter{result}
+
+A shadow is cast from the blue cube to the red one:\\
+
+\includegraphics[scale = 0.6]{img/cubes.png}
+
+
+\newpage
+We can combine lighting with the classes inheriting from AnatomicalMesh to get a better rendering:
+
+\includegraphics[scale = 0.6]{img/AllMeshesLighting.png}
+ 
+\end{document}

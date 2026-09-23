@@ -1,0 +1,187 @@
+#
+#
+# Copyright (c) 2014, Dr Franck P. Vidal (franck.p.vidal@fpvidal.net),
+# http://www.fpvidal.net/
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the Bangor University nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+#-----------------------------------------------------------------------------
+#
+# gVirtualXRayConfig.cmake - gVirtualXRay CMake configuration file for external projects.
+#
+# This file is configured by gVirtualXRay and used by the UsegVirtualXRay.cmake module
+# to load gVirtualXRay's settings for an external project.
+@gVirtualXRay_CONFIG_CODE@
+
+
+# The version number
+SET(gVirtualXRay_VERSION_MAJOR "@gVirtualXRay_VERSION_MAJOR@")
+SET(gVirtualXRay_VERSION_MINOR "@gVirtualXRay_VERSION_MINOR@")
+SET(gVirtualXRay_VERSION_PATCH "@gVirtualXRay_VERSION_PATCH@")
+
+
+# The project name
+SET(gVirtualXRay_PROJECT_NAME "@PROJECT_NAME@")
+
+
+# The email address
+SET(gVirtualXRay_EMAIL "@EMAIL@")
+
+
+# The mainwebsite
+SET(gVirtualXRay_MAIN_WEBSITE "@MAIN_WEBSITE@")
+
+
+# The main package name
+SET(gVirtualXRay_MAIN_PACKAGE_NAME "@MAIN_PACKAGE_NAME@")
+
+
+# The main package version
+SET(gVirtualXRay_MAIN_PROJECT_VERSION "@MAIN_PROJECT_VERSION@")
+
+
+# The copyright string
+SET(gVirtualXRay_COPYRIGHT_STRING "@COPYRIGHT_STRING@")
+
+
+# Whether gVirtualXRay was built with shared libraries.
+SET(gVirtualXRay_BUILD_SHARED "@gVirtualXRay_BUILD_SHARED_LIBS@")
+
+
+# C++ version
+SET(gVirtualXRay_CMAKE_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
+
+
+# C flags
+SET(gVirtualXRay_CMAKE_C_FLAGS "@CMAKE_C_FLAGS@")
+
+
+# C++ flags
+SET(gVirtualXRay_CMAKE_CXX_FLAGS "@CMAKE_CXX_FLAGS@")
+
+
+# Base directory
+SET(gVirtualXRay_BASE_DIR "@gVirtualXRay_BASE_DIR@")
+
+# Install directory
+SET(gVirtualXRay_INSTALL_PREFIX "@gVirtualXRay_INSTALL_PREFIX@")
+
+# Include directory
+SET(gVirtualXRay_INCLUDE_DIR  "@gVirtualXRay_INSTALL_PREFIX@/include")
+SET(gVirtualXRay_INCLUDE_DIRS "@gVirtualXRay_INCLUDE_DIRS@" "@gVirtualXRay_INSTALL_PREFIX@/third_party/include")
+
+
+# gVirtualXRay library
+SET(gVirtualXRay_LIBRARY      "@gVirtualXRay_LIBRARY@")
+SET(gVirtualXRay_LIBRARY_DIRS "@gVirtualXRay_INSTALL_PREFIX@"
+"@gVirtualXRay_INSTALL_PREFIX@/lib" "@gVirtualXRay_INSTALL_PREFIX@/lib64" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib" "@gVirtualXRay_INSTALL_PREFIX@/third_party/lib64" "@gVirtualXRay_LIBRARY_DIRS@")
+SET(gVirtualXRay_XRAYLIB_LIB    "@XRAYLIB_LIB@")
+
+# xraylib library
+SET(gVirtualXRay_LIBRARY      "@gVirtualXRay_LIBRARY@")
+
+# Preprocessor definitions
+SET(gVirtualXRay_ADD_DEFINITIONS "@gVirtualXRay_ADD_DEFINITIONS@")
+
+
+# Gzip tool
+SET(gVirtualXRay_GZIP_TOOL "@GZIP_TOOL@")
+
+
+# GLEW
+SET(gVirtualXRay_USE_SYSTEM_GLEW "@USE_SYSTEM_GLEW@")
+IF (gVirtualXRay_USE_SYSTEM_GLEW)
+    FIND_PACKAGE (GLEW REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${GLEW_INCLUDE_DIR}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${GLEW_LIBRARY}")
+ENDIF()
+
+
+# ZLIB
+SET(gVirtualXRay_USE_SYSTEM_ZLIB "@USE_SYSTEM_ZLIB@")
+IF (gVirtualXRay_USE_SYSTEM_ZLIB)
+    FIND_PACKAGE (ZLIB REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${ZLIB_INCLUDE_DIR}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${ZLIB_LIBRARY}")
+ENDIF()
+
+
+# FreeType
+SET(gVirtualXRay_USE_SYSTEM_FREETYPE "@USE_SYSTEM_FREETYPE@")
+IF (gVirtualXRay_USE_SYSTEM_FREETYPE)
+    FIND_PACKAGE (Freetype REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${FREETYPE_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${FREETYPE_LIBRARIES}")
+ENDIF()
+
+
+# LibTiff
+SET(gVirtualXRay_USE_SYSTEM_LIBTIFF "@USE_SYSTEM_LIBTIFF@")
+IF (gVirtualXRay_USE_SYSTEM_LIBTIFF)
+    FIND_PACKAGE (TIFF REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${TIFF_INCLUDE_DIR}" "${TIFF_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS}" "${TIFF_LIBRARY_DIR}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${TIFF_LIBRARIES}")
+ENDIF()
+
+
+# GDCM
+SET(gVirtualXRay_USE_SYSTEM_GDCM "@USE_SYSTEM_GDCM@")
+IF (gVirtualXRay_USE_SYSTEM_GDCM)
+    FIND_PACKAGE (GDCM REQUIRED)
+    SET (gVirtualXRay_INCLUDE_DIRS "${gVirtualXRay_INCLUDE_DIRS}" "${GDCM_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARY_DIRS "${gVirtualXRay_LIBRARY_DIRS}" "${GDCM_LIBRARY_DIR}")
+    SET (gVirtualXRay_LIBRARIES    "${gVirtualXRay_LIBRARIES}"    "${GDCM_LIBRARIES}")
+ENDIF()
+
+
+# ITK
+SET(gVirtualXRay_USE_ITK "@USE_ITK@")
+IF (gVirtualXRay_USE_ITK)
+    FIND_PACKAGE (ITK REQUIRED)
+
+    include(${ITK_USE_FILE})
+
+    SET (gVirtualXRay_INCLUDE_DIRS ${gVirtualXRay_INCLUDE_DIRS} "${ITK_INCLUDE_DIRS}")
+    SET (gVirtualXRay_LIBRARIES ${gVirtualXRay_LIBRARIES} ${ITK_LIBRARIES})
+ENDIF()
+
+
+# OpenMP
+SET(gVirtualXRay_USE_OPENMP "@USE_OPENMP@")
+IF (gVirtualXRay_USE_OPENMP)
+    FIND_PACKAGE (OpenMP)
+
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
+    SET (gVirtualXRay_LIBRARIES ${gVirtualXRay_LIBRARIES} ${OpenMP_EXE_LINKER_FLAGS})
+ENDIF()
+
+
+# The location of the UsegVirtualXRay.cmake file.
+SET(gVirtualXRay_USE_FILE "@gVirtualXRay_USE_FILE@")

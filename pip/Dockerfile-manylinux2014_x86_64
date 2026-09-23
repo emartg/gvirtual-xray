@@ -1,0 +1,95 @@
+# set base image (host OS)
+FROM quay.io/pypa/manylinux2014_x86_64
+
+RUN cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+
+RUN sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo
+RUN sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo
+RUN sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
+RUN yum clean all && yum -y update
+
+# Install RPMs
+RUN yum groupinstall -y 'Development Tools'
+RUN yum install -y libXi-devel libXrandr-devel libXinerama-devel libXcursor-devel libXxf86vm-devel
+RUN yum install -y mesa-libEGL-devel libGL-devel libGLU-devel
+RUN yum install -y python3-devel
+RUN yum install -y gsl-devel
+RUN yum install -y cargo
+RUN yum install -y mesa-libgbm-devel
+
+# Needed for conan
+RUN yum install -y wget
+RUN yum install -y openssl-devel openblas-devel
+RUN yum install -y libfontenc-devel libXaw-devel libXcomposite-devel \
+    libXdmcp-devel libXtst-devel libxkbfile-devel \
+    libXres-devel libXScrnSaver-devel xcb-util-wm-devel \
+    xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel \
+    libXv-devel xcb-util-devel libuuid-devel \
+    xcb-util-cursor-devel
+RUN yum install -y libffi-devel
+
+RUN yum install -y glx-utils mesa-dri-drivers mesa-libGLw
+
+# Install cmake
+RUN mkdir /tmp/cmake
+WORKDIR /tmp/cmake
+RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3-linux-x86_64.tar.gz
+RUN tar zxvfp cmake-4.2.3-linux-x86_64.tar.gz
+ENV PATH="/tmp/cmake/cmake-4.2.3-linux-x86_64/bin:${PATH}"
+
+
+RUN yum install -y egl-utils
+RUN yum install -y glx-utils
+RUN yum install -y figlet
+
+RUN alias ll='ls -alF'
+
+RUN rm /usr/bin/python3
+RUN ln -s /usr/local/bin/python3.8 /usr/bin/python3
+
+
+ENV MAKEFLAGS="-j24"
+
+RUN ln -s /opt/rh/devtoolset-10/root/usr/bin/g++ /usr/local/bin/c++
+RUN ln -s /opt/rh/devtoolset-10/root/usr/bin/gcc /usr/local/bin/cc
+
+WORKDIR /tmp
+RUN wget https://github.com/assimp/assimp/archive/refs/tags/v5.4.0.zip
+RUN unzip v5.4.0.zip
+WORKDIR /tmp/assimp-5.4.0
+RUN cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build -S .
+WORKDIR /tmp/assimp-5.4.0/cmake-build
+RUN make -j32 && make -j32 install
+
+RUN groupadd -g 100 -o gVXR
+RUN useradd -m -u 1000 -g 100 -o -s /bin/bash gVXR
+USER gVXR
+WORKDIR /home/gVXR
+
+ENV PATH="/home/gVXR/.local/bin:/.local/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/.local/lib:${LD_LIBRARY_PATH}"
+
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install     sphinx_book_theme
+RUN python3 -m pip install     conan
+
+RUN conan profile detect --force
+
+WORKDIR /io
+
+COPY ./conanfile-manylinux2014.txt /tmp/conanfile.txt
+
+RUN conan install /tmp/conanfile.txt \
+    -s build_type=Release \
+    --output-folder=/home/gVXR/conan-install-release \
+    --build="*"
+
+RUN echo "alias ll='ls -alF'" >> ~gVXR/.bashrc
+
+RUN figlet "Build gVXR Python wheels for Linux $(uname -m)" >> ~gVXR/.splash
+RUN echo "cat ~gVXR/.splash" >> ~gVXR/.bashrc
+
+
+
+
+#CMD bash test.sh

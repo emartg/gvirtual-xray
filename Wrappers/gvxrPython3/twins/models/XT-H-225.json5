@@ -1,0 +1,227 @@
+{
+    // Name of the system, can include spaces
+    "name": "XT H 225",
+
+    // Description of the system, mention the source, detector, affiliations,
+    // etc
+    "description": "The Nikon XT H 225 can achieve a spatial resolution of approximately 3 µm in transmission mode and can accommodate bigger samples (up to 50 cm in size and 15 kg). This system can be operated at a maximum energy of 225 kV and 225W. Target can be changed and scanning time varies from seconds to hours.",
+
+    // Facility the X-ray unit is hosted by
+    "facility": "NXCT",
+
+    // Date of data collection used to create the digital twin.
+    "date": "N/A",
+
+    // Any affiliations related to the digital twin and machine, e.g facility,
+    // manufacturer, funding partner, lab of the researcher, etc
+    "affilliates": {
+        "University College London": {
+            "website": "https://www.ucl.ac.uk/"
+        },
+        "UCL Centre for Correlative X-ray Microscopy": {
+            "website": "https://www.ucl.ac.uk/engineering/chemical-engineering/research/cross-disciplinary-centres/ucl-electrochemical-innovation-lab/ucl-centre-correlative-x-ray-microscopy"
+        }
+    },
+
+    // X-ray emission source
+    "beams": {
+        "X-ray": {
+            "beam_type": "tube",
+            "shape": "point",
+
+            // X-ray tube limits, [minimum, maximum] in kV.
+            //
+            // Required.
+            "kV": [30, 225],
+
+            // X-ray tube amperage limits, [minimum, maximum] in uA.
+            //
+            // Required.
+            "uA": [50, 1000],
+
+            // Electron target material.
+            //
+            // Required.
+            "target": "W",
+
+            // Electron target angle.
+            //
+            // Required.
+            "target_angle": 12.0,
+
+            // Internal filtration of the source, cannot be changed by operators.
+            //
+            // Optional, leave as [] if empty.
+            "inherent_filteration": [["Be", 0.5], ["C", 4.0]],
+
+            // External filtration, changed by operators.
+            //
+            // Optional, leave as [] if any filter is allowed.
+            "filters": [
+                ["Cu", 0.1, 0.25, 0.55, 1.0],
+                ["Al", 0.1, 0.25, 0.55, 1.0]
+            ],
+
+            // Coefficients for [W] to determine size of focal spot in [um].
+            //
+            // Optional, leave as [] if empty.
+            "focal_spot_curve": [],
+
+            // Lookup table of [voltage, amperage, t_amp] used for calculating the
+            // amperage of the target at any given amperage.
+            //
+            // Optional, leave as [[]] if empty.
+            "target_amperage_table": [[]],
+
+            // Source flux determination for representative noise
+            // Note: This takes into account end-to-end effects, not just raw
+            // flux from tube.
+            //
+            // Optional, leave curve, x, and y as [] if empty.
+            "flux": {
+                // Coefficients for [kV] to calculate photonic flux per at 1 [mAs] at 1 [meter].
+                "curve": [],
+
+                // 1-D array of monotonically increasing real values.
+                x: [],
+
+                // Array of real values.
+                y: [],
+
+                // Interpolation method.
+                //
+                // Optional, leave as "" if empty. Supported values are:
+                // "CubicSpline", "PchipInterpolator", "Akima1DInterpolator", "Makima1DInterpolator",
+                // "FloaterHormannInterpolator", "BarycentricInterpolator", "KroghInterpolator"
+                // "SmoothingSpline"
+                interpolator: ""
+            }
+        }
+    },
+
+    // X-ray detection
+    "detector": {
+
+        // List of exposures [s] the detector supports.
+        //
+        // Required
+        "exposures": [],
+
+        // List of panel resolutions [px] in [height, width].
+        //
+        // Required
+        "resolutions": [
+            [2028, 2028],
+        ],
+
+        // Pitch of pixels in [um].
+        //
+        // Required
+        "pixel_pitch": 200,
+
+        // Line spread function measured from the detector's response
+        //
+        // Optional, leave [] if empty.
+
+        lsf: [],
+
+
+
+        // Detector Scintillation.
+        //
+        // Optional, Leave material as "" if empty.
+        "scintillator": {
+            // Material of the scintillator, "CsI", "Gadox", etc
+            "material": "CsI",
+            // Thickness of the scintillator in [um].
+            "thickness": 600,
+
+            // Energy response in [keV]
+            //
+            // Optional, set to [] if you want to use the energy response built
+            // in gVXR, of provide a lookup table as an array of arrays of two
+            // floating point numbers.
+            "energy_response": []
+        },
+
+        // Detector gain to convert 0.0 - 1.0 to 0 - 65536.
+        //
+        // gain = 1 / (k * adu)
+        // image = gain * image
+        //
+        // k is an experimentally derived gain-independent detector multiplicative
+        // factor. ADU is obtained from detector documentation, and used during the
+        // derivation of k.
+        //
+        // In cases where ADU is unknown, the product of gain may be used.
+        //
+        // Optional, if k is defined, ADU will be used.
+        // if k and ADU are undefined, gains will be used.
+        //
+        // Set gains to [1] to disable detector gain simulation and keep images in
+        // floating-point format. This will disable overexposure capability.
+        "gain": {
+            // Detector-specific ADU multiplier characteristic for detector
+            // electronics.
+            // "k": 9.648402782349826e-06,
+
+            // Detector ADU values in e-/ADU,
+            // gain = 1 / (k * adu)
+            //  "adus": []
+
+            // Gain multipliers, only used if k or ADU are not defined.
+            // Defining 'gains' with 'k' or 'adus' will cause an error.
+             "gains": [1.0]
+        },
+
+
+        "darkfield": {
+            // Residual darkfield current bias added to all images
+            // image = image + bias(sigma)
+            //
+            // Optional, leave 0 to disable, or gain is not set.
+            "bias": 0,
+
+            // Residual darkfield sigma added to all images
+            //  image = image + bias(sigma)
+            //
+            // Optional, leave 0 to disable, only used if bias is set.
+            "sigma": 0
+        }
+    },
+
+    // Source and detector positioning
+    "stage": {
+        // If true, The detector will be fixed at the source's maximum distance
+        // away from the detector, with the sample moving between [minimum,
+        // maximum] E.g, setting source to [10, 120] will ensure SDD is always
+        // 120mm, and allow SOD between 10mm to 120mm.
+        "static_sdd": true,
+
+        // [minimum, maximum] Distance source can move towards or away from the
+        // sample in [mm]
+        //
+        // Optional, set to [] if unconstrained, or [0, 0] if fixed.
+        "source": {
+            // Left-right movement
+            "x": [0, 0],
+            // forward-backwards movement
+            "y": [0, 1000],
+            // up-down movement
+            "z": [0, 0]
+        },
+
+        // [minimum, maximum] Distance detector can move towards or away from
+        // the sample in [mm]
+        //
+        // Optional, set to [] if unconstrained, or [0, 0] if fixed.
+        "detector": {
+            // Left-right movement
+            "x": [0, 0],
+            // forward-backwards movement
+            "y": [0, 1000],
+            // up-down movement
+            "z": [0, 0]
+        }
+    }
+}

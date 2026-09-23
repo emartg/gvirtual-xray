@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/gvxr/getGLEW-prefix/src/getGLEW-stamp/download-getGLEW.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/gvxr/getGLEW-prefix/src/getGLEW-stamp/verify-getGLEW.cmake;COMMAND;C:/Resources/mingw64/bin/cmake.exe;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;C:/Dev/gVirtualXray/build/gvxr/getGLEW-prefix/src/getGLEW-stamp/extract-getGLEW.cmake
+source_dir=C:/Dev/gVirtualXray/build/gvxr/glew-source
+work_dir=C:/Dev/gVirtualXray/build/gvxr
+url(s)=https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz
+hash=MD5=3579164bccaef09e36c0af7f4fd5c7c7
+      no_extract=
+
