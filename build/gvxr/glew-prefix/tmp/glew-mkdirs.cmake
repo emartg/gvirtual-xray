@@ -11,7 +11,7 @@ if(NOT EXISTS "C:/Dev/gVirtualXray/build/gvxr/glew-source/build/cmake")
 endif()
 file(MAKE_DIRECTORY
   "C:/Dev/gVirtualXray/build/gvxr/glew-build"
-  "C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party"
+  "C:/Dev/gVirtualXray/install/third_party"
   "C:/Dev/gVirtualXray/build/gvxr/glew-prefix/tmp"
   "C:/Dev/gVirtualXray/build/gvxr/glew-prefix/src/glew-stamp"
   "C:/Dev/gVirtualXray/build/gvxr/glew-prefix/src"

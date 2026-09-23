@@ -14,14 +14,29 @@
 # EXTERNAL cache entries
 ########################
 
+//No help, variable specified on the command line.
+ASSIMP_WARNINGS_AS_ERRORS:UNINITIALIZED=OFF
+
+//Path to a program.
+BIBER_COMPILER:FILEPATH=BIBER_COMPILER-NOTFOUND
+
+//Path to a program.
+BIBTEX_COMPILER:FILEPATH=BIBTEX_COMPILER-NOTFOUND
+
 //Build demos
 BUILD_DEMOS:BOOL=ON
 
 //Build SimpleGVXR module
 BUILD_SIMPLEGVXR:BOOL=ON
 
+//Build SimpleGVXR's documentation using Doxygen
+BUILD_SimpleGVXR_DOCUMENTATION:BOOL=ON
+
 //Build the testing tree.
 BUILD_TESTING:BOOL=ON
+
+//No help, variable specified on the command line.
+BUILD_WRAPPERS:UNINITIALIZED=OFF
 
 //Build C# SWIG module
 BUILD_WRAPPER_CSHARP:BOOL=OFF
@@ -77,16 +92,17 @@ CMAKE_ADDR2LINE:FILEPATH=C:/Resources/mingw64/bin/addr2line.exe
 //Path to a program.
 CMAKE_AR:FILEPATH=C:/Resources/mingw64/bin/ar.exe
 
-//Build type for single-configuration generators (Makefile Generators,
-// Ninja, etc.). Typical values: Debug, Release, RelWithDebInfo,
-// MinSizeRel; custom build types may also be defined.
-CMAKE_BUILD_TYPE:STRING=Debug
+//Choose the type of build, options are: None Debug Release RelWithDebInfo
+// MinSizeRel ...
+CMAKE_BUILD_TYPE:STRING=Release
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
-//CXX compiler
-CMAKE_CXX_COMPILER:STRING=C:/Resources/mingw64/bin/g++.exe
+//Full path to the compiler used for language <LANG>. Set by CMake
+// during compiler detection on the first configure; users may
+// override on the command line to select a specific toolchain.
+CMAKE_CXX_COMPILER:UNINITIALIZED=C:/Resources/mingw64/bin/g++.exe
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -97,7 +113,7 @@ CMAKE_CXX_COMPILER_AR:FILEPATH=C:/Resources/mingw64/bin/gcc-ar.exe
 CMAKE_CXX_COMPILER_RANLIB:FILEPATH=C:/Resources/mingw64/bin/gcc-ranlib.exe
 
 //Flags used by the CXX compiler during all build types.
-CMAKE_CXX_FLAGS:STRING=
+CMAKE_CXX_FLAGS:STRING=-Wno-error -Wno-unused-but-set-variable
 
 //Flags used by the CXX compiler during DEBUG builds.
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g
@@ -111,11 +127,24 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 //Flags used by the CXX compiler during RELWITHDEBINFO builds.
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
+//Default value used to initialize the CXX_STANDARD target property
+// when a target is created. See the cmake-compile-features(7)
+// manual for the list of supported standards and compilers.
+CMAKE_CXX_STANDARD:STRING=23
+
 //Libraries linked by default with all C++ applications.
 CMAKE_CXX_STANDARD_LIBRARIES:STRING=-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
 
-//C compiler
-CMAKE_C_COMPILER:STRING=C:/Resources/mingw64/bin/gcc.exe
+//Default value for CXX_STANDARD_REQUIRED target property if set
+// when a target is created. See the cmake-compile-features(7)
+// manual for information on compile features and a list of supported
+// compilers.
+CMAKE_CXX_STANDARD_REQUIRED:STRING=ON
+
+//Full path to the compiler used for language <LANG>. Set by CMake
+// during compiler detection on the first configure; users may
+// override on the command line to select a specific toolchain.
+CMAKE_C_COMPILER:UNINITIALIZED=C:/Resources/mingw64/bin/gcc.exe
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -173,7 +202,7 @@ CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=C:/Dev/gVirtualXray/build/CMakeFiles/pkg
 CMAKE_GNUtoMS:BOOL=OFF
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild
+CMAKE_INSTALL_PREFIX:PATH=C:/Dev/gVirtualXray/install
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=C:/Resources/mingw64/bin/ld.exe
@@ -317,6 +346,14 @@ CMAKE_STRIP:FILEPATH=C:/Resources/mingw64/bin/strip.exe
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 
+//Path to TLS CA certificate file for file(DOWNLOAD), file(UPLOAD),
+// ExternalProject, and FetchContent
+CMAKE_TLS_CAINFO:UNINITIALIZED=C:/Resources/certs/cacert.pem
+
+//Enable TLS verification for file(DOWNLOAD), file(UPLOAD), ExternalProject,
+// and FetchContent
+CMAKE_TLS_VERIFY:UNINITIALIZED=ON
+
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
 // during the make.  This is useful for debugging only. With Visual
@@ -330,6 +367,12 @@ COVERAGE_COMMAND:FILEPATH=C:/Resources/mingw64/bin/gcov.exe
 //Extra command line flags to pass to the coverage tool
 COVERAGE_EXTRA_FLAGS:STRING=-l
 
+//Enable to build 7-Zip source packages
+CPACK_SOURCE_7Z:BOOL=ON
+
+//Enable to build ZIP source packages
+CPACK_SOURCE_ZIP:BOOL=ON
+
 //How many times to retry timed-out CTest submissions.
 CTEST_SUBMIT_RETRY_COUNT:STRING=3
 
@@ -338,6 +381,18 @@ CTEST_SUBMIT_RETRY_DELAY:STRING=5
 
 //Maximum time allowed before CTest will kill the test.
 DART_TESTING_TIMEOUT:STRING=1500
+
+//Dot tool for use with Doxygen
+DOXYGEN_DOT_EXECUTABLE:FILEPATH=C:/Program Files/Graphviz/bin/dot.exe
+
+//Doxygen documentation generation tool (https://www.doxygen.nl)
+DOXYGEN_EXECUTABLE:FILEPATH=C:/Resources/mingw64/bin/doxygen.exe
+
+//Path to a program.
+DVIPDF_CONVERTER:FILEPATH=DVIPDF_CONVERTER-NOTFOUND
+
+//Path to a program.
+DVIPS_CONVERTER:FILEPATH=DVIPS_CONVERTER-NOTFOUND
 
 //Directory under which to collect all populated content
 FETCHCONTENT_BASE_DIR:PATH=C:/Dev/gVirtualXray/build/_deps
@@ -371,44 +426,71 @@ FREETYPE_LIBRARY_DEBUG:FILEPATH=FREETYPE_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.
 FREETYPE_LIBRARY_RELEASE:FILEPATH=FREETYPE_LIBRARY_RELEASE-NOTFOUND
 
+//Path to the GhostScript binary directory.
+GHOSTSCRIPT_BINARY_PATH:PATH=GHOSTSCRIPT_BINARY_PATH-NOTFOUND
+
+//Path to the GhostScript library directory.
+GHOSTSCRIPT_LIBRARY_PATH:PATH=GHOSTSCRIPT_LIBRARY_PATH-NOTFOUND
+
+//Path to a program.
+GITCOMMAND:FILEPATH=C:/Program Files/Git/cmd/git.exe
+
 //Where to find GLEW
-GLEW_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party
+GLEW_DIR:PATH=C:/Dev/gVirtualXray/install/third_party
 
 //Where to find GLEW header files
-GLEW_INCLUDE_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include;C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+GLEW_INCLUDE_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/include;C:/Dev/gVirtualXray/install/third_party/include
 
 //Where to find GLEW header files
-GLEW_INCLUDE_DIRS:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include;C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+GLEW_INCLUDE_DIRS:PATH=C:/Dev/gVirtualXray/install/third_party/include;C:/Dev/gVirtualXray/install/third_party/include
 
 //GLEW library
-GLEW_LIBRARY:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/libglew32.lib
+GLEW_LIBRARY:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libglew32.a
 
 //Path of GTest's directory.
-GTest_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party
+GTest_DIR:PATH=C:/Dev/gVirtualXray/install/third_party
 
 //Path of GTest's header files.
-GTest_INCLUDE_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+GTest_INCLUDE_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/include
 
 //Path of GTest's library.
-GTest_LIBRARIES:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/gtest.lib
+GTest_LIBRARIES:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libgtest.a
 
 //Path of GTest's debug library.
-GTest_LIBRARY_DEBUG:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/libgtest.a
+GTest_LIBRARY_DEBUG:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libgtest.a
 
 //Path of GTest's release library.
-GTest_LIBRARY_RELEASE:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/libgtest.a
+GTest_LIBRARY_RELEASE:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libgtest.a
 
 //Where gzip.exe is.
 GZIP_TOOL:FILEPATH=C:/Dev/gVirtualXray/build/gvxr/gzip/bin/gzip.exe
 
+//Path to a program.
+HTLATEX_COMPILER:FILEPATH=HTLATEX_COMPILER-NOTFOUND
+
+//Path to a program.
+LATEX2HTML_CONVERTER:FILEPATH=LATEX2HTML_CONVERTER-NOTFOUND
+
+//Path to a program.
+LATEX_COMPILER:FILEPATH=LATEX_COMPILER-NOTFOUND
+
+//Path to a program.
+LUALATEX_COMPILER:FILEPATH=LUALATEX_COMPILER-NOTFOUND
+
 //Command to build the project
-MAKECOMMAND:STRING=C:/Resources/mingw64/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
+MAKECOMMAND:STRING=C:/Program\ Files/CMake/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
+
+//Path to a program.
+MAKEINDEX_COMPILER:FILEPATH=MAKEINDEX_COMPILER-NOTFOUND
 
 //Path to the memory checking command, used for memory error detection.
 MEMORYCHECK_COMMAND:FILEPATH=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.4/bin/cuda-memcheck.exe
 
 //File that contains suppressions for the memory checker
 MEMORYCHECK_SUPPRESSIONS_FILE:FILEPATH=
+
+//Path to the MikTex binary directory.
+MIKTEX_BINARY_PATH:PATH=MIKTEX_BINARY_PATH-NOTFOUND
 
 //OpenGL library for win32
 OPENGL_gl_LIBRARY:STRING=opengl32
@@ -434,6 +516,12 @@ OpenMP_gomp_LIBRARY:FILEPATH=C:/Resources/mingw64/lib/libgomp.dll.a
 //Path to the mingwthrd library for OpenMP
 OpenMP_mingwthrd_LIBRARY:FILEPATH=C:/Resources/mingw64/x86_64-w64-mingw32/lib/libmingwthrd.a
 
+//Path to a program.
+PDFLATEX_COMPILER:FILEPATH=PDFLATEX_COMPILER-NOTFOUND
+
+//Path to a program.
+PDFTOPS_CONVERTER:FILEPATH=PDFTOPS_CONVERTER-NOTFOUND
+
 //Path to a library.
 PNG_LIBRARY_DEBUG:FILEPATH=PNG_LIBRARY_DEBUG-NOTFOUND
 
@@ -443,23 +531,38 @@ PNG_LIBRARY_RELEASE:FILEPATH=PNG_LIBRARY_RELEASE-NOTFOUND
 //Path to a file.
 PNG_PNG_INCLUDE_DIR:PATH=PNG_PNG_INCLUDE_DIR-NOTFOUND
 
+//Path to a program.
+PS2PDF_CONVERTER:FILEPATH=PS2PDF_CONVERTER-NOTFOUND
+
 //Name of the computer/site where compile is being run
 SITE:STRING=Emart-MSI-PC
 
-//Where to find LibTIFF header files
-TIFF_INCLUDE_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+//Value Computed by CMake
+SimpleGVXR_BINARY_DIR:STATIC=C:/Dev/gVirtualXray/build/SimpleGVXR
+
+//Value Computed by CMake
+SimpleGVXR_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+SimpleGVXR_SOURCE_DIR:STATIC=C:/Dev/gVirtualXray/SimpleGVXR
+
+//Enable the use of KWStyle for checking coding style.
+SimpleGVXR_USE_KWSTYLE:BOOL=OFF
 
 //Where to find LibTIFF header files
-TIFF_INCLUDE_DIRS:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+TIFF_INCLUDE_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/include
+
+//Where to find LibTIFF header files
+TIFF_INCLUDE_DIRS:PATH=C:/Dev/gVirtualXray/install/third_party/include
 
 //LibTIFF library
-TIFF_LIBRARIES:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/tiff.lib
+TIFF_LIBRARIES:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libtiff.a
 
 //LibTIFF library
-TIFF_LIBRARY:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/tiff.lib
+TIFF_LIBRARY:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libtiff.a
 
 //Where to find LibTIFF library files
-TIFF_LIBRARY_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib
+TIFF_LIBRARY_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/lib
 
 //Use clang-tidy if available. 
 USE_CLANG_TIDY:BOOL=OFF
@@ -530,8 +633,14 @@ USE_SYSTEM_XRAYLIB:BOOL=OFF
 //Use system's zlib.
 USE_SYSTEM_ZLIB:BOOL=OFF
 
+//Use System gVirtualXRay
+USE_SYSTEM_gVirtualXRay:BOOL=ON
+
 //Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes
 USE_assimp:BOOL=ON
+
+//Path to a file.
+VALGRIND_HEADER_FILE:FILEPATH=VALGRIND_HEADER_FILE-NOTFOUND
 
 //Path to a program.
 Vulkan_GLSLANG_VALIDATOR_EXECUTABLE:FILEPATH=Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND
@@ -545,38 +654,44 @@ Vulkan_INCLUDE_DIR:PATH=Vulkan_INCLUDE_DIR-NOTFOUND
 //Path to a library.
 Vulkan_LIBRARY:FILEPATH=Vulkan_LIBRARY-NOTFOUND
 
+//Path to a program.
+XELATEX_COMPILER:FILEPATH=XELATEX_COMPILER-NOTFOUND
+
+//Path to a program.
+XINDY_COMPILER:FILEPATH=XINDY_COMPILER-NOTFOUND
+
 //Path xraylib's DLL
 XRAYLIB_SHARED_LIB_PATH:FILEPATH=C:/Dev/gVirtualXray/gvxr/dependencies/xraylib/windows/libxrl-11.dll
 
 //Path of zlib's directory.
-ZLIB_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party
+ZLIB_DIR:PATH=C:/Dev/gVirtualXray/install/third_party
 
 //Path of zlib's header files.
-ZLIB_INCLUDE_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+ZLIB_INCLUDE_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/include
 
 //Path of zlib's library.
-ZLIB_LIBRARY:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/zlibstatic.lib
+ZLIB_LIBRARY:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libzlibstatic.a
 
 //Path of zlib's debug library.
-ZLIB_LIBRARY_DEBUG:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/libz.a
+ZLIB_LIBRARY_DEBUG:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libz.a
 
 //Path of zlib's release library.
-ZLIB_LIBRARY_RELEASE:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/libz.a
+ZLIB_LIBRARY_RELEASE:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libz.a
 
 //Where ASSIMP's headers are.
-assimp_INCLUDE_DIRS:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+assimp_INCLUDE_DIRS:PATH=C:/Dev/gVirtualXray/install/third_party/include
 
 //ASSIMP's libraries.
-assimp_LIBRARIES:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/assimp--mt.lib
+assimp_LIBRARIES:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libassimp.a
 
 //ASSIMP's libraries.
-assimp_LIBRARY:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/assimp--mt.lib
+assimp_LIBRARY:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libassimp.a
 
 //Where ASSIMP's libraries are.
-assimp_LIBRARY_DIRS:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib
+assimp_LIBRARY_DIRS:PATH=C:/Dev/gVirtualXray/install/third_party/lib
 
 //Where ASSIMP is.
-assimp_ROOT_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party
+assimp_ROOT_DIR:PATH=C:/Dev/gVirtualXray/install/third_party
 
 //Value Computed by CMake
 gVirtualXRay-Superbuild_BINARY_DIR:STATIC=C:/Dev/gVirtualXray/build
@@ -596,20 +711,27 @@ gVirtualXRay_IS_TOP_LEVEL:STATIC=OFF
 //Value Computed by CMake
 gVirtualXRay_SOURCE_DIR:STATIC=C:/Dev/gVirtualXray/gvxr
 
+//Enable the use of KWStyle for checking coding style.
+gVirtualXRay_USE_KWSTYLE:BOOL=OFF
+
 //Where to find Cmake files on GLFW3
-glfw3_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/cmake/glfw3
+glfw3_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/lib/cmake/glfw3
 
 //Where to find GLFW3 header files
-glfw3_INCLUDE_DIR:PATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include
+glfw3_INCLUDE_DIR:PATH=C:/Dev/gVirtualXray/install/third_party/include
 
 //Path to the GLFW3 library
-glfw3_LIBRARY:FILEPATH=C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/glfw3.lib
+glfw3_LIBRARY:FILEPATH=C:/Dev/gVirtualXray/install/third_party/lib/libglfw3.a
 
 
 ########################
 # INTERNAL cache entries
 ########################
 
+//ADVANCED property for variable: BIBER_COMPILER
+BIBER_COMPILER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: BIBTEX_COMPILER
+BIBTEX_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BZIP2_INCLUDE_DIR
 BZIP2_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BZIP2_LIBRARY_DEBUG
@@ -679,6 +801,8 @@ CMAKE_C_STANDARD_LIBRARIES-ADVANCED:INTERNAL=1
 CMAKE_DIAGNOSTIC_INIT:INTERNAL=CMD_AUTHOR=WARN;CMD_DEPRECATED=WARN;CMD_EXPERIMENTAL=WARN;CMD_INSTALL_ABSOLUTE_DESTINATION=IGNORE;CMD_POLICY=WARN;CMD_UNINITIALIZED=IGNORE;CMD_UNUSED_CLI=IGNORE
 //ADVANCED property for variable: CMAKE_DLLTOOL
 CMAKE_DLLTOOL-ADVANCED:INTERNAL=1
+//Path to cache edit program executable.
+CMAKE_EDIT_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cmake-gui.exe
 //Deprecated.  Use -W[no-]error=deprecated instead.
 CMAKE_ERROR_DEPRECATED:INTERNAL=OFF
 //Executable file format
@@ -703,6 +827,8 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
+//Test CMAKE_HAVE_LIBC_PTHREAD
+CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=C:/Dev/gVirtualXray
@@ -725,7 +851,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=7
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -787,12 +913,26 @@ CMAKE_WARN_DEPRECATED:INTERNAL=ON
 COVERAGE_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: COVERAGE_EXTRA_FLAGS
 COVERAGE_EXTRA_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CPACK_SOURCE_7Z
+CPACK_SOURCE_7Z-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CPACK_SOURCE_ZIP
+CPACK_SOURCE_ZIP-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CTEST_SUBMIT_RETRY_COUNT
 CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CTEST_SUBMIT_RETRY_DELAY
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_DOT_EXECUTABLE
+DOXYGEN_DOT_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_EXECUTABLE
+DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DVIPDF_CONVERTER
+DVIPDF_CONVERTER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DVIPS_CONVERTER
+DVIPS_CONVERTER-ADVANCED:INTERNAL=1
+//Details about finding Doxygen
+FIND_PACKAGE_MESSAGE_DETAILS_Doxygen:INTERNAL=[C:/Resources/mingw64/bin/doxygen.exe][found components: doxygen dot ][v1.17.0()]
 //Details about finding GZIP
 FIND_PACKAGE_MESSAGE_DETAILS_GZIP:INTERNAL=[C:/Dev/gVirtualXray/build/gvxr/gzip/bin/gzip.exe][v()]
 //Details about finding OpenGL
@@ -801,8 +941,10 @@ FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[opengl32][ ][v()]
 FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][found components: CXX ][v5.2()]
 //Details about finding OpenMP_CXX
 FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-fopenmp][C:/Resources/mingw64/lib/libgomp.dll.a][C:/Resources/mingw64/x86_64-w64-mingw32/lib/libmingwthrd.a][v5.2()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding ZLIB
-FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/lib/zlibstatic.lib][C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/include][ ][v()]
+FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[C:/Dev/gVirtualXray/install/third_party/lib/libzlibstatic.a][C:/Dev/gVirtualXray/install/third_party/include][ ][v1.3.2()]
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_freetype2
 FREETYPE_INCLUDE_DIR_freetype2-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_ft2build
@@ -811,14 +953,50 @@ FREETYPE_INCLUDE_DIR_ft2build-ADVANCED:INTERNAL=1
 FREETYPE_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: FREETYPE_LIBRARY_RELEASE
 FREETYPE_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GHOSTSCRIPT_BINARY_PATH
+GHOSTSCRIPT_BINARY_PATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GHOSTSCRIPT_LIBRARY_PATH
+GHOSTSCRIPT_LIBRARY_PATH-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GITCOMMAND
+GITCOMMAND-ADVANCED:INTERNAL=1
+//Have function abs
+HAVE_ABS:INTERNAL=1
+//Have function cbrt
+HAVE_CBRT:INTERNAL=1
+//Have include cmath
+HAVE_CMATH_H:INTERNAL=1
+//Have function cos
+HAVE_COS:INTERNAL=1
+//Have function exp
+HAVE_EXP:INTERNAL=1
 //Have include filesystem
 HAVE_FILESYSTEM_HEADER:INTERNAL=1
+//Have function log
+HAVE_LOG:INTERNAL=1
+//Have function pow
+HAVE_POW:INTERNAL=1
+//Have function sin
+HAVE_SIN:INTERNAL=1
+//Have function sqrt
+HAVE_SQRT:INTERNAL=1
+//ADVANCED property for variable: HTLATEX_COMPILER
+HTLATEX_COMPILER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: LATEX2HTML_CONVERTER
+LATEX2HTML_CONVERTER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: LATEX_COMPILER
+LATEX_COMPILER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: LUALATEX_COMPILER
+LUALATEX_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
 MAKECOMMAND-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: MAKEINDEX_COMPILER
+MAKEINDEX_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_COMMAND
 MEMORYCHECK_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_SUPPRESSIONS_FILE
 MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: MIKTEX_BINARY_PATH
+MIKTEX_BINARY_PATH-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_gl_LIBRARY
 OPENGL_gl_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_glu_LIBRARY
@@ -843,14 +1021,22 @@ OpenMP_SPECTEST_CXX_:INTERNAL=TRUE
 OpenMP_gomp_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OpenMP_mingwthrd_LIBRARY
 OpenMP_mingwthrd_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PDFLATEX_COMPILER
+PDFLATEX_COMPILER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PDFTOPS_CONVERTER
+PDFTOPS_CONVERTER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PNG_LIBRARY_DEBUG
 PNG_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PNG_LIBRARY_RELEASE
 PNG_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PNG_PNG_INCLUDE_DIR
 PNG_PNG_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PS2PDF_CONVERTER
+PS2PDF_CONVERTER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SimpleGVXR_USE_KWSTYLE
+SimpleGVXR_USE_KWSTYLE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: USE_SYSTEM_GTEST
 USE_SYSTEM_GTEST-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: Vulkan_GLSLANG_VALIDATOR_EXECUTABLE
@@ -861,6 +1047,12 @@ Vulkan_GLSLC_EXECUTABLE-ADVANCED:INTERNAL=1
 Vulkan_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: Vulkan_LIBRARY
 Vulkan_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: XELATEX_COMPILER
+XELATEX_COMPILER-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: XINDY_COMPILER
+XINDY_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: ZLIB_INCLUDE_DIR
 ZLIB_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: gVirtualXRay_USE_KWSTYLE
+gVirtualXRay_USE_KWSTYLE-ADVANCED:INTERNAL=1
 

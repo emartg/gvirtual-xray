@@ -28,7 +28,7 @@ NightlyStartTime: 01:00:00;UTC
 
 # Commands for the build/test/submit cycle
 ConfigureCommand: "C:/Resources/mingw64/bin/cmake.exe" "C:/Dev/gVirtualXray"
-MakeCommand: C:/Resources/mingw64/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
+MakeCommand: C:/Program\ Files/CMake/bin/cmake.exe --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 
 # version control
@@ -45,7 +45,7 @@ SVNOptions:
 SVNUpdateOptions: 
 
 # Git options
-GITCommand: 
+GITCommand: C:/Program Files/Git/cmd/git.exe
 GITInitSubmodules: 
 GITUpdateOptions: 
 GITUpdateCustom: 
@@ -58,9 +58,9 @@ P4UpdateOptions:
 P4UpdateCustom: 
 
 # Generic update command
-UpdateCommand: 
+UpdateCommand: C:/Program Files/Git/cmd/git.exe
 UpdateOptions: 
-UpdateType: 
+UpdateType: git
 
 # Compiler info
 Compiler: C:/Resources/mingw64/bin/g++.exe
@@ -95,7 +95,7 @@ TimeOut: 1500
 # so would cause the system load to exceed this value.
 TestLoad: 
 
-TLSVerify: 
+TLSVerify: ON
 TLSVersion: 
 
 UseLaunchers: 

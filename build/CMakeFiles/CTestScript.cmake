@@ -9,7 +9,7 @@ set(CTEST_SOURCE_DIRECTORY "C:/Dev/gVirtualXray")
 set(CTEST_BINARY_DIRECTORY "C:/Dev/gVirtualXray/build")
 
 # CTest Update Step
-set(CTEST_UPDATE_COMMAND "")
+set(CTEST_UPDATE_COMMAND "C:/Program Files/Git/cmd/git.exe")
 set(CTEST_UPDATE_OPTIONS "")
 set(CTEST_UPDATE_VERSION_ONLY "")
 set(CTEST_NIGHTLY_START_TIME "01:00:00;UTC")
@@ -24,7 +24,7 @@ set(CTEST_SVN_OPTIONS "")
 set(CTEST_SVN_UPDATE_OPTIONS "")
 
 # Git options
-set(CTEST_GIT_COMMAND "")
+set(CTEST_GIT_COMMAND "C:/Program Files/Git/cmd/git.exe")
 set(CTEST_GIT_INIT_SUBMODULES "")
 set(CTEST_GIT_UPDATE_CUSTOM "")
 set(CTEST_GIT_UPDATE_OPTIONS "")
@@ -66,7 +66,7 @@ set(CTEST_SITE "Emart-MSI-PC")
 set(CTEST_BUILD_NAME "Win32-mingw32-make")
 set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=gVirtualXray")
 set(CTEST_SUBMIT_INACTIVITY_TIMEOUT "")
-set(CTEST_TLS_VERIFY "")
+set(CTEST_TLS_VERIFY "ON")
 set(CTEST_TLS_VERSION "")
 
 ################################################################################

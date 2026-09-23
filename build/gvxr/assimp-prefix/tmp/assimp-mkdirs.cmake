@@ -11,7 +11,7 @@ if(NOT EXISTS "C:/Dev/gVirtualXray/build/gvxr/assimp-source")
 endif()
 file(MAKE_DIRECTORY
   "C:/Dev/gVirtualXray/build/gvxr/assimp-build"
-  "C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party"
+  "C:/Dev/gVirtualXray/install/third_party"
   "C:/Dev/gVirtualXray/build/gvxr/assimp-prefix/tmp"
   "C:/Dev/gVirtualXray/build/gvxr/assimp-prefix/src/assimp-stamp"
   "C:/Dev/gVirtualXray/build/gvxr/assimp-prefix/src"

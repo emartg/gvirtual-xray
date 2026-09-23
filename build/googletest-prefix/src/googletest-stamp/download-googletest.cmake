@@ -112,8 +112,8 @@ foreach(i RANGE ${retry_number})
       message(VERBOSE "Using src='${url}'")
 
       
-      
-      
+      set(CMAKE_TLS_VERIFY "ON")
+      set(CMAKE_TLS_CAINFO "C:/Resources/certs/cacert.pem")
       
       
 

@@ -11,7 +11,7 @@ if(NOT EXISTS "C:/Dev/gVirtualXray/build/googletest-source")
 endif()
 file(MAKE_DIRECTORY
   "C:/Dev/gVirtualXray/build/googletest-build"
-  "C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party"
+  "C:/Dev/gVirtualXray/install/third_party"
   "C:/Dev/gVirtualXray/build/googletest-prefix/tmp"
   "C:/Dev/gVirtualXray/build/googletest-prefix/src/googletest-stamp"
   "C:/Dev/gVirtualXray/build/googletest-prefix/src"

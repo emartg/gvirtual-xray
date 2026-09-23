@@ -11,7 +11,7 @@ if(NOT EXISTS "C:/Dev/gVirtualXray/build/glfw-source")
 endif()
 file(MAKE_DIRECTORY
   "C:/Dev/gVirtualXray/build/glfw-build"
-  "C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party"
+  "C:/Dev/gVirtualXray/install/third_party"
   "C:/Dev/gVirtualXray/build/glfw-prefix/tmp"
   "C:/Dev/gVirtualXray/build/glfw-prefix/src/glfw-stamp"
   "C:/Dev/gVirtualXray/build/glfw-prefix/src"

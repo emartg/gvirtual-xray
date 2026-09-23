@@ -11,7 +11,7 @@ if(NOT EXISTS "C:/Dev/gVirtualXray/build/gvxr/freetype-source")
 endif()
 file(MAKE_DIRECTORY
   "C:/Dev/gVirtualXray/build/gvxr/freetype-build"
-  "C:/Program Files (x86)/gVirtualXRay-Superbuild/third_party/freetype-install"
+  "C:/Dev/gVirtualXray/install/third_party/freetype-install"
   "C:/Dev/gVirtualXray/build/gvxr/freetype-prefix/tmp"
   "C:/Dev/gVirtualXray/build/gvxr/freetype-prefix/src/freetype-stamp"
   "C:/Dev/gVirtualXray/build/gvxr/freetype-prefix/src"
