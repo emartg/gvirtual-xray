@@ -43,6 +43,12 @@ Yes, gVXR is open source. Its source code is available under the BSD 3-Clause Li
 
 
 
+## Credits and Third-Party Code
+
+The credits of the project and the origin and license of the third-party code and resources it uses (xraylib, XrayPhysics, GLEW, Assimp, the Welsh dragon mesh, the embedded font, and more) are recorded in [doc/SOURCES.md](doc/SOURCES.md).
+
+
+
 ## Is gVXR available as a package that can be deployed without building it?
 
 Python wheels are available on [Python Package Index (Pypi)](https://pypi.org/project/gvxr/). For other programming languages, you will have to build gVXR from the source code.
