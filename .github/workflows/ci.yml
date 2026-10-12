@@ -95,8 +95,8 @@ jobs:
     name: Consumer test (Linux, system packages, CMake ${{ matrix.cmake }})
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    # experimental: the build with system packages is not known to work (on Ubuntu 26.04 it failed on Boost's missing
-    # interprocess component, on Vulkan when GLFW is off, and on LibTIFF's optional codecs)
+    # experimental: the first run failed on Boost's missing interprocess component (fixed by requesting Boost without
+    # components); on Ubuntu 26.04 the system packages also exposed Vulkan with GLFW off and LibTIFF's optional codecs
     continue-on-error: true
     strategy:
       fail-fast: false

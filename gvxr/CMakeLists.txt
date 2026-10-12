@@ -451,7 +451,8 @@ IF (NOT USE_SYSTEM_BOOST)
     SET (Boost_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/_deps/boost-src)
 
 ELSE (NOT USE_SYSTEM_BOOST)
-    FIND_PACKAGE (Boost COMPONENTS interprocess REQUIRED)
+    # interprocess is a header-only library: it has no component to request
+    FIND_PACKAGE (Boost REQUIRED)
 ENDIF (NOT USE_SYSTEM_BOOST)
 
 SET (gVirtualXRay_ADD_DEFINITIONS ${gVirtualXRay_ADD_DEFINITIONS} "-DHAS_BOOST")
