@@ -33,7 +33,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-cmake_minimum_required(VERSION 4.2 FATAL_ERROR)
+# 3.26 is the oldest version that the build has been checked with, and the one that gvxr/cmake/Bin2C.cmake requires.
+# A newer version sets the policies as 4.2 does
+cmake_minimum_required(VERSION 3.26...4.2 FATAL_ERROR)
 
 project(gVirtualXRay-Superbuild
         VERSION 2.1.0
