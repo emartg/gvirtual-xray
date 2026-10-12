@@ -1,0 +1,211 @@
+# Continuous integration of the fork: builds the core library with its unit tests on Linux (GCC) and Windows
+# (MinGW's GCC), with the dependencies that the build downloads and builds itself (the superbuild), runs the
+# tests that need no OpenGL context everywhere and the ones that need it on Linux (with a virtual display and Mesa's
+# software renderer), and builds the consumer test, a project that uses the core library through add_subdirectory()
+# with the system packages. SimpleGVXR and the wrappers are not built yet: the simulator only uses the core library.
+#
+# The jobs marked experimental report their result without failing the workflow. Remove the mark of a job when it has
+# passed once, so that it protects the repository from then on.
+#
+# The repository is built as it is, without build fixes. Known consequences, to be handled when they matter: MSVC is not
+# part of this workflow (it needs changes to the build files); the system packages may not work for the consumer job
+# (for example Boost's header-only interprocess component); the library is compiled with C++23
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Cancel the previous runs of the same branch or pull request when a new commit is pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Git LFS files that the tests use (the two phantom files of 68 MB each are not used by any enabled test), so that
+  # the runners do not download the 300 MB of the repository on every run
+  LFS_INCLUDE: gvxr/tests/data/**
+  LFS_EXCLUDE: gvxr/tests/data/phantom_projections.raw,gvxr/tests/data/phantom_sinogram.raw
+
+jobs:
+  # Core library and unit tests, with the bundled dependencies
+  linux:
+    name: Linux (GCC, bundled dependencies)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          lfs: false
+
+      - name: Identify the Git LFS files
+        run: git lfs ls-files --long | cut -d ' ' -f 1 | sort > .lfs-ids
+
+      - name: Restore the Git LFS cache
+        uses: actions/cache@v5
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-ids') }}
+          restore-keys: lfs-
+
+      - name: Fetch the Git LFS files of the tests
+        run: git lfs pull --include="$LFS_INCLUDE" --exclude="$LFS_EXCLUDE"
+
+      - name: Install the dependencies
+        # retries and a network timeout, so that an unresponsive package mirror does not stall the job
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y --no-install-recommends \
+            ninja-build libgl-dev libglu1-mesa-dev libegl-dev libx11-dev libxrandr-dev libxinerama-dev \
+            libxcursor-dev libxi-dev xvfb libgl1-mesa-dri mesa-utils
+
+      - name: Configure
+        # the superbuild installs the dependencies that it builds in the install prefix; the C compiler is given because
+        # the top-level project does not declare the C language, and the build of GoogleTest needs a C compiler
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/install" \
+            -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DBUILD_WRAPPERS=OFF
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run the tests that need no OpenGL context
+        run: ctest --test-dir build -L cpu --output-on-failure
+
+      - name: Show the OpenGL renderer of the virtual display
+        run: xvfb-run -a glxinfo -B
+
+      - name: Run the tests that need an OpenGL context
+        # experimental: measured only on Mesa 26 (WSL), where 13 of the 14 tests pass and TestCubeSource takes about
+        # 5 minutes. TestOpenGLContext is left out: its compute shader check (TestOpenGLContext.cxx:375) reads back 0
+        # where the shader wrote -1000 on llvmpipe, and it passes on a GPU
+        continue-on-error: true
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" ctest --test-dir build -L opengl -E TestOpenGLContext --timeout 900 --output-on-failure
+
+  # Consumer test with the system packages (the way the simulator builds on Linux), with the CMake of the runner and
+  # with the minimum version that the repository declares
+  consumer-linux:
+    name: Consumer test (Linux, system packages, CMake ${{ matrix.cmake }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # experimental: the build with system packages is not known to work (on Ubuntu 26.04 it failed on Boost's missing
+    # interprocess component, on Vulkan when GLFW is off, and on LibTIFF's optional codecs)
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        cmake: [runner, 3.26.4]
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          lfs: false
+
+      - name: Install the dependencies
+        # retries and a network timeout, so that an unresponsive package mirror does not stall the job
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 install -y --no-install-recommends \
+            ninja-build libgl-dev libglu1-mesa-dev libegl-dev libglew-dev libassimp-dev libtiff-dev \
+            libfreetype-dev zlib1g-dev libboost-dev libpng-dev libbz2-dev
+
+      - name: Install the minimum version of CMake
+        if: matrix.cmake != 'runner'
+        run: |
+          pipx install --force cmake==${{ matrix.cmake }}
+          hash -r
+
+      - name: Show the version of CMake
+        run: |
+          cmake --version
+          if [ "${{ matrix.cmake }}" != "runner" ]; then cmake --version | grep -q "version ${{ matrix.cmake }}"; fi
+
+      - name: Configure
+        # a dependency that CMake does not find is built from source instead (and installed in the install prefix),
+        # so the log is checked to make sure that every dependency comes from the system
+        shell: bash
+        run: |
+          cmake -S gvxr/tests/consumer -B build-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/install" -DUSE_SYSTEM_GLEW=ON -DUSE_SYSTEM_ASSIMP=ON \
+            -DUSE_SYSTEM_ZLIB=ON -DUSE_SYSTEM_LIBTIFF=ON -DUSE_SYSTEM_FREETYPE=ON -DUSE_SYSTEM_BOOST=ON \
+            2>&1 | tee configure.log
+          if grep -E "^-- Build (Zlib|ASSIMP|GLEW|LibTIFF|Freetype)" configure.log; then
+            echo "::error::A dependency was not found in the system and would be built from source"
+            exit 1
+          fi
+
+      - name: Build
+        run: cmake --build build-consumer --parallel
+
+      - name: Run the consumer test
+        run: ctest --test-dir build-consumer --output-on-failure
+
+  # Windows builds of the core library and the tests that need no OpenGL context (the runners have no OpenGL 4.5
+  # support). MinGW follows the build recipe verified on a development machine (serial build)
+  windows:
+    name: Windows (${{ matrix.name }})
+    runs-on: windows-latest
+    timeout-minutes: 120
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: MinGW GCC, bundled dependencies
+            toolchain: mingw
+            generator: -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
+            experimental: false
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          lfs: false
+
+      - name: Identify the Git LFS files
+        shell: bash
+        run: git lfs ls-files --long | cut -d ' ' -f 1 | sort > .lfs-ids
+
+      - name: Restore the Git LFS cache
+        uses: actions/cache@v5
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-ids') }}
+          restore-keys: lfs-
+
+      - name: Fetch the Git LFS files of the tests
+        shell: bash
+        run: git lfs pull --include="$LFS_INCLUDE" --exclude="$LFS_EXCLUDE"
+
+      - name: Set up the MinGW toolchain
+        if: matrix.toolchain == 'mingw'
+        shell: pwsh
+        run: |
+          # use the MinGW-w64 installation of the runner image (if present) before any other GCC in the PATH
+          if (Test-Path "C:\mingw64\bin\gcc.exe") {
+            "C:\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+            $env:Path = "C:\mingw64\bin;$env:Path"
+          }
+          Get-Command gcc, g++, mingw32-make | Format-Table Name, Source -AutoSize
+          gcc --version
+
+      - name: Configure
+        # the install prefix is where the superbuild installs the dependencies that it builds: it is written with
+        # forward slashes, because the build modules pass it on to the projects that they build
+        run: |
+          $prefix = "$env:GITHUB_WORKSPACE/install".Replace('\', '/')
+          cmake -S . -B build ${{ matrix.generator }} -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$prefix" -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DBUILD_WRAPPERS=OFF -DASSIMP_WARNINGS_AS_ERRORS=OFF
+
+      - name: Build
+        # serial, as in the verified recipe: parallel builds left orphaned processes that locked the build folders.
+        # Try --parallel after the first successful run
+        run: cmake --build build --config Release --parallel 1
+
+      - name: Run the tests that need no OpenGL context
+        run: ctest --test-dir build -C Release -L cpu --output-on-failure
