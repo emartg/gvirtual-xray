@@ -509,6 +509,15 @@ SET (gVirtualXRay_LIBRARIES ${requiredLibs} ${optionalLibs} ${gVirtualXRay_LIBRA
 TARGET_LINK_LIBRARIES (gVirtualXRay ${requiredLibs} ${optionalLibs})
 
 
+# Usage requirements of the target ###############################################
+# The directory-scoped commands above only apply to this project. A project that links to the target gets the
+# same headers and preprocessor definitions from here (the public headers include the ones of the libraries).
+ADD_LIBRARY (gVirtualXRay::gVirtualXRay ALIAS gVirtualXRay)
+TARGET_INCLUDE_DIRECTORIES (gVirtualXRay PUBLIC ${gVirtualXRay_INCLUDE_DIRS})
+TARGET_COMPILE_DEFINITIONS (gVirtualXRay PUBLIC ${gVirtualXRay_ADD_DEFINITIONS})
+TARGET_COMPILE_FEATURES    (gVirtualXRay PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+
+
 
 # Create the RESOURCES ###########################################################
 INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake)
@@ -707,9 +716,11 @@ endif()
 
 
 # Installation #################################################################
-INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib64                  COMPONENT Development)
-INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/gVirtualXRay COMPONENT Development)
-INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX})
+IF (gVXR_INSTALL)
+    INSTALL (TARGETS gVirtualXRay ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib64                  COMPONENT Development)
+    INSTALL (FILES ${HXX_SOURCES}         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/gVirtualXRay COMPONENT Development)
+    INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt DESTINATION ${CMAKE_INSTALL_PREFIX})
+ENDIF (gVXR_INSTALL)
 
 
 # Generate gVirtualXRayConfig.cmake ############################################
@@ -718,13 +729,15 @@ set(gVirtualXRay_USE_FILE
     PARENT_SCOPE)
 configure_file(cmake/gVirtualXRayConfig.cmake.in CMakeFiles/gVirtualXRayConfig.cmake @ONLY)
 
-INSTALL (FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
-    COMPONENT Development)
+IF (gVXR_INSTALL)
+    INSTALL (FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/UsegVirtualXRay.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/gVirtualXRayConfig.cmake
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Bin2C.cmake
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CreateHeaderFiles.cmake
+        DESTINATION ${CMAKE_INSTALL_PREFIX}
+        COMPONENT Development)
+ENDIF (gVXR_INSTALL)
 
 
 
@@ -855,9 +868,9 @@ IF (WIN32)
 ENDIF (WIN32)
 
 
-IF (NOT CPack_CMake_INCLUDED)
+IF (gVXR_INSTALL AND NOT CPack_CMake_INCLUDED)
     INCLUDE(CPack)
-ENDIF (NOT CPack_CMake_INCLUDED)
+ENDIF (gVXR_INSTALL AND NOT CPack_CMake_INCLUDED)
 
 SET (gVirtualXRay_LIBRARY ${gVirtualXRay_LIBRARY} PARENT_SCOPE)
 

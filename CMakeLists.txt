@@ -46,12 +46,18 @@ project(gVirtualXRay-Superbuild
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CheckGitLFS.cmake)
 
 
+# Use from another project #####################################################
+# When another project adds this one with ADD_SUBDIRECTORY, that project owns the installation, the
+# packaging, the build type, and the test driver. Link to the target gVirtualXRay::gVirtualXRay.
+OPTION (gVXR_INSTALL "Generate the installation rules and the packaging of gVirtualXRay" ${PROJECT_IS_TOP_LEVEL})
+
+
 # Set CMake module path to include the cmake directory
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 
 # Set a default build type if none was specified
-IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+IF (PROJECT_IS_TOP_LEVEL AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       message(STATUS "Setting build type to 'Release' as none was specified.")
       SET (CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 
@@ -145,8 +151,13 @@ ENDIF (BUILD_WRAPPERS)
 
 
 # CTest and Unit testing #######################################################
-# Support for the CTest dashboard testing system
-INCLUDE(CTest)
+IF (PROJECT_IS_TOP_LEVEL)
+    # Support for the CTest dashboard testing system
+    INCLUDE(CTest)
+ELSE ()
+    # BUILD_TESTING belongs to the project that added this one: do not build the tests of gVirtualXRay
+    SET (BUILD_TESTING OFF)
+ENDIF ()
 
 # Enable the unit tests
 IF (BUILD_TESTING)
