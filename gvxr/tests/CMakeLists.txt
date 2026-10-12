@@ -349,6 +349,38 @@ add_test (TestImageClass                       TestImageClass)
 add_test (TestAABB                             TestAABB)
 add_test (TestShotNoise                             TestShotNoise)
 
+# Labels: "cpu" tests run without an OpenGL context (ctest -L cpu), "opengl" tests need one (ctest -L opengl)
+SET (CPU_TESTS
+    TestFileRandom
+    TestPhotonCrossSection
+    TestTissueMaterial
+    TestMixture
+    TestDensity
+    TestMassAttenuationCoefficients
+    TestAABB
+)
+SET (OPENGL_TESTS
+    TestOpenGLContext
+    TestCubeWithoutIndex
+    TestCubeWithIndex
+    TestBeerLambertLawMonoChromatic
+    TestBeerLambertLawPolyChromatic
+    TestSinogramFromMesh
+    TestPointSource
+    TestCubeSource
+    TestUncenteredSource
+    TestOrtho
+    TestRayTracing
+    TestScintillator
+    TestImageClass
+    TestShotNoise
+)
+IF (Python3_Development.Embed_FOUND)
+    LIST (APPEND OPENGL_TESTS TestTubeVoltage)
+ENDIF ()
+SET_TESTS_PROPERTIES (${CPU_TESTS}    PROPERTIES LABELS cpu)
+SET_TESTS_PROPERTIES (${OPENGL_TESTS} PROPERTIES LABELS opengl)
+
 
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/)
 FILE (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/point_source)
