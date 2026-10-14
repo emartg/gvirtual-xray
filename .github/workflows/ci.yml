@@ -27,10 +27,10 @@ permissions:
   contents: read
 
 env:
-  # Git LFS files that the tests use (the two phantom files of 68 MB each are not used by any enabled test), so that
-  # the runners do not download the 300 MB of the repository on every run
+  # Git LFS files that the tests use, so that the runners do not download the 300 MB of the repository on every run.
+  # The phantom sinogram (68 MB) is not read by any enabled test; TestSinogramFromMesh reads the phantom projections
   LFS_INCLUDE: gvxr/tests/data/**
-  LFS_EXCLUDE: gvxr/tests/data/phantom_projections.raw,gvxr/tests/data/phantom_sinogram.raw
+  LFS_EXCLUDE: gvxr/tests/data/phantom_sinogram.raw
 
 jobs:
   # Core library and unit tests, with the bundled dependencies
@@ -82,11 +82,12 @@ jobs:
         run: xvfb-run -a glxinfo -B
 
       - name: Run the tests that need an OpenGL context
-        # experimental: measured only on Mesa 26 (WSL), where 13 of the 14 tests pass and TestCubeSource takes about
-        # 5 minutes. TestOpenGLContext is left out: its compute shader check (TestOpenGLContext.cxx:375) reads back 0
-        # where the shader wrote -1000 on llvmpipe, and it passes on a GPU
+        # experimental until it has passed on the runner. TestOpenGLContext is left out: its compute shader check
+        # (TestOpenGLContext.cxx:375) reads back 0 where the shader wrote -1000 on llvmpipe, and it passes on a GPU.
+        # TestCubeSource is left out: it takes about 5 minutes under Mesa 26 on a development machine and exceeded the
+        # timeout of 900 seconds on the runner (the other 11 tests ran in about 30 seconds)
         continue-on-error: true
-        run: xvfb-run -a -s "-screen 0 1600x1000x24" ctest --test-dir build -L opengl -E TestOpenGLContext --timeout 900 --output-on-failure
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" ctest --test-dir build -L opengl -E "TestOpenGLContext|TestCubeSource" --timeout 900 --output-on-failure
 
   # Consumer test with the system packages (the way the simulator builds on Linux), with the CMake of the runner and
   # with the minimum version that the repository declares
