@@ -11,7 +11,7 @@ date: 6th Jul 2021
 
 Make sure you have:
 
-- CMake 3.12 or newer (see [http://www.cmake.org/](http://www.cmake.org/));
+- CMake 3.26 or newer (see [http://www.cmake.org/](http://www.cmake.org/));
 - A C++ compiler; and
 - A GPU that supports OpenGL (integrated GPUs are fine).
 
