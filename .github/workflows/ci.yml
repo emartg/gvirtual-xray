@@ -4,12 +4,11 @@
 # software renderer), and builds the consumer test, a project that uses the core library through add_subdirectory()
 # with the system packages. SimpleGVXR and the wrappers are not built yet: the simulator only uses the core library.
 #
-# The jobs marked experimental report their result without failing the workflow. Remove the mark of a job when it has
-# passed once, so that it protects the repository from then on.
+# The step marked experimental reports its result without failing the workflow. Remove the mark when it has passed
+# on the runner, so that it protects the repository from then on.
 #
 # The repository is built as it is, without build fixes. Known consequences, to be handled when they matter: MSVC is not
-# part of this workflow (it needs changes to the build files); the system packages may not work for the consumer job
-# (for example Boost's header-only interprocess component); the library is compiled with C++23
+# part of this workflow (it needs changes to the build files), and the library is compiled with C++23
 
 name: CI
 
@@ -95,9 +94,6 @@ jobs:
     name: Consumer test (Linux, system packages, CMake ${{ matrix.cmake }})
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    # experimental: the first run failed on Boost's missing interprocess component (fixed by requesting Boost without
-    # components); on Ubuntu 26.04 the system packages also exposed Vulkan with GLFW off and LibTIFF's optional codecs
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
