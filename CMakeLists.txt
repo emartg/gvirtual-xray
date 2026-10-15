@@ -84,7 +84,7 @@ if (ASSIMP_WARNINGS_AS_ERRORS)
 endif()
 
 # MinGW std::byte collision fix
-if (MINGW OR WIN32)
+if (MINGW)
     add_compile_options(-include "${CMAKE_CURRENT_SOURCE_DIR}/mingw_fix.h")
 endif()
 
