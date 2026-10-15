@@ -53,6 +53,10 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CheckGitLFS.cmake)
 # packaging, the build type, and the test driver. Link to the target gVirtualXRay::gVirtualXRay.
 OPTION (gVXR_INSTALL "Generate the installation rules and the packaging of gVirtualXRay" ${PROJECT_IS_TOP_LEVEL})
 
+# The Debug objects reference the coverage runtime when they are compiled with the coverage flags (GCC and Clang on
+# Linux), so it is off by default. When it is on, the target adds the linker option for its consumers
+OPTION (gVXR_COVERAGE "Compile the Debug configuration with the coverage flags on Linux" OFF)
+
 
 # Set CMake module path to include the cmake directory
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -95,7 +99,9 @@ IF (UNIX)
         #IF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
             SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall")
             SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
-            SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+            IF (gVXR_COVERAGE)
+                SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+            ENDIF (gVXR_COVERAGE)
 
         #ENDIF ("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
     ENDIF (NOT APPLE)
