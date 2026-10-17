@@ -4,9 +4,6 @@
 # software renderer), and builds the consumer test, a project that uses the core library through add_subdirectory()
 # with the system packages. SimpleGVXR and the wrappers are not built yet: the simulator only uses the core library.
 #
-# The step marked experimental reports its result without failing the workflow. Remove the mark when it has passed
-# on the runner, so that it protects the repository from then on.
-#
 # The repository is built as it is, without build fixes. Known consequences, to be handled when they matter: MSVC is not
 # part of this workflow (it needs changes to the build files), and the library is compiled with C++23
 
@@ -82,11 +79,9 @@ jobs:
         run: xvfb-run -a glxinfo -B
 
       - name: Run the tests that need an OpenGL context
-        # experimental until it has passed on the runner. TestOpenGLContext is left out: its compute shader check
-        # (TestOpenGLContext.cxx:375) reads back 0 where the shader wrote -1000 on llvmpipe, and it passes on a GPU.
-        # TestCubeSource is left out: it takes about 5 minutes under Mesa 26 on a development machine and exceeded the
-        # timeout of 900 seconds on the runner (the other 11 tests ran in about 30 seconds)
-        continue-on-error: true
+        # TestOpenGLContext is left out: its compute shader check (TestOpenGLContext.cxx:375) reads back 0 where the
+        # shader wrote -1000 on llvmpipe, and it passes on a GPU. TestCubeSource is left out: it takes about 5 minutes
+        # under Mesa 26 on a development machine and exceeded the timeout of 900 seconds on the runner
         run: xvfb-run -a -s "-screen 0 1600x1000x24" ctest --test-dir build -L opengl -E "TestOpenGLContext|TestCubeSource" --timeout 900 --output-on-failure
 
   # Consumer test with the system packages (the way the simulator builds on Linux), with the CMake of the runner and
