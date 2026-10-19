@@ -172,6 +172,43 @@ public:
 	void destroy();
 
 
+    //--------------------------------------------------------------------------
+    /// Use the OpenGL context that the application has made current
+    /*
+	*  The application owns an OpenGL context (and its window or display) that is
+	*  current on the calling thread. This function creates nothing: it releases
+	*  what the library holds, loads the extensions of the current context, checks
+	*  its version (3.2 or newer), and marks this object as ready, so that the
+	*  shaders, the VBOs, and the framebuffers of the library can be used. Call
+	*  ResourceManager::setGraphicsContext() with this object if it is not the
+	*  one that is registered (a Context registers itself when it is constructed).
+	*
+	*  An external context is not owned by the library: release() and the
+	*  destructor free the objects of the library (shaders, VBOs, and
+	*  framebuffers) but destroy no window, display, or context. They make OpenGL
+	*  calls, so call release() while the context of the application is still
+	*  current on this thread, before the application destroys it. The OpenGL
+	*  function loader of the application (GLAD) is not initialised by this
+	*  function; GLEW is. Calling create() on an external context releases it first,
+	*  and then creates a context of the library, which becomes the current one.
+	*
+	*  @return true if the context is ready, false if no OpenGL context is current
+	*          or if its version is older than 3.2
+	*/
+    //--------------------------------------------------------------------------
+	[[nodiscard]] bool adoptCurrentContext();
+
+
+    //--------------------------------------------------------------------------
+    /// Check if the OpenGL context is owned by the application (see adoptCurrentContext())
+    /*
+	*  @return true after a successful call to adoptCurrentContext(), and false
+	*          after release() or for a context that the library created
+	*/
+    //--------------------------------------------------------------------------
+	[[nodiscard]] bool isExternal() const;
+
+
 	[[nodiscard]] bool isReady() const;
 
 #ifdef HAS_GLFW

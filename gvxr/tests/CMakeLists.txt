@@ -137,6 +137,9 @@ add_executable(TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic.c
 # Validation_05
 add_executable(TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic.cxx)
 
+# A context that adopts the OpenGL context of the application
+add_executable(TestAdoptCurrentContext TestAdoptCurrentContext.cxx)
+
 # Validation_08
 add_executable(TestSinogramFromMesh            TestSinogramFromMesh.cxx)
 
@@ -198,6 +201,7 @@ target_link_libraries(TestCubeWithIndex               ${gVirtualXRay_LIBRARY} ${
 target_link_libraries(TestLBuffer                     ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestBeerLambertLawMonoChromatic ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestBeerLambertLawPolyChromatic ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestAdoptCurrentContext ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestSinogramFromMesh            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 #target_link_libraries(TestSinogramFromVoxels          ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestPointSource                 ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
@@ -240,6 +244,7 @@ ADD_DEPENDENCIES(TestMassAttenuationCoefficients   gVirtualXRay)
  ADD_DEPENDENCIES(TestLBuffer                       gVirtualXRay)
  ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   gVirtualXRay)
  ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   gVirtualXRay)
+ ADD_DEPENDENCIES(TestAdoptCurrentContext   gVirtualXRay)
  ADD_DEPENDENCIES(TestSinogramFromMesh              gVirtualXRay)
  #ADD_DEPENDENCIES(TestSinogramFromVoxels            gVirtualXRay)
  ADD_DEPENDENCIES(TestPointSource                   gVirtualXRay)
@@ -281,6 +286,7 @@ IF (NOT USE_SYSTEM_GTEST)
     ADD_DEPENDENCIES(TestLBuffer                       googletest)
     ADD_DEPENDENCIES(TestBeerLambertLawMonoChromatic   googletest)
     ADD_DEPENDENCIES(TestBeerLambertLawPolyChromatic   googletest)
+    ADD_DEPENDENCIES(TestAdoptCurrentContext   googletest)
     ADD_DEPENDENCIES(TestSinogramFromMesh              googletest)
     #ADD_DEPENDENCIES(TestSinogramFromVoxels            googletest)
     ADD_DEPENDENCIES(TestPointSource                   googletest)
@@ -324,6 +330,7 @@ add_test (TestCubeWithIndex               TestCubeWithIndex)
 #add_test (TestLBuffer                     TestLBuffer)
 add_test (TestBeerLambertLawMonoChromatic TestBeerLambertLawMonoChromatic)
 add_test (TestBeerLambertLawPolyChromatic TestBeerLambertLawPolyChromatic)
+add_test (TestAdoptCurrentContext         TestAdoptCurrentContext)
 add_test (TestSinogramFromMesh            TestSinogramFromMesh)
 #add_test (TestSinogramFromVoxels          TestSinogramFromVoxels)
 add_test (TestPointSource                 TestPointSource)
@@ -365,6 +372,7 @@ SET (OPENGL_TESTS
     TestCubeWithIndex
     TestBeerLambertLawMonoChromatic
     TestBeerLambertLawPolyChromatic
+    TestAdoptCurrentContext
     TestSinogramFromMesh
     TestPointSource
     TestCubeSource
