@@ -4,6 +4,12 @@
 # software renderer), and builds the consumer test, a project that uses the core library through add_subdirectory()
 # with the system packages. SimpleGVXR and the wrappers are not built yet: the simulator only uses the core library.
 #
+# The build folder and the install prefix of the superbuild (the dependencies that it builds: Assimp, FreeType, LibTIFF,
+# GLEW, GLFW, zlib, GoogleTest, and the downloaded Boost) are cached. Only the runs on the main branch save the cache, and
+# every run restores it, because a pull request can read the caches of the default branch but not the ones of other
+# pull requests. The key has the compiler version and the files that define the dependencies, so changing the
+# versions or the options of the dependencies, or the compiler of the runner image, builds them again.
+#
 # The repository is built as it is, without build fixes. Known consequences, to be handled when they matter: MSVC is not
 # part of this workflow (it needs changes to the build files), and the library is compiled with C++23
 
@@ -62,6 +68,20 @@ jobs:
             ninja-build libgl-dev libglu1-mesa-dev libegl-dev libx11-dev libxrandr-dev libxinerama-dev \
             libxcursor-dev libxi-dev xvfb libgl1-mesa-dri mesa-utils
 
+      - name: Identify the compiler
+        # part of the key of the cache of the dependencies, so that they are not reused with another compiler version
+        id: compiler
+        run: echo "version=$(g++ -dumpfullversion)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the dependencies
+        id: deps
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            build
+            install
+          key: superbuild-linux-gcc-${{ steps.compiler.outputs.version }}-${{ hashFiles('.github/workflows/ci.yml', 'cmake/Build*.cmake', 'gvxr/cmake/Build*.cmake', 'gvxr/cmake/dependencies.cmake') }}
+
       - name: Configure
         # the superbuild installs the dependencies that it builds in the install prefix; the C compiler is given because
         # the top-level project does not declare the C language, and the build of GoogleTest needs a C compiler
@@ -71,6 +91,16 @@ jobs:
 
       - name: Build
         run: cmake --build build --parallel
+
+      - name: Save the dependencies
+        # only on the main branch, and only the first time for a key: the build folder is large
+        if: github.ref == 'refs/heads/main' && steps.deps.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            build
+            install
+          key: superbuild-linux-gcc-${{ steps.compiler.outputs.version }}-${{ hashFiles('.github/workflows/ci.yml', 'cmake/Build*.cmake', 'gvxr/cmake/Build*.cmake', 'gvxr/cmake/dependencies.cmake') }}
 
       - name: Run the tests that need no OpenGL context
         run: ctest --test-dir build -L cpu --output-on-failure
@@ -187,6 +217,21 @@ jobs:
           Get-Command gcc, g++, mingw32-make | Format-Table Name, Source -AutoSize
           gcc --version
 
+      - name: Identify the compiler
+        # part of the key of the cache of the dependencies, so that they are not reused with another compiler version
+        id: compiler
+        shell: pwsh
+        run: '"version=$(gcc -dumpfullversion)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append'
+
+      - name: Restore the dependencies
+        id: deps
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            build
+            install
+          key: superbuild-windows-mingw-gcc-${{ steps.compiler.outputs.version }}-${{ hashFiles('.github/workflows/ci.yml', 'cmake/Build*.cmake', 'gvxr/cmake/Build*.cmake', 'gvxr/cmake/dependencies.cmake') }}
+
       - name: Configure
         # the install prefix is where the superbuild installs the dependencies that it builds: it is written with
         # forward slashes, because the build modules pass it on to the projects that they build
@@ -198,6 +243,16 @@ jobs:
         # serial, as in the verified recipe: parallel builds left orphaned processes that locked the build folders.
         # Try --parallel after the first successful run
         run: cmake --build build --config Release --parallel 1
+
+      - name: Save the dependencies
+        # only on the main branch, and only the first time for a key: the build folder is large
+        if: github.ref == 'refs/heads/main' && steps.deps.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            build
+            install
+          key: superbuild-windows-mingw-gcc-${{ steps.compiler.outputs.version }}-${{ hashFiles('.github/workflows/ci.yml', 'cmake/Build*.cmake', 'gvxr/cmake/Build*.cmake', 'gvxr/cmake/dependencies.cmake') }}
 
       - name: Run the tests that need no OpenGL context
         run: ctest --test-dir build -C Release -L cpu --output-on-failure
