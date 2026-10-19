@@ -420,6 +420,59 @@ void Context::destroy()
 }
 
 
+//------------------------------------
+bool Context::adoptCurrentContext()
+//------------------------------------
+{
+    // Free the objects of the library, and destroy the context that it created if any
+    release();
+
+#ifdef HAS_OPENGL
+    // An OpenGL context must be current on this thread
+    if (glGetString(GL_VERSION) == nullptr)
+    {
+        LOGGER.logWarning("Cannot adopt an OpenGL context: none is current on this thread.") << std::endl;
+        return false;
+    }
+
+    // Load the extensions of the context, as for a context that the library creates
+    gVirtualXRay::initialiseGLEW();
+
+    glGetError(); // Remove any error of the application
+
+    int major = 0;
+    int minor = 0;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+    // The library needs OpenGL 3.2 at least
+    if ((major > 3) || ((major == 3) && (minor >= 2)))
+    {
+        m_renderer = "External";
+        m_major_version = major;
+        m_minor_version = minor;
+        m_ready = true;
+    }
+    else
+    {
+        LOGGER.logWarning("Cannot adopt an OpenGL context older than 3.2: ") << major << "." << minor << std::endl;
+    }
+#else
+    LOGGER.logWarning("Cannot adopt an OpenGL context: the library was built without OpenGL.") << std::endl;
+#endif
+
+    return m_ready;
+}
+
+
+//-------------------------------
+bool Context::isExternal() const
+//-------------------------------
+{
+    return m_ready && m_renderer == "External";
+}
+
+
 //---------------------------
 bool Context::isReady() const
 //---------------------------
