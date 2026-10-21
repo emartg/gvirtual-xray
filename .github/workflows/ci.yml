@@ -170,7 +170,7 @@ jobs:
         run: ctest --test-dir build-consumer --output-on-failure
 
   # Windows builds of the core library and the tests that need no OpenGL context (the runners have no OpenGL 4.5
-  # support). MinGW follows the build recipe verified on a development machine (serial build)
+  # support). MinGW follows the build recipe verified on a development machine, with a parallel build on the runner
   windows:
     name: Windows (${{ matrix.name }})
     runs-on: windows-latest
@@ -240,9 +240,10 @@ jobs:
           cmake -S . -B build ${{ matrix.generator }} -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$prefix" -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DBUILD_WRAPPERS=OFF -DASSIMP_WARNINGS_AS_ERRORS=OFF
 
       - name: Build
-        # serial, as in the verified recipe: parallel builds left orphaned processes that locked the build folders.
-        # Try --parallel after the first successful run
-        run: cmake --build build --config Release --parallel 1
+        # in parallel (the runner has 4 vCPUs and is discarded after the job): the orphaned processes that a parallel build
+        # left on a development machine, and that locked its build folders, do not matter here. Compiling was 85% of the
+        # time of the serial build. The dependencies come from the cache; when it is missing they are built in parallel too
+        run: cmake --build build --config Release --parallel 4
 
       - name: Save the dependencies
         # only on the main branch, and only the first time for a key: the build folder is large
