@@ -7,10 +7,10 @@ to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- TBA
+- The folder `docs/` for the maintainer's documents, with `docs/diagrams/` for the diagrams (Mermaid sources and rendered images side by side).
 
 ### Changed
-- TBA
+- Moved the credits file `doc/SOURCES.md` to `docs/sources.md`.
 
 ### Fixed
 - TBA
