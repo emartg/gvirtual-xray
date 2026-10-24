@@ -181,6 +181,7 @@ ENDIF ()
 
 add_executable(TestImageClass       TestImageClass.cxx)
 add_executable(TestAABB       TestAABB.cxx)
+add_executable(TestXRayDetectorConstruction TestXRayDetectorConstruction.cxx)
 add_executable(TestShotNoise       TestShotNoise.cxx)
 
 
@@ -227,6 +228,7 @@ ENDIF ()
 
 target_link_libraries(TestImageClass                      ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestAABB                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
+target_link_libraries(TestXRayDetectorConstruction ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 target_link_libraries(TestShotNoise                            ${gVirtualXRay_LIBRARY} ${gVirtualXRay_LIBRARIES} ${optionalLibs} ${requiredLibs} ${GTest_LIBRARIES})
 
 
@@ -268,6 +270,7 @@ ENDIF ()
 
 ADD_DEPENDENCIES(TestImageClass                         gVirtualXRay)
 ADD_DEPENDENCIES(TestAABB                               gVirtualXRay)
+ADD_DEPENDENCIES(TestXRayDetectorConstruction gVirtualXRay)
 ADD_DEPENDENCIES(TestShotNoise                               gVirtualXRay)
 
 ADD_DEPENDENCIES(TestPhotonCrossSection   gVirtualXRay)
@@ -310,6 +313,7 @@ IF (NOT USE_SYSTEM_GTEST)
 
     ADD_DEPENDENCIES(TestImageClass                         googletest)
     ADD_DEPENDENCIES(TestAABB                               googletest)
+    ADD_DEPENDENCIES(TestXRayDetectorConstruction googletest)
     ADD_DEPENDENCIES(TestShotNoise                               googletest)
 
     ADD_DEPENDENCIES(TestPhotonCrossSection   googletest)
@@ -354,6 +358,7 @@ ENDIF ()
 
 add_test (TestImageClass                       TestImageClass)
 add_test (TestAABB                             TestAABB)
+add_test (TestXRayDetectorConstruction         TestXRayDetectorConstruction)
 add_test (TestShotNoise                             TestShotNoise)
 
 # Labels: "cpu" tests run without an OpenGL context (ctest -L cpu), "opengl" tests need one (ctest -L opengl)
@@ -365,6 +370,7 @@ SET (CPU_TESTS
     TestDensity
     TestMassAttenuationCoefficients
     TestAABB
+    TestXRayDetectorConstruction
 )
 SET (OPENGL_TESTS
     TestOpenGLContext
