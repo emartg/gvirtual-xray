@@ -2,9 +2,9 @@
 
 This repository is a fork of gVirtualXRay. This file credits the project itself, the third-party code that
 is bundled in it or that its build uses, and the resources that are part of it: who made each one, where it
-comes from, and under which license. It sits in `doc/` (the repository's documentation folder) and follows
-the naming of this repository; the other repositories of the simulator project keep the same kind of file
-as `docs/sources.md`.
+comes from, and under which license. It sits in `docs/` (the folder of the maintainer's documents; `doc/` keeps the
+documents of the library's own authors) and has the same name and place as the file of the other repositories of the
+simulator project (`docs/sources.md`).
 
 ## How to Use This File
 

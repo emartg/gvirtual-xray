@@ -45,7 +45,7 @@ Yes, gVXR is open source. Its source code is available under the BSD 3-Clause Li
 
 ## Credits and Third-Party Code
 
-The credits of the project and the origin and license of the third-party code and resources it uses (xraylib, XrayPhysics, GLEW, Assimp, the Welsh dragon mesh, the embedded font, and more) are recorded in [doc/SOURCES.md](doc/SOURCES.md).
+The credits of the project and the origin and license of the third-party code and resources it uses (xraylib, XrayPhysics, GLEW, Assimp, the Welsh dragon mesh, the embedded font, and more) are recorded in [docs/sources.md](docs/sources.md).
 
 
 
