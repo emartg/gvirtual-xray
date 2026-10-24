@@ -875,6 +875,10 @@ protected:
     RATIONAL_NUMBER m_widget_length;
 
 
+    /// Number of subdivisions of the spheres that are drawn as widgets (3 gives 1,280 triangles; 10 gave more than 20 million)
+    static const unsigned int WIDGET_SPHERE_SUBDIVISIONS = 3;
+
+
     /// Polygon mesh of the source
     SphereMesh m_source_mesh;
 

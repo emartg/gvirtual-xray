@@ -88,9 +88,9 @@ inline XRayDetector::XRayDetector():
 	m_vbo_need_update(true),
 	//m_source_mesh(10, 10, 0.5 * cm),
 	m_widget_length(5 * mm),
-	m_source_mesh(10, m_widget_length / 2.0),
+	m_source_mesh(WIDGET_SPHERE_SUBDIVISIONS, m_widget_length / 2.0),
 	m_first_pixel_mesh(m_widget_length, GL_UNSIGNED_BYTE),
-	m_detector_centre_mesh(10, m_widget_length / 2.0),
+	m_detector_centre_mesh(WIDGET_SPHERE_SUBDIVISIONS, m_widget_length / 2.0),
     m_source_shape(UNKNOWN_SHAPE),
 	m_update_right_vector_flag(true),
 	m_gain(1.0f),
@@ -136,9 +136,9 @@ inline void XRayDetector::setWidgetLength(const RATIONAL_NUMBER& aLength)
 {
 	m_widget_length = aLength;
 
-	m_source_mesh.create(10, m_widget_length / 2.0);
+	m_source_mesh.create(WIDGET_SPHERE_SUBDIVISIONS, m_widget_length / 2.0);
 	m_first_pixel_mesh.create(m_widget_length, GL_UNSIGNED_BYTE),
-	m_detector_centre_mesh.create(10, m_widget_length / 2.0);
+	m_detector_centre_mesh.create(WIDGET_SPHERE_SUBDIVISIONS, m_widget_length / 2.0);
 }
 
 

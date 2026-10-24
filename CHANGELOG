@@ -13,7 +13,7 @@ to [Semantic Versioning](https://semver.org/).
 - Moved the credits file `doc/SOURCES.md` to `docs/sources.md`.
 
 ### Fixed
-- TBA
+- Creating an `XRayDetector` took more than a second (four in Debug) because its constructor built two spheres of more than 20 million triangles for its widgets; the spheres now have 1,280 triangles.
 
 ## [2.1.0] - 2026-06-09
 
