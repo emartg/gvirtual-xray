@@ -8,6 +8,8 @@ to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - The folder `docs/` for the maintainer's documents, with `docs/diagrams/` for the diagrams (Mermaid sources and rendered images side by side).
+- Diagrams in `docs/diagrams/`: the computation of an X-ray image, the classes of the core library, the jobs of the continuous integration, and the release flow, with the script `docs/diagrams/diagrams.py` that renders them with a pinned Mermaid command-line tool and checks that every image has its source.
+- The workflow `diagrams.yml` checks on every pull request that every diagram image has its Mermaid source and the reverse.
 
 ### Changed
 - Moved the credits file `doc/SOURCES.md` to `docs/sources.md`.

@@ -1,0 +1,59 @@
+flowchart TD
+    trigger["Triggers<br/>push to main, pull request, manual run.<br/>A new commit cancels the earlier run of the same branch"]
+
+    subgraph ci["Workflow CI (.github/workflows/ci.yml)"]
+        direction TB
+
+        subgraph linux["Linux (GCC, bundled dependencies), ubuntu-24.04"]
+            direction TB
+            l1["Check out, then fetch only the Git LFS files of the tests<br/>(cache of the LFS files, phantom sinogram left out)"]
+            l2["apt: Ninja, OpenGL, X11, Xvfb, Mesa"]
+            l3["Restore the dependencies from the cache"]
+            l4["Configure and build the superbuild with Ninja<br/>(core library, 24 tests)"]
+            l5["Save the dependencies (main only, on a cache miss)"]
+            l6["ctest -L cpu"]
+            l7["xvfb-run, Mesa software renderer:<br/>ctest -L opengl, without TestOpenGLContext and TestCubeSource (13 tests)"]
+            l1 --> l2 --> l3 --> l4 --> l5 --> l6 --> l7
+        end
+
+        subgraph win["Windows (MinGW GCC, bundled dependencies), windows-latest"]
+            direction TB
+            w1["Check out, then fetch only the Git LFS files of the tests"]
+            w2["Set up MinGW and identify the compiler"]
+            w3["Restore the dependencies from the cache"]
+            w4["Configure (MinGW Makefiles) and build with --parallel 4"]
+            w5["Save the dependencies (main only, on a cache miss)"]
+            w6["ctest -L cpu"]
+            w1 --> w2 --> w3 --> w4 --> w5 --> w6
+        end
+
+        subgraph cons["Consumer test (Linux, system packages), matrix: CMake of the runner and CMake 3.26.4"]
+            direction TB
+            c1["apt: the library dependencies as system packages"]
+            c2["Install the minimum CMake when the matrix asks for it"]
+            c3["Configure gvxr/tests/consumer with the USE_SYSTEM_* options<br/>and fail if any dependency would be built from source"]
+            c4["Build, then ctest of the consumer"]
+            c1 --> c2 --> c3 --> c4
+        end
+    end
+
+    subgraph dg["Workflow Diagrams (.github/workflows/diagrams.yml)"]
+        d1["python docs/diagrams/diagrams.py check:<br/>every .png has its .mmd and every .mmd has its .png"]
+    end
+
+    cache[("Cache of the superbuild: build/ and install/<br/>key = OS, compiler version, hash of ci.yml, cmake/Build*.cmake,<br/>gvxr/cmake/Build*.cmake, gvxr/cmake/dependencies.cmake<br/>Restored by every run, saved only by runs on main.<br/>Editing ci.yml changes the key: the next run is cold")]
+
+    trigger --> linux
+    trigger --> win
+    trigger --> cons
+    trigger --> dg
+    l3 -. restore .-> cache
+    w3 -. restore .-> cache
+    l5 -. save .-> cache
+    w5 -. save .-> cache
+
+    dg ~~~ gate
+    gate["The result of each job shows on the pull request,<br/>and the owner merges it with Rebase and merge"]
+
+    times["Measured on GitHub on 2026-10-24 with restored caches:<br/>Linux 126 to 165 s, Windows 178 to 297 s, consumer 50 to 94 s.<br/>Cold runs: Linux 5 min 22 s, Windows 8 to 13 min"]
+    gate ~~~ times
