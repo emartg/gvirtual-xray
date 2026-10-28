@@ -51,7 +51,7 @@ The credits of the project and the origin and license of the third-party code an
 
 ## Is gVXR available as a package that can be deployed without building it?
 
-Python wheels are available on [Python Package Index (Pypi)](https://pypi.org/project/gvxr/). For other programming languages, you will have to build gVXR from the source code.
+Python wheels are available on [Python Package Index (Pypi)](https://pypi.org/project/gvxr/). For other programming languages, you will have to build gVXR from the source code (see [docs/build_instructions.md](docs/build_instructions.md)).
 
 
 ## Is gVXR code publicly available to download?
