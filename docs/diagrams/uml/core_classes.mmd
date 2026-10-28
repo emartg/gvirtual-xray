@@ -1,0 +1,146 @@
+classDiagram
+    direction TB
+
+    class Context {
+        -string m_renderer
+        -bool m_ready
+        +create(renderer, major, minor)
+        +adoptCurrentContext() bool
+        +isExternal() bool
+        +isReady() bool
+        +release()
+        +destroy()
+    }
+
+    class ResourceManager {
+        <<singleton>>
+        -vector~Shader*~ m_p_shader_set
+        -vector~FramebufferObject*~ m_p_FBO_set
+        -vector~OpenGL2VBO*~ m_p_gl2_vbo
+        -vector~OpenGL3VBO*~ m_p_gl3_vbo
+        -Context* m_p_context
+        +getInstance()$ ResourceManager
+        +setGraphicsContext(Context*)
+        +getGraphicsContext() Context*
+        +addShader(Shader*)
+        +addFBO(FramebufferObject*)
+        +addVBO(VBO*)
+        +releaseResources()
+        +destroyAndRemoveContext()
+    }
+
+    class XRayRenderer {
+        -XRayDetector* m_p_detector
+        -XRayBeam* m_p_xray_beam
+        -vector~SceneGraphNode*~ m_p_inner_surface_set
+        -SceneGraphNode* m_p_outer_surface
+        -vector~vector~SceneGraphNode*~~ m_p_surface_per_material_set
+        -vector~Shader~ m_shader_set
+        -vector~FramebufferObject*~ m_p_fbo_set
+        -unique_ptr~VBO~ m_detector_temporary_geometry
+        +initialise(mode, mixedPrecision, detector, beam)
+        +computeImage(modelMatrix, integrateEnergy)
+        +getEnergyFluence() Image
+        +needUpdateSurfacePerMaterial()
+        +release()
+    }
+
+    class XRayDetector {
+        -SphereMesh m_source_mesh
+        -SphereMesh m_detector_centre_mesh
+        -Vec2ui m_size_in_number_of_pixels
+        #WIDGET_SPHERE_SUBDIVISIONS$ uint
+        +setNumberOfPixels(Vec2ui)
+        +setDetectorPosition(position)
+        +setXrayPointSource(position)
+        +setWidgetLength(length)
+    }
+
+    class XRayBeam {
+        -vector~SpectrumRecord~ m_unfiltered_beam_spectrum
+        -vector~SpectrumRecord~ m_current_beam_spectrum
+        +addChannel(photons, energy) bool
+        +clear()
+        +getEnergyChannelNumber() uint
+    }
+
+    class SceneGraphNode {
+        -string m_label
+        -PolygonMesh m_local_geometry
+        -PolygonMesh* m_p_geometry
+        -MATRIX4 m_local_transformation
+        -MATRIX4 m_global_transformation
+        -SceneGraphNode* m_p_parent
+        -vector~SceneGraphNode*~ m_p_children
+        +setGeometry(PolygonMesh)
+        +setLocalTransformation(MATRIX4)
+        +addChild(label, mesh, position)
+        +getPolygonMesh() PolygonMesh
+    }
+
+    class PolygonMesh {
+        -unique_ptr~VBO~ m_p_vbo
+        -Material m_material
+        -PhotonCrossSection m_photon_cross_section
+        +setMixture(Mixture)
+        +getPhotonCrossSection()
+        +display()
+    }
+
+    class SphereMesh
+    class CubeMesh
+    class CylinderMesh
+    class AnatomicalMesh
+
+    class VBO {
+        <<abstract>>
+        +setVertexData(primitive, vertices, ...)
+        +isReady() bool
+        +display()
+    }
+
+    class OpenGL2VBO
+    class OpenGL3VBO
+
+    class Shader {
+        +loadSource(vertex, fragment)
+        +enable()
+        +disable()
+    }
+
+    class FramebufferObject {
+        +AttachTexture(...)
+        +Bind()
+        +UnattachAll()
+    }
+
+    XRayRenderer --> XRayDetector : reads live, does not own
+    XRayRenderer --> XRayBeam : reads live, does not own
+    XRayRenderer --> SceneGraphNode : meshes to draw, does not own
+    XRayRenderer *-- Shader : 7 programs
+    XRayRenderer *-- FramebufferObject : 5 FBOs
+    XRayRenderer *-- VBO : quad of the detector
+
+    XRayDetector *-- SphereMesh : 2 widgets, 3 subdivisions
+
+    SceneGraphNode *-- PolygonMesh : own geometry
+    SceneGraphNode o-- SceneGraphNode : children, parent
+    SceneGraphNode ..> PolygonMesh : m_p_geometry may point elsewhere
+
+    PolygonMesh <|-- SphereMesh
+    PolygonMesh <|-- CubeMesh
+    PolygonMesh <|-- CylinderMesh
+    PolygonMesh <|-- AnatomicalMesh
+    PolygonMesh *-- VBO : vertex data on the GPU
+
+    VBO <|-- OpenGL2VBO
+    VBO <|-- OpenGL3VBO
+
+    ResourceManager o-- Shader : registers
+    ResourceManager o-- FramebufferObject : registers
+    ResourceManager o-- OpenGL2VBO : registers
+    ResourceManager o-- OpenGL3VBO : registers
+    ResourceManager --> Context : the current context
+
+    note for Context "adoptCurrentContext() marks the context as external:<br/>release() then frees only the objects of the library<br/>and destroys no window, display, or context"
+    note for ResourceManager "releaseResources() frees shaders, FBOs, and VBOs<br/>(not textures) while the context is still current"

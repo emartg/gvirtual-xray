@@ -1,0 +1,32 @@
+# Light check of the diagrams: every rendered image in docs/diagrams/ has its Mermaid source and the reverse. It renders
+# nothing and takes a few seconds. It is a workflow of its own, and not a step of ci.yml, because the key of the cache of the
+# dependencies includes ci.yml: editing it would make the next runs of the build jobs cold.
+
+name: Diagrams
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pairs:
+    name: Diagrams (each .png has its .mmd)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          lfs: false
+
+      - name: Check the pairs of sources and images
+        run: python3 docs/diagrams/diagrams.py check

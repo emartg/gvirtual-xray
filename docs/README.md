@@ -6,7 +6,7 @@ simulator project (the engine and the simulator):
 | Path | Content |
 |---|---|
 | [sources.md](sources.md) | The credits: who made the third-party code and resources of the repository, where they come from, and their licenses |
-| [diagrams/](diagrams/README.md) | The diagrams, as Mermaid sources and rendered images |
+| [diagrams/](diagrams/README.md) | The diagrams, as Mermaid sources and rendered images, with the index, the rendering command, and the check |
 
 The folder `doc/` is different: it keeps the documents of the library's own authors (the overview, theory, implementation, validation,
 installation, and coding sessions, the posters, and the screenshots) and is not edited by the maintainer. The folder `gvxr/doc/` (Doxygen,

@@ -1,0 +1,56 @@
+sequenceDiagram
+    autonumber
+    participant App as Application
+    participant R as XRayRenderer
+    participant L as XRayDetector, XRayBeam,<br/>SceneGraphNode (read live)
+    participant G as GPU: 7 shader programs,<br/>5 FBOs, textures
+
+    Note over App,L: Part 0, once per detector. The constructor of XRayDetector takes 0.04 ms in Release and 0.2 ms in Debug.<br/>It took 1.1 s and 4 s while its two widget spheres had 10 subdivisions (now 3)
+    App->>L: XRayDetector and XRayBeam set up: positions, size, pixel count, energy channels
+
+    Note over App,G: Part 1, once per renderer. initialise() sizes the resources.<br/>Measured warm, Release, GTX 1660 SUPER, 256x128 pixels, 1 channel, 4 meshes: 4.3 ms in total (8.3 ms in Debug)
+    App->>R: initialise(mode, mixed precision, detector, beam)
+    R->>R: release() and keep the two pointers (0.1 ms)
+    R->>R: loadMuWater(), table of mu of water (0.5 ms)
+    R->>G: initShaders(): inflate, compile, link (1.3 ms)
+    R->>G: createFBOs(), textures, init2DFBO x4, init3DFBOs() (1.6 ms)
+    Note right of G: sized by the pixel count of the detector: 512x512 costs about 20 ms here.<br/>FBOs: uncleaned L-buffer (with Z-buffer), cleaned L-buffer,<br/>cumulated L-buffers, energy fluence, and the 3D sum of mu x dx
+    R->>R: CPU images, detector quad VBO, random generators (0.9 ms)
+    Note right of R: sized by the pixel count and by the number of energy channels
+
+    Note over App,G: Part 2, at every call. computeImage() takes 3.3 ms here, and reading the image back 0.15 ms (Debug: median 9 ms and 0.5 ms)
+    App->>R: computeImage(model matrix, integrate energy)
+    R->>G: glFinish(), save viewport and matrices, viewport = pixels of the detector
+    R->>G: reset the energy fluence FBO and the sum of mu x dx FBO
+    R->>R: updateSurfacePerMaterialSet(): group the meshes by photon cross section, only when something changed
+    loop each sample of the X-ray source
+        L-->>R: source sample position, detector plane, ray direction
+        opt there is an outer surface
+            R->>G: reset the cumulated L-buffers FBO
+        end
+        loop each group of meshes that share a material
+            R->>G: preComputeLBuffer(): bind the uncleaned L-buffer FBO, additive blending, no depth test
+            R->>G: draw each mesh with the L-buffer shader
+            Note right of G: per fragment: plus or minus the distance<br/>to the detector plane (back face plus, front face minus),<br/>in cm, so the sum is the path length through the group.<br/>The mesh matrix is the world matrix of its node
+            alt filtering of the artefacts on the GPU (default)
+                R->>G: clean_l_buffer shader into the cleaned L-buffer FBO
+            end
+            R->>G: for each energy channel, MUx_Dx shader: L-buffer x mu(energy) into one slice of the 3D texture, added after the first group
+            L-->>R: energy of each channel from the beam
+            opt there is an outer surface
+                R->>G: cumulated_l_buffer shader: add this L-buffer to the cumulated L-buffers
+            end
+        end
+        opt there is an outer surface
+            R->>G: outer_surface_l_buffer shader: path length of the outer surface minus the cumulated inner ones
+            R->>G: MUx_Dx shader with the material of the outer surface
+        end
+        R->>G: for each energy channel, xray_attenuation shader: photons x energy x exp(minus the sum of mu x dx), added to the energy fluence
+        L-->>R: photon count and energy of each channel, energy response of the detector
+    end
+    R->>G: restore matrices and viewport, glFinish()
+    App->>R: getEnergyFluence()
+    R->>G: read the energy fluence FBO back (optional Poisson noise)
+    R-->>App: Image of the energy fluence
+
+    Note over App,G: Read live at every computeImage(), so changing them needs no initialise (identical images to a new renderer in 14 cases):<br/>source and detector positions, up vector, pixel size, parallel or point beam, number of source samples, beam spectrum,<br/>node transformations, materials (after needUpdateSurfacePerMaterial()). Sized at initialise(): the pixel count of the detector (changing it needs initialise).<br/>The number of energy channels is rebuilt on its own the first time computeSumMUxDx() sees a different count
