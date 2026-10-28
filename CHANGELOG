@@ -10,9 +10,11 @@ to [Semantic Versioning](https://semver.org/).
 - The folder `docs/` for the maintainer's documents, with `docs/diagrams/` for the diagrams (Mermaid sources and rendered images side by side).
 - Diagrams in `docs/diagrams/`: the computation of an X-ray image, the classes of the core library, the jobs of the continuous integration, and the release flow, with the script `docs/diagrams/diagrams.py` that renders them with a pinned Mermaid command-line tool and checks that every image has its source.
 - The workflow `diagrams.yml` checks on every pull request that every diagram image has its Mermaid source and the reverse.
+- A section "Building this repository" in the build instructions (Git LFS, the superbuild, the tests and their labels), and a Troubleshooting section with the failures of a configuration or a build: a build folder with the tools of another compiler, the download of Boost with MinGW's CMake, the download of gzip on Windows, a missing Git LFS, test data that are pointers, a missing target after an update, the tests that need an OpenGL context, and Vulkan.
 
 ### Changed
 - Moved the credits file `doc/SOURCES.md` to `docs/sources.md`.
+- Moved the build instructions `BUILD.md` to `docs/build_instructions.md`, with the links of its screenshots adjusted.
 
 ### Fixed
 - Creating an `XRayDetector` took more than a second (four in Debug) because its constructor built two spheres of more than 20 million triangles for its widgets; the spheres now have 1,280 triangles.
