@@ -2,7 +2,10 @@ macro(build_zlib install_prefix staging_prefix temp_path)
 
 
 # make a custom ZLIB configuration file
-SET (URL "http://zlib.net/zlib-1.3.2.tar.gz")
+# zlib.net keeps only the latest release at its root; the same archive of this version is in its fossils folder and in
+# the GitHub release of zlib, and ExternalProject tries the addresses in order
+SET (URL "https://github.com/madler/zlib/releases/download/v1.3.2/zlib-1.3.2.tar.gz"
+         "https://zlib.net/fossils/zlib-1.3.2.tar.gz")
 SET (HASH "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16")
 
 SET (ZLIB_VERSION_STRING 1.3)
