@@ -22,6 +22,7 @@ to [Semantic Versioning](https://semver.org/).
 - A build of the dependencies from a new build folder stopped at the download of zlib: zlib.net keeps only the latest release at its root and no longer has zlib 1.3.2. The superbuild downloads the same archive (same version and checksum) from the GitHub release of zlib, or from the fossils folder of zlib.net.
 - A project that builds the library with a shared GLEW could not use it: the static GLEW was forced. The value of `GLEW_USE_STATIC_LIBS` that the project sets is now kept (with `OFF`, `gVirtualXRay::gVirtualXRay` links the shared GLEW and does not define `GLEW_STATIC`); the static GLEW stays the default, and the GLEW that the superbuild builds is static.
 - The library did not compile on a machine with Vulkan installed when it was configured without GLFW (`USE_GLFW` off): the configuration defined `HAS_VULKAN`, but the Vulkan types come only from the GLFW header. The configuration now looks for Vulkan only when GLFW is used.
+- The diagram of the release flow was missing from the repository: the rule `Release/` of `.gitignore` also matches the folder `docs/diagrams/release/`. It is now in `docs/diagrams/releasing/`, and the check of the diagrams reports a file that git ignores.
 
 ## [2.1.0] - 2026-06-09
 
