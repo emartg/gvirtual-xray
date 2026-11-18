@@ -2,7 +2,8 @@
 # (MinGW's GCC), with the dependencies that the build downloads and builds itself (the superbuild), runs the
 # tests that need no OpenGL context everywhere and the ones that need it on Linux (with a virtual display and Mesa's
 # software renderer), and builds the consumer test, a project that uses the core library through add_subdirectory()
-# with the system packages. SimpleGVXR and the wrappers are not built yet: the simulator only uses the core library.
+# with the system packages (on Linux, and on Windows with MSYS2's packages and a shared GLEW). SimpleGVXR and the
+# wrappers are not built yet: the simulator only uses the core library.
 #
 # The build folder and the install prefix of the superbuild (the dependencies that it builds: Assimp, FreeType, LibTIFF,
 # GLEW, GLFW, zlib, GoogleTest, and the downloaded Boost) are cached. Only the runs on the main branch save the cache, and
@@ -115,15 +116,19 @@ jobs:
         run: xvfb-run -a -s "-screen 0 1600x1000x24" ctest --test-dir build -L opengl -E "TestOpenGLContext|TestCubeSource" --timeout 900 --output-on-failure
 
   # Consumer test with the system packages (the way the simulator builds on Linux), with the CMake of the runner and
-  # with the minimum version that the repository declares
+  # with the minimum version that the repository declares, and once with the shared GLEW (GLEW_USE_STATIC_LIBS OFF)
   consumer-linux:
-    name: Consumer test (Linux, system packages, CMake ${{ matrix.cmake }})
+    name: Consumer test (Linux, system packages, CMake ${{ matrix.cmake }}${{ matrix.glew == 'shared' && ', shared GLEW' || '' }})
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         cmake: [runner, 3.26.4]
+        glew: [static]
+        include:
+          - cmake: runner
+            glew: shared
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
@@ -157,7 +162,7 @@ jobs:
           cmake -S gvxr/tests/consumer -B build-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$GITHUB_WORKSPACE/install" -DUSE_SYSTEM_GLEW=ON -DUSE_SYSTEM_ASSIMP=ON \
             -DUSE_SYSTEM_ZLIB=ON -DUSE_SYSTEM_LIBTIFF=ON -DUSE_SYSTEM_FREETYPE=ON -DUSE_SYSTEM_BOOST=ON \
-            2>&1 | tee configure.log
+            ${{ matrix.glew == 'shared' && '-DGLEW_USE_STATIC_LIBS=OFF' || '' }} 2>&1 | tee configure.log
           if grep -E "^-- Build (Zlib|ASSIMP|GLEW|LibTIFF|Freetype)" configure.log; then
             echo "::error::A dependency was not found in the system and would be built from source"
             exit 1
@@ -165,6 +170,63 @@ jobs:
 
       - name: Build
         run: cmake --build build-consumer --parallel
+
+      - name: Check that the consumer links the shared GLEW
+        if: matrix.glew == 'shared'
+        run: |
+          consumer=$(find build-consumer -name TestConsumer -type f -perm -u+x | head -n 1)
+          ldd "$consumer" | grep libGLEW
+
+      - name: Run the consumer test
+        run: ctest --test-dir build-consumer --output-on-failure
+
+  # Consumer test on Windows with a shared GLEW (GLEW_USE_STATIC_LIBS OFF) and the other dependencies from MSYS2's
+  # packages: a consumer that does not use the static GLEW of the superbuild
+  consumer-windows:
+    name: Consumer test (Windows, MSYS2 packages, shared GLEW)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          lfs: false
+
+      - name: Install MSYS2 and the dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: false
+          # git-lfs: the configuration checks that Git LFS is installed (cmake/CheckGitLFS.cmake)
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-glew mingw-w64-ucrt-x86_64-assimp mingw-w64-ucrt-x86_64-libtiff
+            mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-zlib mingw-w64-ucrt-x86_64-boost
+            mingw-w64-ucrt-x86_64-git-lfs
+
+      - name: Configure
+        # as on Linux, every dependency must come from the packages
+        run: |
+          set -o pipefail
+          cmake -S gvxr/tests/consumer -B build-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$PWD/install" -DUSE_SYSTEM_GLEW=ON -DUSE_SYSTEM_ASSIMP=ON \
+            -DUSE_SYSTEM_ZLIB=ON -DUSE_SYSTEM_LIBTIFF=ON -DUSE_SYSTEM_FREETYPE=ON -DUSE_SYSTEM_BOOST=ON \
+            -DGLEW_USE_STATIC_LIBS=OFF 2>&1 | tee configure.log
+          if grep -E "^-- Build (Zlib|ASSIMP|GLEW|LibTIFF|Freetype)" configure.log; then
+            echo "::error::A dependency was not found in the packages and would be built from source"
+            exit 1
+          fi
+
+      - name: Build
+        run: cmake --build build-consumer --parallel
+
+      - name: Check that the consumer links the shared GLEW
+        run: |
+          consumer=$(find build-consumer -name TestConsumer.exe -type f | head -n 1)
+          objdump -p "$consumer" | grep -i "DLL Name: glew32.dll"
 
       - name: Run the consumer test
         run: ctest --test-dir build-consumer --output-on-failure

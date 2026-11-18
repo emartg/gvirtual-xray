@@ -19,6 +19,7 @@ to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Creating an `XRayDetector` took more than a second (four in Debug) because its constructor built two spheres of more than 20 million triangles for its widgets; the spheres now have 1,280 triangles.
 - A build of the dependencies from a new build folder stopped at the download of zlib: zlib.net keeps only the latest release at its root and no longer has zlib 1.3.2. The superbuild downloads the same archive (same version and checksum) from the GitHub release of zlib, or from the fossils folder of zlib.net.
+- A project that builds the library with a shared GLEW could not use it: the static GLEW was forced. The value of `GLEW_USE_STATIC_LIBS` that the project sets is now kept (with `OFF`, `gVirtualXRay::gVirtualXRay` links the shared GLEW and does not define `GLEW_STATIC`); the static GLEW stays the default, and the GLEW that the superbuild builds is static.
 
 ## [2.1.0] - 2026-06-09
 

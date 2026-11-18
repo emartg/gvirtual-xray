@@ -50,7 +50,7 @@ The first configuration of a new build folder takes several minutes because the 
     $ ctest --test-dir build -L opengl -E "TestOpenGLContext|TestCubeSource" --timeout 900 --output-on-failure
 ```
 The second command needs a GPU with an OpenGL driver. On a Linux machine without a display, run it through a virtual display: `xvfb-run -a -s "-screen 0 1600x1000x24" ctest ...` (see [Troubleshooting](#troubleshooting) for the two tests that are left out).
-6. **Use the library in another CMake project.** The folder `gvxr/tests/consumer` is a small project that does it with `add_subdirectory()`, and it is built by the CI with the system packages. The library target is `gVirtualXRay::gVirtualXRay`. Do not enable `USE_GLAD`: its OpenGL loader (glad version 2) clashes with the one of an application that has its own, such as glad version 1.
+6. **Use the library in another CMake project.** The folder `gvxr/tests/consumer` is a small project that does it with `add_subdirectory()`, and it is built by the CI with the system packages. The library target is `gVirtualXRay::gVirtualXRay`. It links the static GLEW by default; a project that uses a shared GLEW (for example the standard vcpkg triplets, or the `libglew-dev` package of a Linux distribution) sets `GLEW_USE_STATIC_LIBS` to `OFF` before it adds the library (with `USE_SYSTEM_GLEW` on), and the target then links `GLEW::GLEW` and does not define `GLEW_STATIC` for it. Do not enable `USE_GLAD`: its OpenGL loader (glad version 2) clashes with the one of an application that has its own, such as glad version 1.
 
 ## Requirements
 

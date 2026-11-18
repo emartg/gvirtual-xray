@@ -453,7 +453,10 @@ ENDIF (USE_GLFW)
 
 # GLEW #########################################################################
 IF (USE_GLEW AND OpenGL_OpenGL_FOUND)
+    # Static GLEW unless the project that builds the library chose otherwise (a shared GLEW with GLEW_USE_STATIC_LIBS OFF)
+    IF (NOT DEFINED GLEW_USE_STATIC_LIBS)
     	SET (GLEW_USE_STATIC_LIBS ON)
+    ENDIF ()
 
     # Deals with cross-compilation using Mac OS X (building GLEW does not work in this case)
     IF (USE_SYSTEM_GLEW)
@@ -468,6 +471,7 @@ IF (USE_GLEW AND OpenGL_OpenGL_FOUND)
 
         UNSET (USE_SYSTEM_GLEW)
         SET (USE_SYSTEM_GLEW OFF)
+        SET (GLEW_USE_STATIC_LIBS ON) # the GLEW that is built here is a static library
         SET (USE_SYSTEM_GLEW OFF CACHE BOOL "Use system's GLEW." FORCE )
 
         INCLUDE(BuildGLEW)
