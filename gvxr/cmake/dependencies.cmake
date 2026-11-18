@@ -350,7 +350,10 @@ ENDIF (OpenMP_CUDA_FOUND)
 
 
 # Vulkan ######################################################################
-FIND_PACKAGE(Vulkan)
+# The Vulkan types of the headers come from GLFW (GLFW_INCLUDE_VULKAN), so Vulkan is only used with GLFW
+IF (USE_GLFW)
+    FIND_PACKAGE(Vulkan)
+ENDIF (USE_GLFW)
 
 IF (Vulkan_FOUND)
     MESSAGE (STATUS "Use VULKAN")
