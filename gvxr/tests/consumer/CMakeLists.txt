@@ -38,12 +38,25 @@ IF (NOT TARGET gVirtualXRay::gVirtualXRay)
 ENDIF ()
 
 # The tests and SimpleGVXR must not be built when the library is used by another project
+# With GLEW_USE_STATIC_LIBS OFF (a shared GLEW), the target must not ask its consumers for the static GLEW
+IF (DEFINED GLEW_USE_STATIC_LIBS AND NOT GLEW_USE_STATIC_LIBS)
+    GET_TARGET_PROPERTY (GVXR_INTERFACE_DEFINITIONS gVirtualXRay INTERFACE_COMPILE_DEFINITIONS)
+    GET_TARGET_PROPERTY (GVXR_LINK_LIBRARIES gVirtualXRay LINK_LIBRARIES)
+    IF ("${GVXR_INTERFACE_DEFINITIONS}" MATCHES "GLEW_STATIC")
+        MESSAGE (FATAL_ERROR "gVirtualXRay::gVirtualXRay defines GLEW_STATIC although GLEW_USE_STATIC_LIBS is OFF")
+    ENDIF ()
+    IF (NOT "GLEW::GLEW" IN_LIST GVXR_LINK_LIBRARIES OR "GLEW::glew_s" IN_LIST GVXR_LINK_LIBRARIES)
+        MESSAGE (FATAL_ERROR "gVirtualXRay::gVirtualXRay does not link the shared GLEW (GLEW::GLEW): ${GVXR_LINK_LIBRARIES}")
+    ENDIF ()
+    MESSAGE (STATUS "gVirtualXRay::gVirtualXRay uses the shared GLEW")
+ENDIF ()
+
 IF (TARGET SimpleGVXR OR TARGET TestMixture)
     MESSAGE (FATAL_ERROR "SimpleGVXR and the tests of gVirtualXRay must not be built for consumers")
 ENDIF ()
 
 # Create the consumer executable
-ADD_EXECUTABLE (TestConsumer TestConsumer.cxx)
+ADD_EXECUTABLE (TestConsumer TestConsumer.cxx GlewVersion.cxx)
 TARGET_LINK_LIBRARIES (TestConsumer PRIVATE gVirtualXRay::gVirtualXRay)
 
 # xraylib is a shared library on Windows: copy its DLL beside the executable

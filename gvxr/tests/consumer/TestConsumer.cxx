@@ -31,6 +31,12 @@
 #endif
 
 
+#ifdef HAS_GLEW
+// The version of the GLEW that the target links (GlewVersion.cxx)
+const char* getGlewVersion();
+#endif
+
+
 //******************************************************************************
 //  Name space
 //******************************************************************************
@@ -62,6 +68,19 @@ int main()
         std::cerr << "[ERROR] The molar mass of the mixture is not positive" << std::endl;
         return 1;
     }
+
+#ifdef HAS_GLEW
+    // The GLEW that the target links (static, or shared with GLEW_USE_STATIC_LIBS OFF): its version needs no OpenGL context
+    const char* p_glew_version = getGlewVersion();
+
+    if (!p_glew_version)
+    {
+        std::cerr << "[ERROR] GLEW gives no version" << std::endl;
+        return 1;
+    }
+
+    std::cout << "GLEW " << p_glew_version << std::endl;
+#endif
 
     std::cout << "gVirtualXRay " << gVirtualXRay_VERSION_MAJOR << "." << gVirtualXRay_VERSION_MINOR << "."
               << gVirtualXRay_VERSION_PATCH << ": mixture " << mixture.getLabel() << ", molar mass "
