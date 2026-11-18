@@ -498,11 +498,3 @@ The failures of a configuration or a build of this repository, with the cause an
 **Cause.** They need an OpenGL context. On Linux, a virtual display and Mesa's software renderer provide one, but two tests do not work there: `TestOpenGLContext` (its compute shader check reads back 0 where the shader wrote -1000 with the llvmpipe renderer, and it passes on a GPU) and `TestCubeSource` (it takes about 5 minutes with Mesa 26 and exceeded a timeout of 900 seconds).
 
 **What to do.** On a machine with a GPU and its driver, run `ctest --test-dir build -L opengl --output-on-failure`. On a Linux machine without a display, install `xvfb libgl1-mesa-dri mesa-utils` and run `xvfb-run -a -s "-screen 0 1600x1000x24" ctest --test-dir build -L opengl -E "TestOpenGLContext|TestCubeSource" --timeout 900 --output-on-failure`, as the CI does. The tests labelled `cpu` need no context.
-
-### The compilation fails when Vulkan is installed
-
-**Symptom.** The build stops with compilation errors on a machine where the Vulkan loader or a Vulkan SDK is installed, when the library is configured with `-DUSE_GLFW=OFF`.
-
-**Cause.** The configuration defines `HAS_VULKAN` whenever it finds Vulkan, even when GLFW is not used, and the code that this enables does not compile without GLFW. This is a known problem of the library, and it has not been fixed in the repository.
-
-**What to do.** Tell CMake not to look for Vulkan: add `-DCMAKE_DISABLE_FIND_PACKAGE_Vulkan=ON` to the configuration command, in a new build folder.
