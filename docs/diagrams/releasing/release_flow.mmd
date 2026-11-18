@@ -1,0 +1,44 @@
+flowchart TD
+    start(["A release is about to come out"])
+
+    subgraph prep["Prepare the release (a pull request, merged with Rebase and merge)"]
+        direction LR
+        p1["Regenerate and review the diagrams:<br/>python docs/diagrams/diagrams.py render"]
+        p2["CHANGELOG: move Unreleased to the new version,<br/>with the upstream base (gVirtualXRay 2.1.0) in the notes"]
+        p3["Pull request: CI green on Linux, Windows MinGW, consumer, diagrams"]
+        p1 --> p2 --> p3
+    end
+
+    subgraph pub["Publish (by the owner)"]
+        direction LR
+        t1["Tag vX.Y.Z on the merge commit on main (lightweight tag)"]
+        t2["GitHub release, by hand, marked as a pre-release,<br/>with the notes of the changelog"]
+        t1 --> t2
+    end
+
+    consumers["The simulator moves its pin to the tag<br/>(its own delivery, ordered by the owner)"]
+
+    start --> prep --> pub --> consumers
+
+    subgraph v1["v0.1.0 (next release): the test data still comes from Git LFS"]
+        direction LR
+        a1["Consumers need git-lfs: cmake/CheckGitLFS.cmake<br/>stops the configuration without it"]
+        a2["CI fetches the LFS files of the tests only (gvxr/tests/data)"]
+        a1 --- a2
+    end
+
+    subgraph v2["v0.2.0 (decided, not built yet): Git LFS removed"]
+        direction LR
+        b1["The owner uploads the data archive to a GitHub release<br/>(for example test-data-1), one asset, hash recorded"]
+        b2["CMake downloads the archive when the tests are built:<br/>checks the hash, with an option for a local folder"]
+        b3["CI caches the archive by its hash and stops using LFS"]
+        b4["Remove the pointer files, the LFS patterns of .gitattributes,<br/>CheckGitLFS.cmake, and BUILD.pdf"]
+        b5["Update the build instructions and release v0.2.0"]
+        b1 --> b2 --> b3 --> b4 --> b5
+    end
+
+    purge["Optional, later, the owner decides:<br/>purge of the old LFS objects (392.6 MB in the history) by recreating the<br/>GitHub repository with the same history, after a mirror backup"]
+
+    consumers --> v1
+    v1 -->|"next release after the LFS work"| v2
+    v2 -.-> purge

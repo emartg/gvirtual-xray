@@ -3,7 +3,8 @@
 
 Every diagram is a pair in a subfolder: <name>.mmd (the Mermaid source, the file to edit) and <name>.png (the rendered image).
 
-    python docs/diagrams/diagrams.py check    every .png has its .mmd and every .mmd has its .png (no tools needed; used by the CI)
+    python docs/diagrams/diagrams.py check    every .png has its .mmd and every .mmd has its .png, and no file is ignored by git
+                                              (no tools needed except git; used by the CI)
     python docs/diagrams/diagrams.py render   regenerate every .png with the pinned Mermaid command-line tool (needs Node.js)
 
 The environment variable DIAGRAMS_MMDC names an installed mmdc program to use instead of npx, and DIAGRAMS_PUPPETEER_CONFIG names
@@ -36,6 +37,14 @@ def find_files(extension):
     return found
 
 
+def is_ignored(path):
+    """True when git would ignore the file, so that it would never be committed (False when git is not available)."""
+    git = shutil.which("git")
+    if not git:
+        return False
+    return subprocess.run([git, "check-ignore", "-q", path], cwd=ROOT, capture_output=True).returncode == 0
+
+
 def check():
     sources = find_files(".mmd")
     images = find_files(".png")
@@ -44,6 +53,11 @@ def check():
         problems.append("%s.mmd has no %s.png" % (name, name))
     for name in sorted(images - sources):
         problems.append("%s.png has no %s.mmd" % (name, name))
+    for name in sorted(sources | images):
+        for extension in (".mmd", ".png"):
+            path = os.path.join(ROOT, name + extension)
+            if os.path.exists(path) and is_ignored(path):
+                problems.append("%s%s is ignored by git (a rule of .gitignore matches its path), so it would not be committed" % (name, extension))
     for name in sorted(sources & images):
         with open(os.path.join(ROOT, name + ".png"), "rb") as image:
             if image.read(len(PNG_SIGNATURE)) != PNG_SIGNATURE:
