@@ -126,11 +126,11 @@ void initializeGLAD(const std::string& anAPI)
 }
 
 
-//-------------------
-void initializeGLEW()
-//-------------------
+//---------------------------------------------
+void initializeGLEW(unsigned int aVerboseLevel)
+//---------------------------------------------
 {
-    initialiseGLEW();
+    initialiseGLEW(aVerboseLevel);
 }
 
 

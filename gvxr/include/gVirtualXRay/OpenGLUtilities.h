@@ -118,14 +118,24 @@ void initializeGLAD(const std::string& anAPI);
 
 //------------------------------------------------------------------------------
 /// Initialise GLEW.
+/**
+*   @param aVerboseLevel:   the level of statements in the standard output.
+*                           For no output, use 0 (default value: 0).
+*                           Errors are always logged.
+*/
 //------------------------------------------------------------------------------
-void initialiseGLEW();
+void initialiseGLEW(unsigned int aVerboseLevel = 0);
 
 
 //------------------------------------------------------------------------------
 /// Initialize GLEW.
+/**
+*   @param aVerboseLevel:   the level of statements in the standard output.
+*                           For no output, use 0 (default value: 0).
+*                           Errors are always logged.
+*/
 //------------------------------------------------------------------------------
-void initializeGLEW();
+void initializeGLEW(unsigned int aVerboseLevel = 0);
 
 
 //------------------------------------------------------------------------------
