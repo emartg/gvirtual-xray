@@ -63,6 +63,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <cmath>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 #include "gtest/gtest.h"
 
@@ -100,6 +103,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef GVXR_LOGGER_H
 #include "gVirtualXRay/Logger.h"
+#endif
+
+#ifndef GVXR_OPENGL_UTILITIES_H
+#include "gVirtualXRay/OpenGLUtilities.h"
 #endif
 
 #ifndef GVXR_utils_h
@@ -218,5 +225,74 @@ TEST(TestAdoptCurrentContext, BeerLambertLawOnAdoptedContext)
     g_adopted_context.release();
     ResourceManager::getInstance().setGraphicsContext(nullptr);
     g_application_context.release();
+}
+#endif
+
+
+#if defined(HAS_OPENGL) && defined(HAS_GLEW)
+//------------------------------------------------------------------------------
+// Sends what std::clog receives to a string while it exists. The tests do not
+// open a log file, so the logger writes its messages to std::clog.
+//------------------------------------------------------------------------------
+class CaptureClog
+{
+public:
+    CaptureClog():
+        m_p_previous(std::clog.rdbuf(m_captured.rdbuf()))
+    {}
+
+    ~CaptureClog()
+    {
+        std::clog.rdbuf(m_p_previous);
+    }
+
+    std::string getText() const
+    {
+        return m_captured.str();
+    }
+
+private:
+    std::ostringstream m_captured;
+    std::streambuf* m_p_previous;
+};
+
+
+//-------------------------------------------------------
+TEST(TestAdoptCurrentContext, GLEWInitialisationIsQuiet)
+//-------------------------------------------------------
+{
+    ASSERT_FALSE(LOGGER.is_open());
+
+    Context application_context;
+    initGL(application_context);
+    if (!application_context.isReady())
+    {
+        GTEST_SKIP() << "No OpenGL context could be created";
+    }
+
+    Context adopted_context;
+    ResourceManager::getInstance().setGraphicsContext(&adopted_context);
+
+    // The adoption initialises GLEW with the default verbose level (0): no line
+    std::string adoption_output;
+    {
+        CaptureClog capture;
+        ASSERT_TRUE(adopted_context.adoptCurrentContext());
+        adoption_output = capture.getText();
+    }
+    EXPECT_EQ(adoption_output.find("Initialise GLEW"), std::string::npos) << adoption_output;
+
+    // A verbose level greater than 0 logs the line
+    std::string verbose_output;
+    {
+        CaptureClog capture;
+        initialiseGLEW(1);
+        verbose_output = capture.getText();
+    }
+    EXPECT_NE(verbose_output.find("Initialise GLEW"), std::string::npos) << verbose_output;
+
+    adopted_context.release();
+    ResourceManager::getInstance().setGraphicsContext(nullptr);
+    application_context.release();
 }
 #endif

@@ -16,6 +16,7 @@ to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Moved the credits file `doc/SOURCES.md` to `docs/sources.md`.
 - Moved the build instructions `BUILD.md` to `docs/build_instructions.md`, with the links of its screenshots adjusted.
+- `initialiseGLEW()` and `initializeGLEW()` take a verbose level (`aVerboseLevel`, default 0, like the other functions of the library that can print details): the line `Initialise GLEW` is no longer logged when a context is created or adopted, unless a level greater than 0 is given. Errors of GLEW are still logged.
 
 ### Fixed
 - Creating an `XRayDetector` took more than a second (four in Debug) because its constructor built two spheres of more than 20 million triangles for its widgets; the spheres now have 1,280 triangles.
