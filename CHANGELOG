@@ -18,6 +18,9 @@ to [Semantic Versioning](https://semver.org/).
 - Moved the build instructions `BUILD.md` to `docs/build_instructions.md`, with the links of its screenshots adjusted.
 - `initialiseGLEW()` and `initializeGLEW()` take a verbose level (`aVerboseLevel`, default 0, like the other functions of the library that can print details): the line `Initialise GLEW` is no longer logged when a context is created or adopted, unless a level greater than 0 is given. Errors of GLEW are still logged.
 
+### Removed
+- The upstream files that this repository does not build or use: the Python packaging (`pip/`, `setup.py`, `pyproject.toml`, `VERSION.txt`, `edit_version.sh`), the Read the Docs configuration (`.readthedocs.yaml`), the Conan files (`conanfile.txt`, `conanfile-amd-aac6.txt`, `conanfile-manylinux2014.txt`), the Docker files (`docker/`), the wxPython GUI (`gvxrGUI/`), `CMakeLists.old`, the CDash configuration (`CTestConfig.cmake`), the former build documents (`BUILD.txt`, `BUILD.pdf`, `md2pdf.sh`), `amd_hackhathon.txt`, the diagrams `architecture.dia` and `architecture.png` and `dependency_graph.dia` and `dependency_graph.png`, and the one-off script `fix_win32_guards.ps1`.
+
 ### Fixed
 - Creating an `XRayDetector` took more than a second (four in Debug) because its constructor built two spheres of more than 20 million triangles for its widgets; the spheres now have 1,280 triangles.
 - A build of the dependencies from a new build folder stopped at the download of zlib: zlib.net keeps only the latest release at its root and no longer has zlib 1.3.2. The superbuild downloads the same archive (same version and checksum) from the GitHub release of zlib, or from the fossils folder of zlib.net.

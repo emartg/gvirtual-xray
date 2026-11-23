@@ -171,6 +171,5 @@ wheelhouse/
 # Project-specific generated output
 # -----------------------------------------------------------------------------
 install/
-pip/wheelhouse/
 Wrappers/gvxr.egg-info/
 screenshots/generated/

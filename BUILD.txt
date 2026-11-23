@@ -1,1 +1,0 @@
-For installation instructions, please consult INSTALL.md/INSTALL.pdf available in this directory and on the gVirtualXRay's web-site.
