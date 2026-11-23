@@ -44,13 +44,13 @@ simulator builds only the core library, which needs a subset of them.
 | Library | Version in the scripts | Author and source | License | Status |
 |---|---|---|---|---|
 | [GLEW](https://github.com/nigels-com/glew) | 2.2.0 | Milan Ikits and the GLEW contributors | The GLEW license (modified BSD), with Mesa (MIT-style) and Khronos (MIT-style) parts | Verified (the project's license file) |
-| [Assimp](https://github.com/assimp/assimp) | 5.4.0 (the Conan file names 6.0.2) | The assimp team | BSD 3-Clause | Verified |
+| [Assimp](https://github.com/assimp/assimp) | 5.4.0 | The assimp team | BSD 3-Clause | Verified |
 | [zlib](https://github.com/madler/zlib) | 1.3.2 | Jean-loup Gailly and Mark Adler | The zlib license | Verified |
 | [GLFW](https://www.glfw.org) | 3.4 (SimpleGVXR windowing) | Marcus Geelnard and the GLFW contributors | zlib License | Verified |
 | [GoogleTest](https://github.com/google/googletest) | 1.17.0 (tests) | Google | BSD 3-Clause | Verified |
 | [LibTIFF](https://libtiff.gitlab.io/libtiff/) | 4.4.0 | Sam Leffler, Silicon Graphics, and contributors | The LibTIFF license (permissive) | Verified |
 | [FreeType](https://freetype.org) | 2.6 | The FreeType Project | The FreeType License (BSD-style, with a credit clause) or the GNU GPL version 2, at the user's choice | Verified |
-| [Boost](https://www.boost.org) (`interprocess`) | 1.90.0 in the Conan file | The Boost community | Boost Software License 1.0 | Verified |
+| [Boost](https://www.boost.org) (`interprocess`) | 1.87.0 (downloaded when `USE_SYSTEM_BOOST` is off) | The Boost community | Boost Software License 1.0 | Verified |
 
 The scripts also mention FFTW3, FLTK, GDCM, GLUT, VCG, FreeImage, and Minizip as optional dependencies;
 they are credited here when the fork actually uses them.
