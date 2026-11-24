@@ -1,7 +1,7 @@
 #
 # CMakeLists.txt of the consumer test, a standalone project that uses the core library of gVirtualXRay through
 # ADD_SUBDIRECTORY(), as a project does with this repository as a Git submodule. It verifies that the library
-# is built alone (without SimpleGVXR, the wrappers, the tests, the installation rules, or the packaging), and
+# is built alone (without SimpleGVXR, the tests, the installation rules, or the packaging), and
 # that a target that links to gVirtualXRay::gVirtualXRay gets the headers, the preprocessor definitions, and the
 # C++ standard of the library.
 #
@@ -26,7 +26,6 @@ INCLUDE (CTest)
 
 # Build the core library alone, without a GLFW of its own: the application provides the OpenGL context
 SET (BUILD_SIMPLEGVXR OFF)
-SET (BUILD_WRAPPERS OFF)
 SET (USE_GLFW OFF)
 SET (USE_GLEW ON)
 

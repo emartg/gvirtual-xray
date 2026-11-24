@@ -1,2 +1,0 @@
-ruby -I. < test.rb
-

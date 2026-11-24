@@ -171,5 +171,4 @@ wheelhouse/
 # Project-specific generated output
 # -----------------------------------------------------------------------------
 install/
-Wrappers/gvxr.egg-info/
 screenshots/generated/

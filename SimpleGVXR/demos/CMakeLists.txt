@@ -110,7 +110,7 @@ install (TARGETS DemoDragon
 install (TARGETS DemoConvolutionKernel
         DESTINATION ${INSTALL_DIR}/demos)
 
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../SimpleGVXR-examples/WelshDragon/welsh-dragon-small.stl
         DESTINATION ${INSTALL_DIR}/demos)
 
-FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Wrappers/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../SimpleGVXR-examples/WelshDragon/welsh-dragon-small.stl DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

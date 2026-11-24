@@ -65,13 +65,6 @@ set(CMAKE_CXX_EXTENSIONS OFF) # without compiler extensions like gnu++11
 
 OPTION(USE_SYSTEM_gVirtualXRay   "Use System gVirtualXRay"      ON)
 
-FIND_PACKAGE(Doxygen)
-IF (Doxygen_FOUND)
-    OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" ON)
-ELSE (Doxygen_FOUND)
-    OPTION(BUILD_SimpleGVXR_DOCUMENTATION         "Build SimpleGVXR's documentation using Doxygen" OFF)
-ENDIF (Doxygen_FOUND)
-
 IF (USE_GLEW)
     IF (USE_SYSTEM_GLEW)
         find_package(GLEW REQUIRED)
@@ -131,15 +124,6 @@ SET (SimpleGVXR_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 ################################################################################
 # gVirtualXRay uses KWStyle for checking the coding style
 include(cmake/KWStyle/KWStyle.cmake)
-
-
-# Doxygen documentation ########################################################
-IF(BUILD_SimpleGVXR_DOCUMENTATION)
-    ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/doc ${CMAKE_CURRENT_BINARY_DIR}/doc)
-    MESSAGE(STATUS "Build documentation.")
-ELSE (BUILD_SimpleGVXR_DOCUMENTATION)
-       MESSAGE("Do not build documentation.")
-ENDIF(BUILD_SimpleGVXR_DOCUMENTATION)
 
 
 # Find gVirtualXRay ############################################################
@@ -371,7 +355,6 @@ install(FILES
 SET (SimpleGVXR_LIBRARY ${SimpleGVXR_LIBRARY} PARENT_SCOPE)
 SET (SimpleGVXR_LIBRARIES ${SimpleGVXR_LIBRARIES} PARENT_SCOPE)
 SET (SimpleGVXR_INCLUDE_DIR ${SimpleGVXR_INCLUDE_DIR} PARENT_SCOPE)
-SET (SimpleGVXR_Doxy_XML ${PROJECT_BINARY_DIR}/doc/xml PARENT_SCOPE)
 
 
 # Build demos ##################################################################
