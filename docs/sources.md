@@ -32,7 +32,7 @@ of this fork, under the same license.
 
 | Component | Author and source | License | Status |
 |---|---|---|---|
-| xraylib (headers and prebuilt libraries for Windows, Linux, and macOS, in `xraylib/`) | Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans, and Teemu Ikonen ([tschoonj/xraylib](https://github.com/tschoonj/xraylib)) | Three-clause BSD license (`xraylib/license_all.txt`) | Verified |
+| xraylib (headers and prebuilt libraries for Windows and GNU/Linux on x86_64, in `xraylib/`) | Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans, and Teemu Ikonen ([tschoonj/xraylib](https://github.com/tschoonj/xraylib)) | Three-clause BSD license (`xraylib/license_all.txt`) | Verified |
 | XrayPhysics (sources `xsource.cpp` and `xsec.cpp` compiled into the library) | Kyle Champley | MIT License (`XrayPhysics/LICENSE`) | Verified |
 | glad (v2 loader, used only with `USE_GLAD`) | David Herberth ([Dav1dde/glad](https://github.com/Dav1dde/glad)) | MIT License for the glad source code (`glad/LICENSE`) | Verified |
 
