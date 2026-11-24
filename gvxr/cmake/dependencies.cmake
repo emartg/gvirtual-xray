@@ -188,18 +188,13 @@ IF (NOT USE_SYSTEM_XRAYLIB)
         #    FILES_MATCHING PATTERN "*.so"
         #)
 
-        IF ( ${ARCHITECTURE} STREQUAL "aarch64" )
+        # The repository has the prebuilt xraylib of GNU/Linux for x86_64 only
+        IF ( ${ARCHITECTURE} STREQUAL "x86_64" )
             SET (XRAYLIB_PATH
-                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-arm64-v8
+                ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-amd64
             )
         ELSE ()
-            IF ( ${ARCHITECTURE} STREQUAL "x86_64" )
-                SET (XRAYLIB_PATH
-                    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/linux-amd64
-                )
-            ELSE ()
-                MESSAGE ( FATAL_ERROR "Architecture: ${ARCHITECTURE} is not supported." )
-            ENDIF ()
+            MESSAGE ( FATAL_ERROR "Architecture: ${ARCHITECTURE} is not supported: the repository has the prebuilt xraylib of GNU/Linux for x86_64 only." )
         ENDIF ()
 
         SET (XRAYLIB_LIBS
@@ -238,23 +233,9 @@ IF (NOT USE_SYSTEM_XRAYLIB)
 
     ENDIF (WIN32)
 
+    # The repository has no prebuilt xraylib for macOS
     IF (APPLE)
-        #INSTALL (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
-        #    DESTINATION ${INSTALL_DIR}/third_party/lib64
-        #    COMPONENT Development
-        #    FILES_MATCHING PATTERN "*.*"
-        #)
-
-        SET (XRAYLIB_PATH
-            ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/xraylib/apple
-        )
-
-        SET (XRAYLIB_LIBS
-            ${XRAYLIB_PATH}/libxrl.la
-            ${XRAYLIB_PATH}/libxrl.dylib
-            ${XRAYLIB_PATH}/libxrl.11.dylib
-        )
-
+        MESSAGE ( FATAL_ERROR "macOS is not supported: the repository has the prebuilt xraylib of Windows and of GNU/Linux (x86_64) only." )
     ENDIF (APPLE)
 
 ENDIF (NOT USE_SYSTEM_XRAYLIB)
