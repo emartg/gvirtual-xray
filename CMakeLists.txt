@@ -145,17 +145,9 @@ INCLUDE(ExternalProject)
 # Options ######################################################################
 INCLUDE (gvxr/cmake/options.cmake)
 INCLUDE (SimpleGVXR/cmake/options.cmake)
-INCLUDE (Wrappers/cmake/options.cmake)
 
-# Enable SimpleGVXR if a wrapper is built
-IF (BUILD_WRAPPERS)
-    MESSAGE (STATUS "BUILD_WRAPPERS is ${BUILD_WRAPPERS}, SimpleGVXR will be built automatically.")
-    SET (BUILD_SIMPLEGVXR ON)
-# No wrapper, SimpleGVXR can still be built as an optional component
-ELSE (BUILD_WRAPPERS)
-    option(BUILD_SIMPLEGVXR    "Build SimpleGVXR module" ON)
-    MESSAGE (STATUS "BUILD_WRAPPERS is ${BUILD_WRAPPERS}, you can still build SimpleGVXR if you'd like (default is ON)")
-ENDIF (BUILD_WRAPPERS)
+# SimpleGVXR is an optional component
+option(BUILD_SIMPLEGVXR    "Build SimpleGVXR module" ON)
 
 
 # CTest and Unit testing #######################################################
@@ -341,9 +333,9 @@ ENDIF (BUILD_TESTING)
 
 
 # GLFW ########################################################################
-# GLFW3 is required for either testing, SimpleGVXR or Wrappers
+# GLFW3 is required for either testing or SimpleGVXR
 IF (USE_GLFW AND NOT EMSCRIPTEN)
-    IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS OR BUILD_TESTING)
+    IF (BUILD_SIMPLEGVXR OR BUILD_TESTING)
         # Use system library
         IF (USE_SYSTEM_GLFW)
             FIND_LIBRARY(GLFW3_LIBRARY NAMES glfw3)
@@ -401,14 +393,9 @@ ENDIF (USE_GLFW AND NOT EMSCRIPTEN)
 ADD_SUBDIRECTORY (gvxr)
 
 # Build SimpleGVXR
-IF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
+IF (BUILD_SIMPLEGVXR)
     ADD_SUBDIRECTORY (SimpleGVXR)
-ENDIF (BUILD_SIMPLEGVXR OR BUILD_WRAPPERS)
-
-# Build Wrappers
-IF (BUILD_WRAPPERS)
-    ADD_SUBDIRECTORY (Wrappers)
-ENDIF (BUILD_WRAPPERS)
+ENDIF (BUILD_SIMPLEGVXR)
 
 # Packaging support
 set(CPACK_PACKAGE_VENDOR "Dr Franck P. Vidal @ Bangor University")

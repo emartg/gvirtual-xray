@@ -25,19 +25,19 @@ If the repository was cloned before Git LFS was installed, run `git lfs install`
         xvfb libgl1-mesa-dri mesa-utils
 ```
 On Windows, use MinGW-w64 (GCC) and CMake from [https://cmake.org/download/](https://cmake.org/download/). Put CMake's own folder **before** the `bin` folder of MinGW in the `PATH` (see [Troubleshooting](#troubleshooting)).
-3. **Configure.** The top-level project is a superbuild: it downloads and builds the dependencies that are not installed (GLFW, GLEW, Assimp, zlib, LibTIFF, FreeType, GoogleTest, and Boost), and installs them in the install prefix. The core library and its tests are built, SimpleGVXR and the wrappers are not.
+3. **Configure.** The top-level project is a superbuild: it downloads and builds the dependencies that are not installed (GLFW, GLEW, Assimp, zlib, LibTIFF, FreeType, GoogleTest, and Boost), and installs them in the install prefix. The core library and its tests are built, SimpleGVXR is not.
     - Linux:
 ```bash
         $ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PWD/install" \
             -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ \
-            -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DBUILD_WRAPPERS=OFF
+            -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF
 ```
     - Windows (PowerShell, MinGW). The install prefix is written with forward slashes because the build modules pass it on to the projects that they build:
 ```powershell
         $prefix = "$PWD/install".Replace('\', '/')
         cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ `
             -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$prefix" `
-            -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DBUILD_WRAPPERS=OFF -DASSIMP_WARNINGS_AS_ERRORS=OFF
+            -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DASSIMP_WARNINGS_AS_ERRORS=OFF
 ```
 The first configuration of a new build folder takes several minutes because the dependencies are built; the next ones do not build them again.
 4. **Build.** Adjust `--parallel` to the number of cores:
