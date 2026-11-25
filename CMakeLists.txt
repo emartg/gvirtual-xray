@@ -44,10 +44,6 @@ project(gVirtualXRay-Superbuild
         LANGUAGES CXX
 )
 
-# Check for Git LFS
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CheckGitLFS.cmake)
-
-
 # Use from another project #####################################################
 # When another project adds this one with ADD_SUBDIRECTORY, that project owns the installation, the
 # packaging, the build type, and the test driver. Link to the target gVirtualXRay::gVirtualXRay.
