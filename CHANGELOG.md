@@ -1,26 +1,32 @@
 # Changelog
-All notable changes to gVirtualXray will be documented in this file.
+All notable changes to this repository, a downstream copy of gVirtualXRay 2.1.0 ([NOTICE.md](NOTICE.md)), are documented in
+this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
-to [Semantic Versioning](https://semver.org/).
+to [Semantic Versioning](https://semver.org/). Its versions are its own; the sections from [2.1.0] down are the releases of
+upstream gVirtualXRay that this repository is based on.
 
 ## [Unreleased]
 
 ### Added
+- The documentation of this repository, written for it: a new `README.md` (with a notice that the repository is a downstream copy, badges, and the index of the documents), `NOTICE.md` (the upstream base and every difference), and, in `docs/`, `integration.md` (using the library from an application) and `limitations.md` (what is not supported, and the known issues).
 - The folder `docs/` for the maintainer's documents, with `docs/diagrams/` for the diagrams (Mermaid sources and rendered images side by side).
 - Diagrams in `docs/diagrams/`: the computation of an X-ray image, the classes of the core library, the jobs of the continuous integration, and the release flow, with the script `docs/diagrams/diagrams.py` that renders them with a pinned Mermaid command-line tool and checks that every image has its source.
 - The workflow `diagrams.yml` checks on every pull request that every diagram image has its Mermaid source and the reverse.
-- A section "Building this repository" in the build instructions (the clone, the superbuild, the test data, the tests and their labels), and a Troubleshooting section with the failures of a configuration or a build: a build folder with the tools of another compiler, the download of Boost with MinGW's CMake, the download of gzip on Windows, the download of the test data, a missing target after an update, and the tests that need an OpenGL context.
+- A Troubleshooting section in the build instructions with the failures of a configuration or a build: a build folder with the tools of another compiler, the download of Boost with MinGW's CMake, the download of gzip on Windows, the download of the test data, a missing target after an update, and the tests that need an OpenGL context.
 - The test `TestDetectorResize` (label `opengl`): after `XRayDetector::setNumberOfPixels()`, a second `XRayRenderer::initialise()` on the same renderer gives the image of a new renderer, larger or smaller and square or not, with the inner surfaces, their transformations, and their materials kept, and the beam and the detector as they were set; the outer surface must be added again.
 
 ### Changed
 - The reference data of `TestSinogramFromMesh` (`phantom_projections` and `phantom_sinogram`, two files of 68 MB and their headers) are no longer in the repository: they are the archive `gvxr-test-data-1.zip` (7.9 MB), the asset of the release `test-data-1` of this repository. The configuration with the tests downloads it once into the build folder, checks its SHA-256, and extracts it (`cmake/DownloadTestData.cmake`); `gVXR_TEST_DATA_ARCHIVE` gives the path of a copy downloaded by hand.
 - The other files of `gvxr/tests/data/` (69 raw images, 22.5 MB) are plain Git files instead of Git LFS files, marked as binary in `.gitattributes`.
 - Moved the credits file `doc/SOURCES.md` to `docs/sources.md`.
-- Moved the build instructions `BUILD.md` to `docs/build_instructions.md`, with the links of its screenshots adjusted.
+- The build instructions, moved from `BUILD.md` to `docs/build_instructions.md`, are rewritten for this repository (prerequisites, dependencies, Windows and Linux, the options, SimpleGVXR and its demos, the tests with their labels and expected results, the installation, the continuous integration); the instructions of upstream's release 1.1.5 that they kept are dropped.
+- `docs/sources.md` describes the repository as a downstream copy.
+- The changelog is `CHANGELOG.md` (it was `CHANGELOG`), as in the other repositories of the project; upstream's releases are kept below this repository's changes.
 - `initialiseGLEW()` and `initializeGLEW()` take a verbose level (`aVerboseLevel`, default 0, like the other functions of the library that can print details): the line `Initialise GLEW` is no longer logged when a context is created or adopted, unless a level greater than 0 is given. Errors of GLEW are still logged.
 
 ### Removed
+- The README of upstream gVirtualXRay (its Python usage, packages, awards, and citations), replaced by this repository's; upstream's `CONTRIBUTING.md` and `SECURITY.md`, replaced by the section "Contributing and Reporting Problems" of the README; and `docs/README.md`, replaced by the README's section "Documentation".
 - Git LFS as a requirement: `cmake/CheckGitLFS.cmake` (the configuration stopped without `git-lfs`), the Git LFS patterns of `.gitattributes` (the PDF files of the upstream documentation stay in Git LFS until that documentation is removed; no build or test reads them), and the Git LFS steps of the CI.
 - The upstream files that this repository does not build or use: the Python packaging (`pip/`, `setup.py`, `pyproject.toml`, `VERSION.txt`, `edit_version.sh`), the Read the Docs configuration (`.readthedocs.yaml`), the Conan files (`conanfile.txt`, `conanfile-amd-aac6.txt`, `conanfile-manylinux2014.txt`), the Docker files (`docker/`), the wxPython GUI (`gvxrGUI/`), `CMakeLists.old`, the CDash configuration (`CTestConfig.cmake`), the former build documents (`BUILD.txt`, `BUILD.pdf`, `md2pdf.sh`), `amd_hackhathon.txt`, the diagrams `architecture.dia` and `architecture.png` and `dependency_graph.dia` and `dependency_graph.png`, and the one-off script `fix_win32_guards.ps1`.
 - The SWIG wrappers of SimpleGVXR (`Wrappers/`: Python 3, Python 2, R, Ruby, Tcl, C#, Java, Perl, and GNU Octave) with `cmake/External_Wrappers.cmake` and the option `BUILD_WRAPPERS`, and the Doxygen and Sphinx documentation of SimpleGVXR (`SimpleGVXR/doc/`, the option `BUILD_SimpleGVXR_DOCUMENTATION`), which fed the Python wrapper and Read the Docs. The SimpleGVXR demos take the Welsh dragon mesh from `SimpleGVXR-examples/WelshDragon/` (the same file). The Python scripts that need the Python wrapper (`TestBeerLambertLawPolyChromatic.py` in `gvxr/tests/` and `SimpleGVXR/tests/`, and `SimpleGVXR-examples/WelshDragon/welsh-dragon.py`) are removed too; no test runs them.

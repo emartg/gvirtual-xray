@@ -1,10 +1,8 @@
 # Sources and Attribution
 
-This repository is a fork of gVirtualXRay. This file credits the project itself, the third-party code that
-is bundled in it or that its build uses, and the resources that are part of it: who made each one, where it
-comes from, and under which license. It sits in `docs/` (the folder of the maintainer's documents; `doc/` keeps the
-documents of the library's own authors) and has the same name and place as the file of the other repositories of the
-simulator project (`docs/sources.md`).
+This repository is a downstream copy of upstream gVirtualXRay 2.1.0 ([NOTICE.md](../NOTICE.md)). This file credits the
+project itself, the third-party code that is bundled in it or that its build uses, and the resources that are part of it: who
+made each one, where it comes from, and under which license.
 
 ## How to Use This File
 
@@ -25,8 +23,7 @@ simulator project (`docs/sources.md`).
 | Developers | Prof Franck P. Vidal, Dr Andréas Meuleman, Dr Aaron Sújar, Mr Iwan T. Mitchell, Mr Nalin Gupta (see `CONTRIBUTORS`) | Verified |
 | Institutions | United Kingdom Research and Innovation, Science & Technology Facilities Council (UKRI-STFC); Bangor University; Universidad Rey Juan Carlos (see `CONTRIBUTORS`) | Verified |
 
-The fork's own changes (build fixes for MinGW and Windows, repository hygiene) are by the owner
-of this fork, under the same license.
+The changes of this repository (listed in [NOTICE.md](../NOTICE.md)) are by its maintainer, under the same license.
 
 ## Third-Party Code Bundled in the Repository (`gvxr/dependencies/`)
 
@@ -38,8 +35,8 @@ of this fork, under the same license.
 
 ## Third-Party Libraries Used by the Build
 
-Downloaded or found by the build scripts (`cmake/` and `gvxr/cmake/`), with the versions they name. The
-simulator builds only the core library, which needs a subset of them.
+Downloaded or found by the build scripts (`cmake/` and `gvxr/cmake/`), with the versions they name. An
+application that builds only the core library needs a subset of them (no GLFW, no GoogleTest).
 
 | Library | Version in the scripts | Author and source | License | Status |
 |---|---|---|---|---|
@@ -53,7 +50,7 @@ simulator builds only the core library, which needs a subset of them.
 | [Boost](https://www.boost.org) (`interprocess`) | 1.87.0 (downloaded when `USE_SYSTEM_BOOST` is off) | The Boost community | Boost Software License 1.0 | Verified |
 
 The scripts also mention FFTW3, FLTK, GDCM, GLUT, VCG, FreeImage, and Minizip as optional dependencies;
-they are credited here when the fork actually uses them.
+they are credited here when this repository actually uses them.
 
 ## Resources
 
@@ -63,7 +60,6 @@ they are credited here when the fork actually uses them.
 | `gvxr/resources/FreeSans.ttf` | Font embedded in the library | Probably GNU FreeFont, FreeSans ([license](https://www.gnu.org/s/freefont/license.html): GPL version 3 or later with a font exception) | Inferred (from the file name; the repository has no license file for it) |
 | `gvxr/tests/data/` (SimpleGVXR's tests use the same files) and the archive `gvxr-test-data-1.zip` of the release `test-data-1` (the phantom of `TestSinogramFromMesh`, downloaded by the configuration) | Reference data of the validation tests (scintillator responses, CT reconstruction) | Presumably produced by the gVXR developers (some folders are named `old_gate`, which suggests simulations with GATE) | Unknown |
 | `logo-pack/`, `Logo.png`, `Logo-transparent-*.png`, `doc/`, `gvxr/doc/`, `screenshots/` | Logos, documentation images, and screenshots | Presumably the gVXR developers, under the project's license | Unknown |
-
 ## Open Items
 
 1. **Welsh dragon:** confirm with the gVXR documentation or its authors that the mesh derives from the
