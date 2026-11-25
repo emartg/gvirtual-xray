@@ -46,8 +46,8 @@ project(gVirtualXRay-Superbuild
 
 # Use from another project #####################################################
 # When another project adds this one with ADD_SUBDIRECTORY, that project owns the installation, the
-# packaging, the build type, and the test driver. Link to the target gVirtualXRay::gVirtualXRay.
-OPTION (gVXR_INSTALL "Generate the installation rules and the packaging of gVirtualXRay" ${PROJECT_IS_TOP_LEVEL})
+# build type, and the test driver. Link to the target gVirtualXRay::gVirtualXRay.
+OPTION (gVXR_INSTALL "Generate the installation rules of gVirtualXRay" ${PROJECT_IS_TOP_LEVEL})
 
 # The Debug objects reference the coverage runtime when they are compiled with the coverage flags (GCC and Clang on
 # Linux), so it is off by default. When it is on, the target adds the linker option for its consumers
@@ -392,23 +392,3 @@ ADD_SUBDIRECTORY (gvxr)
 IF (BUILD_SIMPLEGVXR)
     ADD_SUBDIRECTORY (SimpleGVXR)
 ENDIF (BUILD_SIMPLEGVXR)
-
-# Packaging support
-set(CPACK_PACKAGE_VENDOR "Dr Franck P. Vidal @ Bangor University")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
-set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
-set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENCE.txt")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
-
-set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
-set(CPACK_SOURCE_IGNORE_FILES
-    /.git
-    /.svn
-    /dist
-    /.*build.*
-    /\\\\.DS_Store
-    .swp$
-    .*~
-)

@@ -19,7 +19,7 @@ made each one, where it comes from, and under which license.
 
 | What | Credit and license | Status |
 |---|---|---|
-| gVirtualXRay (all code, documentation, and logos not credited below) | Copyright (c) 2019, Dr Franck P. Vidal. BSD 3-Clause License (see `LICENSE`) | Verified |
+| gVirtualXRay (all code and documentation not credited below) | Copyright (c) 2019, Dr Franck P. Vidal. BSD 3-Clause License (see `LICENSE`) | Verified |
 | Developers | Prof Franck P. Vidal, Dr Andréas Meuleman, Dr Aaron Sújar, Mr Iwan T. Mitchell, Mr Nalin Gupta (see `CONTRIBUTORS`) | Verified |
 | Institutions | United Kingdom Research and Innovation, Science & Technology Facilities Council (UKRI-STFC); Bangor University; Universidad Rey Juan Carlos (see `CONTRIBUTORS`) | Verified |
 
@@ -56,10 +56,9 @@ they are credited here when this repository actually uses them.
 
 | Path | What | Author, source, and license | Status |
 |---|---|---|---|
-| `SimpleGVXR-examples/WelshDragon/welsh-dragon-small.stl` (and a copy in `doc/6-coding/`) | Mesh of a Welsh dragon, used by the examples and demos | Probably derived from the Welsh Dragon mesh released by Bangor University, UK, for Eurographics 2011 (scanned by the CAM Innovation Centre, Coleg Menai); Bangor [released it into the public domain](https://research.bangor.ac.uk/en/datasets/eg-2011-welsh-dragon-dataset-3d-model/) and asks that publications acknowledge: "The Welsh Dragon mesh model was released by Bangor University, UK, for Eurographics 2011" | Inferred (the repository does not state the origin, and the "small" mesh may be a reduction of it) |
+| `SimpleGVXR-examples/WelshDragon/welsh-dragon-small.stl` | Mesh of a Welsh dragon, used by the examples and demos | Probably derived from the Welsh Dragon mesh released by Bangor University, UK, for Eurographics 2011 (scanned by the CAM Innovation Centre, Coleg Menai); Bangor [released it into the public domain](https://research.bangor.ac.uk/en/datasets/eg-2011-welsh-dragon-dataset-3d-model/) and asks that publications acknowledge: "The Welsh Dragon mesh model was released by Bangor University, UK, for Eurographics 2011" | Inferred (the repository does not state the origin, and the "small" mesh may be a reduction of it) |
 | `gvxr/resources/FreeSans.ttf` | Font embedded in the library | Probably GNU FreeFont, FreeSans ([license](https://www.gnu.org/s/freefont/license.html): GPL version 3 or later with a font exception) | Inferred (from the file name; the repository has no license file for it) |
 | `gvxr/tests/data/` (SimpleGVXR's tests use the same files) and the archive `gvxr-test-data-1.zip` of the release `test-data-1` (the phantom of `TestSinogramFromMesh`, downloaded by the configuration) | Reference data of the validation tests (scintillator responses, CT reconstruction) | Presumably produced by the gVXR developers (some folders are named `old_gate`, which suggests simulations with GATE) | Unknown |
-| `logo-pack/`, `Logo.png`, `Logo-transparent-*.png`, `doc/`, `gvxr/doc/`, `screenshots/` | Logos, documentation images, and screenshots | Presumably the gVXR developers, under the project's license | Unknown |
 ## Open Items
 
 1. **Welsh dragon:** confirm with the gVXR documentation or its authors that the mesh derives from the

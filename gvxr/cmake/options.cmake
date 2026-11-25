@@ -1,5 +1,4 @@
 # The options ##################################################################
-OPTION(BUILD_gVXR_DOCUMENTATION         "Build gVXR's documentation using Doxygen" OFF)
 OPTION(USE_OPENGL         "Use OpenGL to create a backend" ON)
 OPTION(USE_assimp         "Use the Open-Asset-Importer-Lib (ASSIMP) to load 3D meshes" ON)
 OPTION(USE_OPENSCENEGRAPH "Use the OpenSceneGraph to load 3D meshes" OFF)
