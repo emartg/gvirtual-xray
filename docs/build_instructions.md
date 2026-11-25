@@ -11,13 +11,11 @@ date: 6th Jul 2021
 
 This section is the procedure for a clone of this repository, the one that the continuous integration runs: it builds the core library (the folder `gvxr/`) and its tests, with CMake 3.26 or newer and a C++23 compiler. The sections that follow, from "Requirements" to "Test the Python wrapper", are the original text of the library's author, written for the release 1.1.5 from SourceForge (the SimpleGVXR library and the wrappers); they are kept as they were. The failures that a configuration or a build can meet are in [Troubleshooting](#troubleshooting).
 
-1. **Install Git LFS before cloning.** The data of the tests is stored with Git LFS, and the configuration stops without `git-lfs` (see [Troubleshooting](#troubleshooting)).
+1. **Clone the repository.** Git LFS is not needed: the data of the tests are plain files of the repository, except the two of the phantom of `TestSinogramFromMesh` (68 MB each), which the configuration downloads (step 3).
 ```bash
-    $ git lfs install
     $ git clone https://github.com/emartg/gvirtual-xray.git
     $ cd gvirtual-xray
 ```
-If the repository was cloned before Git LFS was installed, run `git lfs install` and `git lfs pull` in it.
 2. **Install a compiler and the system libraries.** On Ubuntu, as the Linux job of the CI does (the last three packages are for the tests that need an OpenGL context, on a machine without a display):
 ```bash
     $ sudo apt-get install build-essential cmake ninja-build libgl-dev libglu1-mesa-dev libegl-dev \
@@ -40,6 +38,7 @@ On Windows, use MinGW-w64 (GCC) and CMake from [https://cmake.org/download/](htt
             -DBUILD_TESTING=ON -DBUILD_SIMPLEGVXR=OFF -DASSIMP_WARNINGS_AS_ERRORS=OFF
 ```
 The first configuration of a new build folder takes several minutes because the dependencies are built; the next ones do not build them again.
+With the tests (`BUILD_TESTING`, on by default), the first configuration also downloads the archive `gvxr-test-data-1.zip` (7.9 MB), the asset of the release [`test-data-1`](https://github.com/emartg/gvirtual-xray/releases/tag/test-data-1) of this repository, checks its SHA-256, and extracts it in the folder `test_data` of the build folder. On a machine without network access, download that file elsewhere and give its path with `-DgVXR_TEST_DATA_ARCHIVE=<path>`.
 4. **Build.** Adjust `--parallel` to the number of cores:
 ```bash
     $ cmake --build build --parallel 4
@@ -467,21 +466,13 @@ The failures of a configuration or a build of this repository, with the cause an
 
 **What to do.** Install a gzip that is in the `PATH` (the one of Git for Windows is in the `usr\bin` folder of its installation), delete `CMakeCache.txt` (or the whole build folder), and configure again. A gzip in the `PATH` is found first and nothing is downloaded.
 
-### The configuration stops with `Git LFS is required`
+### The configuration stops at the test data
 
-**Symptom.** The configuration stops with `Git LFS is required. Install it from https://git-lfs.com/`.
+**Symptom.** With the tests on, the configuration stops with `The test data could not be downloaded from https://github.com/emartg/gvirtual-xray/releases/download/test-data-1/gvxr-test-data-1.zip`, or with a message that the archive `has the SHA-256 ... not fa0dcabf...`.
 
-**Cause.** `cmake/CheckGitLFS.cmake` looks for the program `git-lfs`. The data of the tests and some assets of the repository are stored with Git LFS.
+**Cause.** The reference data of `TestSinogramFromMesh` are not in the repository: `cmake/DownloadTestData.cmake` downloads the archive `gvxr-test-data-1.zip` from the release `test-data-1` of this repository and checks its SHA-256. The download fails without network access (or behind a proxy that CMake does not use); the check fails when the file at the path of the archive is another file.
 
-**What to do.** Install Git LFS (`winget install GitHub.GitLFS` on Windows, `sudo apt install git-lfs` on Debian and Ubuntu, `brew install git-lfs` on macOS), run `git lfs install` once, then `git lfs pull` in the repository, and configure again.
-
-### Tests fail because their data files are not the real files
-
-**Symptom.** Several tests of the `opengl` label fail when they read their input files (the ones of `gvxr/tests/data`), although the library built without errors.
-
-**Cause.** The data files are Git LFS files. A clone made before Git LFS was installed, an archive of the repository (`git archive`, or the zip of a branch downloaded from GitHub), or a clone made with `GIT_LFS_SKIP_SMUDGE=1` holds small text files, the pointers, in their place. A file that starts with `version https://git-lfs.github.com/spec/v1` is a pointer.
-
-**What to do.** Run `git lfs install` and `git lfs pull` in the repository. To fetch only what the tests use, as the CI does: `git lfs pull --include="gvxr/tests/data/**" --exclude="gvxr/tests/data/phantom_sinogram.raw"` (no enabled test reads the phantom sinogram, which is 68 MB).
+**What to do.** Download the archive by hand (from the address of the message, with a browser for example) and configure again with `-DgVXR_TEST_DATA_ARCHIVE=<path of the file>`. For a wrong SHA-256, delete the file that the message names (the default path is `test_data/gvxr-test-data-1.zip` in the build folder) and configure again. A configuration with `-DBUILD_TESTING=OFF` needs no test data.
 
 ### `No rule to make target` after updating the repository
 

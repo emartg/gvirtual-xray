@@ -9,7 +9,9 @@
 # GLEW, GLFW, zlib, GoogleTest, and the downloaded Boost) are cached. Only the runs on the main branch save the cache, and
 # every run restores it, because a pull request can read the caches of the default branch but not the ones of other
 # pull requests. The key has the compiler version and the files that define the dependencies, so changing the
-# versions or the options of the dependencies, or the compiler of the runner image, builds them again.
+# versions or the options of the dependencies, or the compiler of the runner image, builds them again. The build folder
+# also keeps the archive of the test data (cmake/DownloadTestData.cmake), so a run with a restored cache does not
+# download it again.
 #
 # The repository is built as it is, without build fixes. Known consequences, to be handled when they matter: MSVC is not
 # part of this workflow (it needs changes to the build files), and the library is compiled with C++23
@@ -30,12 +32,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  # Git LFS files that the tests use, so that the runners do not download the 300 MB of the repository on every run.
-  # The phantom sinogram (68 MB) is not read by any enabled test; TestSinogramFromMesh reads the phantom projections
-  LFS_INCLUDE: gvxr/tests/data/**
-  LFS_EXCLUDE: gvxr/tests/data/phantom_sinogram.raw
-
 jobs:
   # Core library and unit tests, with the bundled dependencies
   linux:
@@ -47,19 +43,6 @@ jobs:
         uses: actions/checkout@v7
         with:
           lfs: false
-
-      - name: Identify the Git LFS files
-        run: git lfs ls-files --long | cut -d ' ' -f 1 | sort > .lfs-ids
-
-      - name: Restore the Git LFS cache
-        uses: actions/cache@v5
-        with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-ids') }}
-          restore-keys: lfs-
-
-      - name: Fetch the Git LFS files of the tests
-        run: git lfs pull --include="$LFS_INCLUDE" --exclude="$LFS_EXCLUDE"
 
       - name: Install the dependencies
         # retries and a network timeout, so that an unresponsive package mirror does not stall the job
@@ -200,12 +183,10 @@ jobs:
         with:
           msystem: UCRT64
           update: false
-          # git-lfs: the configuration checks that Git LFS is installed (cmake/CheckGitLFS.cmake)
           install: >-
             mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja
             mingw-w64-ucrt-x86_64-glew mingw-w64-ucrt-x86_64-assimp mingw-w64-ucrt-x86_64-libtiff
             mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-zlib mingw-w64-ucrt-x86_64-boost
-            mingw-w64-ucrt-x86_64-git-lfs
 
       - name: Configure
         # as on Linux, every dependency must come from the packages
@@ -251,21 +232,6 @@ jobs:
         uses: actions/checkout@v7
         with:
           lfs: false
-
-      - name: Identify the Git LFS files
-        shell: bash
-        run: git lfs ls-files --long | cut -d ' ' -f 1 | sort > .lfs-ids
-
-      - name: Restore the Git LFS cache
-        uses: actions/cache@v5
-        with:
-          path: .git/lfs
-          key: lfs-${{ hashFiles('.lfs-ids') }}
-          restore-keys: lfs-
-
-      - name: Fetch the Git LFS files of the tests
-        shell: bash
-        run: git lfs pull --include="$LFS_INCLUDE" --exclude="$LFS_EXCLUDE"
 
       - name: Set up the MinGW toolchain
         if: matrix.toolchain == 'mingw'
