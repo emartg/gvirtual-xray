@@ -25,8 +25,6 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
-        with:
-          lfs: false
 
       - name: Check the pairs of sources and images
         run: python3 docs/diagrams/diagrams.py check

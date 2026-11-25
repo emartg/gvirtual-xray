@@ -29,8 +29,8 @@ target_link_libraries(xray_adapter PRIVATE gVirtualXRay::gVirtualXRay)
 - **C++23 for the files that include its headers.** The requirement is public: a target that links to the library is
   compiled as C++23. An application that stays at an older standard keeps the files that include the headers of the library
   in one library of its own (an adapter, as above) and links it privately.
-- **What is left out.** When the repository is not the top-level project, its tests, its installation rules, and its
-  packaging are not generated (`BUILD_TESTING` is off inside it, and `gVXR_INSTALL` defaults to off), and the build type is
+- **What is left out.** When the repository is not the top-level project, its tests and its installation rules are not
+  generated (`BUILD_TESTING` is off inside it, and `gVXR_INSTALL` defaults to off), and the build type is
   the application's.
 - **The dependencies.** Either the system packages (`USE_SYSTEM_GLEW`, `USE_SYSTEM_ASSIMP`, `USE_SYSTEM_ZLIB`,
   `USE_SYSTEM_LIBTIFF`, `USE_SYSTEM_FREETYPE`, `USE_SYSTEM_BOOST`), or the ones that the superbuild builds, which are installed

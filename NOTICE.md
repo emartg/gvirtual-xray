@@ -28,8 +28,8 @@ gives the details of each change.
   resource headers are written in one operation, the bundled Assimp does not treat its warnings as errors, and the xraylib
   DLL is copied beside the programs and installed. A small header, `mingw_fix.h`, is force-included with MinGW only.
 - The core library can be used from another CMake project with `add_subdirectory`: the target `gVirtualXRay::gVirtualXRay`
-  carries its include directories, preprocessor definitions, and C++ standard, and the tests, the installation rules, and
-  the packaging are left out when the repository is not the top-level project (the option `gVXR_INSTALL`).
+  carries its include directories, preprocessor definitions, and C++ standard, and the tests and the installation rules
+  are left out when the repository is not the top-level project (the option `gVXR_INSTALL`).
 - The minimum version of CMake is 3.26; the library is compiled as C++23.
 - The coverage flags of the Debug configuration are an option, `gVXR_COVERAGE`, off by default.
 - Boost is found without its header-only component; zlib is downloaded from addresses that keep its version.
@@ -80,7 +80,10 @@ provide:
 - the Conan, Docker, Read the Docs, and CDash files;
 - the prebuilt xraylib for macOS and for Linux on 64-bit ARM (the platforms of this repository are Windows and Linux on
   x86_64);
-- the second copy of the test data in `SimpleGVXR/tests/data/`.
+- the second copy of the test data in `SimpleGVXR/tests/data/`;
+- the documentation of upstream gVirtualXRay (its documents, tutorials, posters, screenshots, and Doxygen
+  configuration), its logos, and its code of conduct;
+- the packaging with CPack.
 
 ## Reporting Problems
 

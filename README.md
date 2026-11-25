@@ -42,9 +42,6 @@ others).
 - `CHANGELOG.md`, `NOTICE.md`, `LICENSE`, `CONTRIBUTORS`: the changes, the differences from upstream, the license, and the
   authors.
 
-The folders `doc/`, `gvxr/doc/`, and `screenshots/`, and the logos, are the documentation of upstream gVirtualXRay, which
-this repository does not maintain; they are removed in a later change.
-
 ## Getting the Sources
 
 ```
